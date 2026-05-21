@@ -5,7 +5,7 @@ from PIL import Image
 import datetime
 
 # ============================================================================
-# 1. ENTERPRISE LEVEL UI CONFIGURATION & THEME
+# 1. ENTERPRISE LEVEL UI CONFIGURATION & THEME (CLEAN & MINIMAL)
 # ============================================================================
 st.set_page_config(
     page_title="Heydoctor.ai | Advanced Multimodal AI Health Concierge",
@@ -14,9 +14,16 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Premium Custom CSS Stylesheet (Dark Teal & Clean Clinical Aesthetics)
+# Premium Custom CSS - Streamlit ke default headers, footers aur menus ko completely hide karne ke liye
 st.markdown("""
     <style>
+    /* Streamlit ke faltu elements ko hide karne ke liye */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display:none;}
+    
+    /* Global Background aur Professional Colors */
     .stApp { background-color: #f4f7f6; }
     .main-header {
         color: #004d40;
@@ -81,12 +88,12 @@ if "premium_licensed" not in st.session_state:
 # ============================================================================
 # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ============================================================================
-# CRITICAL: Replace with your working Google AI Studio API Key
+# Apni working Google AI Studio API Key yahan check kar lena
 GEMINI_API_KEY = "AIzaSyA_Eg-EhCaUrQF5e4c0f3M-Nge7ssNeQmE" 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 GOD_MODE_SYSTEM_INSTRUCTION = """
-You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor. You were engineered by your Master Developer Pratyush .
+You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor. You were engineered by your Master Developer Pratyush.
 
 OPERATIONAL PROTOCOLS:
 1. MULTILINGUAL AUTO-ADAPTATION: Analyze the user's language instantly. If they type in Hinglish, reply in empathetic, natural, fluent Hinglish. If they use English, Hindi script, Marathi, Tamil, or Bengali, respond natively in that exact language and script. Matching the user's cultural context is non-negotiable.
@@ -100,7 +107,7 @@ OPERATIONAL PROTOCOLS:
 """
 
 def compute_health_insights(prompt_text, file_buffer, user_metadata):
-    # Injection of structural metadata to personalize diagnostics
+    # Demographics data ko system injection ke sath jodna
     structured_payload = [
         f"[SYSTEM DATA - CLINICAL CONTEXT]\n"
         f"Patient Profile -> Age: {user_metadata['age']}, Biological Sex: {user_metadata['gender']}, Blood Phenotype: {user_metadata['blood']}\n"
@@ -115,7 +122,7 @@ def compute_health_insights(prompt_text, file_buffer, user_metadata):
         contents=structured_payload,
         config=types.GenerateContentConfig(
             system_instruction=GOD_MODE_SYSTEM_INSTRUCTION,
-            temperature=0.35, # Grounded, balanced, highly secure output
+            temperature=0.35, # Secure aur grounded outputs ke liye
             max_output_tokens=1500
         )
     )
@@ -125,16 +132,16 @@ def compute_health_insights(prompt_text, file_buffer, user_metadata):
 # 4. SIDEBAR: MASTER CREATOR PROFILE & GRAPHICAL USER INTERFACE
 # ============================================================================
 
-# --- Section A: The Immortal Developer Branding ---
+# --- Section A: Chief Architect Profile (Pratyush Branding) ---
 st.sidebar.markdown("""
     <div class="creator-premium-card">
         <span class="dev-badge">Chief Architect & Founder</span>
-        <h2 style='margin:8px 0 2px 0; font-size:28px; font-weight:800; letter-spacing:-0.5px;'>Your Name</h2>
+        <h2 style='margin:8px 0 2px 0; font-size:28px; font-weight:800; letter-spacing:-0.5px;'>Pratyush</h2>
         <p style='margin:0; font-size:14px; opacity:0.85; font-family: monospace;'>Founder, Heydoctor.ai Ecosystem</p>
     </div>
 """, unsafe_allow_html=True)
 
-# Add your real social coordinates here
+# Apne links tu yahan badal sakta hai baad mein
 st.sidebar.markdown("""
 🌐 **Developer Hub & Portfolio:**
 - [✨ GitHub Profile](https://github.com/)
@@ -142,27 +149,14 @@ st.sidebar.markdown("""
 """)
 st.sidebar.markdown("---")
 
-# --- Section B: Commercial Tokenization Logic ---
+# --- Section B: License Status ---
 st.sidebar.subheader("💎 License & Token Gateway")
 if st.session_state.premium_licensed:
     st.sidebar.success("👑 Premium Pro Status: Active Unlimited")
-else:
-    st.sidebar.warning(f"⏳ Free Access Tokens: {st.session_state.wallet_tokens} Remainder")
-    if st.session_state.wallet_tokens <= 0:
-        st.sidebar.markdown("""
-            <div class="monetization-box">
-                <p style='color:#7f6000; margin:0; font-weight:bold;'>⛔ Consultation Limit Reached!</p>
-                <p style='font-size:13px; margin:6px 0; color:#555;'>Unlock infinite multimodal queries, deep medical document decoding, and prioritized lightning-fast engine computations.</p>
-            </div>
-        """, unsafe_allow_html=True)
-        if st.sidebar.button("Upgrade to Premium Pro (₹99)"):
-            st.session_state.premium_licensed = True
-            st.session_state.wallet_tokens = 999999
-            st.rerun()
 
 st.sidebar.markdown("---")
 
-# --- Section C: Contextual Smart Demographic Profile ---
+# --- Section C: Patient Demographics Form ---
 st.sidebar.subheader("👤 Patient Demographics")
 meta_age = st.sidebar.number_input("Patient Age", min_value=1, max_value=125, value=24)
 meta_gender = st.sidebar.selectbox("Biological Gender", ["Male", "Female", "Other"])
@@ -171,13 +165,13 @@ current_metadata = {"age": meta_age, "gender": meta_gender, "blood": meta_blood}
 
 st.sidebar.markdown("---")
 
-# --- Section D: Ultra-Camera & Hardware Diagnostics Input ---
+# --- Section D: Multimodal Hardware Scanner Suite (Camera & Files) ---
 st.sidebar.subheader("📸 Hardware Scanner Suite")
 capture_channel = st.sidebar.radio("Symptom Input Type:", ("Text-Only Stream", "Live Device Camera", "Local File Storage System"))
 
 hardware_media_buffer = None
 if capture_channel == "Live Device Camera":
-    # Asks browser permission natively for camera 📸
+    # Natively asks for browser camera access 📸
     hardware_media_buffer = st.sidebar.camera_input("Position Symptom/Report in Frame")
 elif capture_channel == "Local File Storage System":
     hardware_media_buffer = st.sidebar.file_uploader("Upload Medical Image Asset", type=["png", "jpg", "jpeg"])
@@ -191,7 +185,7 @@ if hardware_media_buffer:
 st.markdown("<h1 class='main-header'>🩺 Heydoctor.ai</h1>", unsafe_allow_html=True)
 st.write(f"**Next-Gen Autonomous Multimodal Health Companion.** Engineered for precision diagnostics assistance.")
 
-# Clinical Redline Crisis Banner
+# Safety Crisis Banner
 st.markdown("""
     <div class="crisis-alert-banner">
         🚨 <b>CRITICAL DISPATCH PROTOCOL:</b> If you are facing life-threatening medical events (e.g., crushing chest pressure, sudden unyielding dyspnea, acute neurological weakness, or extreme traumatic hemorrhaging), abort digital screening immediately. Dial <b>102</b> or <b>112</b> instantly for paramedics. Heydoctor.ai is a non-clinical wellness companion system.
@@ -199,73 +193,39 @@ st.markdown("""
 """, unsafe_allow_html=True)
 st.write("")
 
-# Render Full Conversation Pipeline Natively
+# Dynamic Conversation Render Pipeline
 for chat_node in st.session_state.chat_history:
     with st.chat_message(chat_node["role"]):
         st.markdown(chat_node["content"])
 
-# Main Input Stream Execution
-# --- Chat Blocker Code by Pratyush ---
-if not st.session_state.premium_licensed and len(st.session_state.chat_history) >= 9:
-    st.error("🚨 Free Chat Limit Reached (Max 9 Chats)! Please upgrade to Premium Pro.")
-    st.markdown("### 👑 Upgrade to Premium Pro")
-    if st.button("Unlock Unlimited Chats (₹99)"):
-        st.session_state.premium_licensed = True
-        st.rerun()
-    user_prompt = None
-else:
-    user_prompt = st.chat_input("Enter physical symptoms, medication queries...")
+# Chat box input
+user_prompt = st.chat_input("Enter physical symptoms, medication queries...")
 
 if user_prompt:
-# Financial Verification Guardrail
-    if not st.session_state.premium_licensed and st.session_state.wallet_tokens <= 0:
-        st.error("🚨 Consultation streaming suspended. Free-tier token exhaustion detected. Please upgrade via the License Gateway in the sidebar.")
-    else:
-        # Commit User Command to State
-        st.session_state.chat_history.append({"role": "user", "content": user_prompt})
-        with st.chat_message("user"):
-            st.markdown(user_prompt)
-                                
-            # Compute AI Diagnostic
-            with st.chat_message("assistant"):
-                with st.spinner("⚡ Initializing Neural Diagnostic Stream..."):
-                    try:
-                        # Request execution from Gemini API Gateway
-                        computed_insight = compute_health_insights(user_prompt, hardware_media_buffer, current_metadata)
-                        st.markdown(computed_insight)
-                        
-                        # Log Assistant Node to History
-                        st.session_state.chat_history.append({"role": "assistant", "content": computed_insight})
-                        
-                        # Deduct Commercial Token Allocation
-                        if not st.session_state.premium_licensed:
-                            st.session_state.wallet_tokens -= 1
-                            st.rerun() # Refresh tokens dashboard
+    # Append user chat to history
+    st.session_state.chat_history.append({"role": "user", "content": user_prompt})
+    with st.chat_message("user"):
+        st.markdown(user_prompt)
                             
-                    except Exception as critical_fault_log:
-                        st.error("Data Stream Interrupted: Please verify your Gemini API key activation parameter.")
-                        st.sidebar.error(f"System Debug Fault: {critical_fault_log}")
+        # Core execution loop
+        with st.chat_message("assistant"):
+            with st.spinner("⚡ Initializing Neural Diagnostic Stream..."):
+                try:
+                    # Gemini API hit karna
+                    computed_insight = compute_health_insights(user_prompt, hardware_media_buffer, current_metadata)
+                    st.markdown(computed_insight)
+                    st.session_state.chat_history.append({"role": "assistant", "content": computed_insight})
+                        
+                except Exception as critical_fault_log:
+                    st.error("Data Stream Interrupted: Please verify your Gemini API key activation parameter.")
+                    st.sidebar.error(f"System Debug Fault: {critical_fault_log}")
 
-    # ============================================================================
-    # 6. SYSTEM ENTERPRISE FOOTER
-    # ============================================================================
-    st.markdown("---")
-    footer_grid = st.columns([4, 1])
-    with footer_grid[0]:
-        st.markdown(f"© {datetime.datetime.now().year} **Heydoctor.ai** Ecosystem | Advanced Neural Health Advisor Architecture. All Rights Reserved.")
-    with footer_grid[1]:
-        st.markdown(f"<p style='text-align:right; font-family:monospace; color:#777;'><b>Core Version:</b> 3.0.0-PRO</p>", unsafe_allow_html=True)
-     # ==========================================
-# ==========================================
-# DOWNLOAD SYSTEM FOR PEOPLE
-# ==========================================
-with open("hey doctor.py", "r", encoding="utf-8") as download_file:
-    code_to_download = download_file.read()
-
-st.sidebar.markdown("---")
-st.sidebar.download_button(
-    label="📥 Download HeyDoctor App Code (.py)",
-    data=code_to_download,
-    file_name="hey_doctor.py",
-    mime="text/plain"
-)
+# ============================================================================
+# 6. SYSTEM ENTERPRISE FOOTER
+# ============================================================================
+st.markdown("---")
+footer_grid = st.columns([4, 1])
+with footer_grid[0]:
+    st.markdown(f"© {datetime.datetime.now().year} **Heydoctor.ai** Ecosystem | Advanced Neural Health Advisor Architecture. All Rights Reserved.")
+with footer_grid[1]:
+    st.markdown(f"<p style='text-align:right; font-family:monospace; color:#777;'><b>Core Version:</b> 3.0.0-PRO</p>", unsafe_allow_html=True)
