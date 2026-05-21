@@ -95,13 +95,23 @@ if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 else:
     GEMINI_API_KEY = None
 
+# ==============================================================================
+# # SYSTEM INSTRUCTION CONFIGURATION
+# ==============================================================================
+GOD_MODE_SYSTEM_INSTRUCTION = """
+You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor. 
+"""
+
 # ---- 4. CHAT INITIALIZATION WITH MEMORY ----
+if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+else:
+    GEMINI_API_KEY = None
+
 if GEMINI_API_KEY:
     try:
-        # Naya Client setup
         client = genai.Client(api_key=GEMINI_API_KEY)
         
-        # Google ke naye SDK ke mutabik chat session aise banta hai
         if "chat_session" not in st.session_state:
             st.session_state.chat_session = client.chats.create(
                 model="gemini-2.5-flash",
@@ -110,27 +120,3 @@ if GEMINI_API_KEY:
             
     except Exception as e:
         st.error(f"Engine Initialization Error: {e}")
-else:
-    st.error("API Key nahi mili! Please Streamlit Secrets check karein.")
-
-# ---- 5. SCREEN PAR PURANI CHAT HISTORY DIKHANA ----
-if "chat_session" in st.session_state:
-    # Naye SDK mein history ko reads karne ka tarika
-    for message in st.session_state.chat_session.get_history():
-        role = "user" if message.role == "user" else "assistant"
-        with st.chat_message(role):
-            st.markdown(message.parts[0].text)
-
-# ---- 6. USER KA NEW INPUT HANDLE KARNA ----
-if user_query := st.chat_input("Enter physical symptoms, medication queries...", key="heydoctor_chat_input"):
-    with st.chat_message("user"):
-        st.markdown(user_query)
-    
-    if "chat_session" in st.session_state:
-        with st.chat_message("assistant"):
-            try:
-                # Naye SDK mein message send karne ka tarika
-                response = st.session_state.chat_session.send_message(user_query)
-                st.markdown(response.text)
-            except Exception as e:
-                st.error(f"Data Stream Interrupted: {e}")
