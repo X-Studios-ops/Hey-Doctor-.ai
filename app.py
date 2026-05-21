@@ -89,7 +89,6 @@ if "premium_licensed" not in st.session_state:
 # # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ==============================================================================
 
-# System Instruction set karna
 GOD_MODE_SYSTEM_INSTRUCTION = """You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor."""
 
 # Secrets se key uthana
@@ -101,10 +100,13 @@ else:
 # ---- 4. CHAT INITIALIZATION WITH MEMORY ----
 if GEMINI_API_KEY:
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        # Client ko session state mein save rakhna taaki wo close na ho
+        if "ai_client" not in st.session_state:
+            st.session_state.ai_client = genai.Client(api_key=GEMINI_API_KEY)
         
+        # Chat session ko maintain rakhna
         if "chat_session" not in st.session_state:
-            st.session_state.chat_session = client.chats.create(
+            st.session_state.chat_session = st.session_state.ai_client.chats.create(
                 model="gemini-2.5-flash",
                 config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
             )
