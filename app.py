@@ -89,12 +89,53 @@ if "premium_licensed" not in st.session_state:
 # # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ==============================================================================
 
-# GitHub par koi asli key nahi rahegi taaki Google ban na kare
+# Secrets se key uthana
 if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 else:
-    # Backup variable error se bachne ke liye
     GEMINI_API_KEY = None
+
+# ---- 4. CHAT INITIALIZATION WITH MEMORY ----
+if GEMINI_API_KEY:
+    try:
+        # Client aur Model setup
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        
+        # Agar chat session pehle se nahi bana hai toh naya banao
+        if "chat_session" not in st.session_state:
+            model = genai.GenerativeModel(
+                model_name="gemini-2.5-flash",
+                system_instruction=GOD_MODE_SYSTEM_INSTRUCTION
+            )
+            st.session_state.chat_session = model.start_chat(history=[])
+            
+    except Exception as e:
+        st.error(f"Engine Initialization Error: {e}")
+else:
+    st.error("API Key nahi mili! Please Streamlit Secrets check karein.")
+
+# ---- 5. SCREEN PAR PURANI CHAT HISTORY DIKHANA ----
+if "chat_session" in st.session_state:
+    for message in st.session_state.chat_session.history:
+        role = "user" if message.role == "user" else "assistant"
+        with st.chat_message(role):
+            st.markdown(message.parts[0].text)
+
+# ---- 6. USER KA NEW INPUT HANDLE KARNA ----
+if user_query := st.chat_input("Enter physical symptoms, medication queries..."):
+    # User ka message screen par dikhao
+    with st.chat_message("user"):
+        st.markdown(user_query)
+    
+    # AI se response lo (Poori history automatic piche se jayegi)
+    if "chat_session" in st.session_state:
+        with st.chat_message("assistant"):
+            try:
+                response = st.session_state.chat_session.send_message(user_query)
+                st.markdown(response.text)
+            except Exception as e:
+                # Agar ab koi error aayega toh asli wajah dikhegi, ganda static error nahi!
+                st.error(f"Data Stream Interrupted: {e}")
 
 # Agar Secrets mein key mil gayi hai toh client shuru hoga
 if GEMINI_API_KEY:
