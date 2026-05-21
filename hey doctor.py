@@ -66,11 +66,14 @@ st.markdown("""
 # ============================================================================
 # 2. STATE MANAGEMENT & COMMERCIAL GATEWAYS
 # ============================================================================
+today_date = str(datetime.date.today())
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
-
-if "wallet_tokens" not in st.session_state:
-    st.session_state.wallet_tokens = 9  # Free Tier limit
+    
+if "last_chat_date" not in st.session_state or st.session_state.last_chat_date != today_date:
+    st.session_state.last_chat_date = today_date
+    st.session_state.user_daily_tokens = 9  # Har naye din 9 fresh tokens
 
 if "premium_licensed" not in st.session_state:
     st.session_state.premium_licensed = True
@@ -252,3 +255,4 @@ if user_prompt:
         st.markdown(f"© {datetime.datetime.now().year} **Heydoctor.ai** Ecosystem | Advanced Neural Health Advisor Architecture. All Rights Reserved.")
     with footer_grid[1]:
         st.markdown(f"<p style='text-align:right; font-family:monospace; color:#777;'><b>Core Version:</b> 3.0.0-PRO</p>", unsafe_allow_html=True)
+
