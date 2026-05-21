@@ -98,16 +98,15 @@ else:
 # ---- 4. CHAT INITIALIZATION WITH MEMORY ----
 if GEMINI_API_KEY:
     try:
-        # Client aur Model setup
+        # Naya Client setup
         client = genai.Client(api_key=GEMINI_API_KEY)
         
-        # Agar chat session pehle se nahi bana hai toh naya banao
+        # Google ke naye SDK ke mutabik chat session aise banta hai
         if "chat_session" not in st.session_state:
-            model = genai.GenerativeModel(
-                model_name="gemini-2.5-flash",
-                system_instruction=GOD_MODE_SYSTEM_INSTRUCTION
+            st.session_state.chat_session = client.chats.create(
+                model="gemini-2.5-flash",
+                config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
             )
-            st.session_state.chat_session = model.start_chat(history=[])
             
     except Exception as e:
         st.error(f"Engine Initialization Error: {e}")
@@ -116,22 +115,21 @@ else:
 
 # ---- 5. SCREEN PAR PURANI CHAT HISTORY DIKHANA ----
 if "chat_session" in st.session_state:
-    for message in st.session_state.chat_session.history:
+    # Naye SDK mein history ko reads karne ka tarika
+    for message in st.session_state.chat_session.get_history():
         role = "user" if message.role == "user" else "assistant"
         with st.chat_message(role):
             st.markdown(message.parts[0].text)
 
 # ---- 6. USER KA NEW INPUT HANDLE KARNA ----
-# Isme key="heydoctor_chat_input" laga diya hai taaki duplicate error na aaye
 if user_query := st.chat_input("Enter physical symptoms, medication queries...", key="heydoctor_chat_input"):
-    # User ka message screen par dikhao
     with st.chat_message("user"):
         st.markdown(user_query)
     
-    # AI se response lo (Poori history automatic piche se jayegi)
     if "chat_session" in st.session_state:
         with st.chat_message("assistant"):
             try:
+                # Naye SDK mein message send karne ka tarika
                 response = st.session_state.chat_session.send_message(user_query)
                 st.markdown(response.text)
             except Exception as e:
