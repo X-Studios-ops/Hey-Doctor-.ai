@@ -89,13 +89,18 @@ if "premium_licensed" not in st.session_state:
 # # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ==============================================================================
 
-# Ab hum GitHub par koi asli key nahi likhenge, taaki Google ban na kare
+# GitHub par koi asli key nahi rahegi taaki Google ban na kare
 if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+else:
+    # Backup variable error se bachne ke liye
+    GEMINI_API_KEY = None
+
+# Agar Secrets mein key mil gayi hai toh client shuru hoga
+if GEMINI_API_KEY:
+    client = genai.Client(api_key=GEMINI_API_KEY)
 else:
     st.error("API Key nahi mili! Please Streamlit Secrets check karein.")
-client = genai.Client(api_key=GEMINI_API_KEY)
-
 GOD_MODE_SYSTEM_INSTRUCTION = """
 You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor. You were engineered by your Master Developer Pratyush.
 
