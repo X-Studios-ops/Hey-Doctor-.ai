@@ -89,25 +89,16 @@ if "premium_licensed" not in st.session_state:
 # # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ==============================================================================
 
-# Secrets se key uthana (GitHub par koi key nahi hai)
+# System Instruction set karna
+GOD_MODE_SYSTEM_INSTRUCTION = """You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor."""
+
+# Secrets se key uthana
 if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
     GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 else:
     GEMINI_API_KEY = None
-
-# ==============================================================================
-# # SYSTEM INSTRUCTION CONFIGURATION
-# ==============================================================================
-GOD_MODE_SYSTEM_INSTRUCTION = """
-You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, and wellness advisor. 
-"""
 
 # ---- 4. CHAT INITIALIZATION WITH MEMORY ----
-if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-else:
-    GEMINI_API_KEY = None
-
 if GEMINI_API_KEY:
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
@@ -117,6 +108,30 @@ if GEMINI_API_KEY:
                 model="gemini-2.5-flash",
                 config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
             )
-            
     except Exception as e:
         st.error(f"Engine Initialization Error: {e}")
+else:
+    st.error("API Key nahi mili! Please Streamlit Secrets check karein.")
+
+# ---- 5. SCREEN PAR PURANI CHAT HISTORY DIKHANA ----
+if "chat_session" in st.session_state:
+    try:
+        for message in st.session_state.chat_session.get_history():
+            role = "user" if message.role == "user" else "assistant"
+            with st.chat_message(role):
+                st.markdown(message.parts[0].text)
+    except Exception as e:
+        pass
+
+# ---- 6. USER KA NEW INPUT HANDLE KARNA ----
+if user_query := st.chat_input("Enter physical symptoms, medication queries...", key="heydoctor_chat_input"):
+    with st.chat_message("user"):
+        st.markdown(user_query)
+    
+    if "chat_session" in st.session_state:
+        with st.chat_message("assistant"):
+            try:
+                response = st.session_state.chat_session.send_message(user_query)
+                st.markdown(response.text)
+            except Exception as e:
+                st.error(f"Data Stream Interrupted: {e}")
