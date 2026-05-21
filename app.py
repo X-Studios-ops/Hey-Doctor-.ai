@@ -85,17 +85,15 @@ if "last_chat_date" not in st.session_state or st.session_state.last_chat_date !
 if "premium_licensed" not in st.session_state:
     st.session_state.premium_licensed = True
 
-# ============================================================================
-# 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
-# ============================================================================
-# Apni working Google AI Studio API Key yahan check kar lena
-# ---- SAFE SECRETS BACKEND CONFIGURATION ----
-if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-else:
-    # Local laptop par testing ke liye backup key
-    GEMINI_API_KEY = "AIzaSyAZD6oQyIlLKlL8VwVXtXyGt4TzzdA2Iak"
+# ==============================================================================
+# # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
+# ==============================================================================
 
+# Ab hum GitHub par koi asli key nahi likhenge, taaki Google ban na kare
+if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+else:
+    st.error("API Key nahi mili! Please Streamlit Secrets check karein.")
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 GOD_MODE_SYSTEM_INSTRUCTION = """
