@@ -1,4 +1,4 @@
-import streamlit as st
+mport streamlit as st
 from google import genai
 from google.genai import types
 from PIL import Image
@@ -255,4 +255,17 @@ if user_prompt:
         st.markdown(f"© {datetime.datetime.now().year} **Heydoctor.ai** Ecosystem | Advanced Neural Health Advisor Architecture. All Rights Reserved.")
     with footer_grid[1]:
         st.markdown(f"<p style='text-align:right; font-family:monospace; color:#777;'><b>Core Version:</b> 3.0.0-PRO</p>", unsafe_allow_html=True)
+     # ==========================================
+# ==========================================
+# DOWNLOAD SYSTEM FOR PEOPLE
+# ==========================================
+with open("hey doctor.py", "r", encoding="utf-8") as download_file:
+    code_to_download = download_file.read()
 
+st.sidebar.markdown("---")
+st.sidebar.download_button(
+    label="📥 Download HeyDoctor App Code (.py)",
+    data=code_to_download,
+    file_name="hey_doctor.py",
+    mime="text/plain"
+)
