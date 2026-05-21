@@ -89,7 +89,7 @@ if "premium_licensed" not in st.session_state:
 # 3. CORE AI ENGINE & SECURITY GATEWAY (GEMINI 2.5 FLASH)
 # ============================================================================
 # Apni working Google AI Studio API Key yahan check kar lena
-GEMINI_API_KEY = "AIzaSyA_Eg-EhCaUrQF5e4c0f3M-Nge7ssNeQmE" 
+GEMINI_API_KEY = "AIzaSyAkZWNo4QSUgH8pE1YX_c2DUOmO9zkBJEs" 
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 GOD_MODE_SYSTEM_INSTRUCTION = """
