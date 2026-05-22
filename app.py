@@ -1,7 +1,7 @@
 import streamlit as st
 import google.genai as genai
-import time
 from PIL import Image
+import time
 
 # ==============================================================================
 # 1. PAGE SETUP, MULTICOLOR NEON INJECTOR & GOOGLE VERIFICATION
@@ -19,17 +19,13 @@ st.markdown("""
     </head>
 """, unsafe_allow_html=True)
 
-# Heavy-duty custom CSS override to enforce neon multi-color highlights and animations
 st.markdown("""
     <style>
-    /* Full Application Metallic Canvas */
     html, body, [data-testid="stAppViewContainer"] {
         background: radial-gradient(circle at center, #061510 0%, #010403 100%) !important;
         color: #F1F5F9 !important;
         font-family: 'Courier New', monospace !important;
     }
-    
-    /* Multicolor Title (Cyan to Green Gradient) */
     .main-title {
         font-size: 3.6rem;
         font-weight: 900;
@@ -42,12 +38,7 @@ st.markdown("""
         letter-spacing: 2px;
         filter: drop-shadow(0px 0px 20px rgba(0, 242, 254, 0.4));
     }
-    
-    /* Advanced Glowing Shield Badge */
-    .premium-badge-container {
-        text-align: center;
-        margin-bottom: 30px;
-    }
+    .premium-badge-container { text-align: center; margin-bottom: 30px; }
     .premium-badge {
         background: rgba(0, 242, 254, 0.05);
         border: 1px dashed #00F2FE;
@@ -59,101 +50,49 @@ st.markdown("""
         letter-spacing: 1px;
         box-shadow: 0px 0px 15px rgba(0, 242, 254, 0.2);
     }
-
-    /* 🦾 ADVANCED BIO-SCANNER ANIMATION */
-    @keyframes scan {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-    }
+    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
     .bio-scan-container {
-        position: relative;
-        width: 100%;
-        height: 120px;
-        background: rgba(4, 15, 12, 0.7);
-        border: 1px solid rgba(0, 242, 254, 0.3);
-        border-radius: 6px;
-        overflow: hidden;
-        margin-bottom: 25px;
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+        position: relative; width: 100%; height: 120px;
+        background: rgba(4, 15, 12, 0.7); border: 1px solid rgba(0, 242, 254, 0.3);
+        border-radius: 6px; overflow: hidden; margin-bottom: 25px;
     }
     .bio-scan-line {
-        position: absolute;
-        width: 100%;
-        height: 2px;
-        background: #00F2FE;
-        opacity: 0.8;
-        box-shadow: 0 0 10px #00F2FE;
-        animation: scan 1.5s linear infinite;
+        position: absolute; width: 100%; height: 2px; background: #00F2FE;
+        box-shadow: 0 0 10px #00F2FE; animation: scan 1.5s linear infinite;
     }
-    .scanner-text {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        color: #00F2FE;
-        font-size: 10px;
-        opacity: 0.6;
-    }
-    
-    /* Structured Section Group Label */
+    .scanner-text { position: absolute; top: 10px; left: 10px; color: #00F2FE; font-size: 10px; opacity: 0.6; }
     .section-header {
-        color: #10B981;
-        font-size: 12px;
-        font-weight: bold;
-        letter-spacing: 2px;
-        margin-bottom: 10px;
-        text-transform: uppercase;
-        border-left: 3px solid #00F2FE;
-        padding-left: 8px;
+        color: #10B981; font-size: 12px; font-weight: bold; letter-spacing: 2px;
+        margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #00F2FE; padding-left: 8px;
     }
-
-    /* Photo Scan Drop-Zone Custom Overrides */
     div[data-testid="stFileUploader"] {
-        border: 1px solid #00F2FE !important;
-        background-color: rgba(4, 15, 12, 0.7) !important;
-        border-radius: 4px !important;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.1) !important;
+        border: 1px solid #00F2FE !important; background-color: rgba(4, 15, 12, 0.7) !important;
     }
-
-    /* Input Matrix Component Custom Borders */
     div[data-baseweb="select"], div[data-baseweb="input"] {
-        background-color: rgba(2, 6, 5, 0.95) !important;
-        border: 1px solid #10B981 !important;
-        border-radius: 4px !important;
+        background-color: rgba(2, 6, 5, 0.95) !important; border: 1px solid #10B981 !important;
     }
-    
-    /* Output Terminal Panels */
     .hacker-response-container {
-        color: #F8FAFC;
-        font-family: 'Courier New', monospace;
-        line-height: 1.6;
-        padding: 15px;
-        background: rgba(5, 14, 11, 0.8);
-        border: 1px solid #00F2FE;
-        border-radius: 4px;
-        margin-bottom: 12px;
-        box-shadow: inset 0 0 15px rgba(0, 242, 254, 0.05);
+        color: #F8FAFC; font-family: 'Courier New', monospace; line-height: 1.6; padding: 15px;
+        background: rgba(5, 14, 11, 0.8); border: 1px solid #00F2FE; border-radius: 4px; margin-bottom: 12px;
+    }
+    [data-testid="stImage"] {
+        border: 1px solid #10B981; border-radius: 4px; margin-bottom: 25px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Top Brand Presentation
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
-# 🦾 Animation Block
 st.markdown("""
     <div class="bio-scan-container">
-        <div class="scanner-text">
-            STATUS::LIVE<br>
-            BIO_SCAN::ACTIVE<br>
-            QUOTA::GEMINI_5X_CLUSTER
-        </div>
+        <div class="scanner-text">STATUS::LIVE<br>BIO_SCAN::ACTIVE<br>QUOTA::GEMINI_5X_CLUSTER</div>
         <div class="bio-scan-line"></div>
     </div>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE 5-API CLUSTER ROUTING & WATERTIGHT RUNTIME
+# 2. SECURE 5-API CLUSTER ROUTING
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
@@ -166,7 +105,6 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# 👑 PRATYUSH IDENTITY LOCK UPDATED IN CORES
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -175,131 +113,75 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
     "that you are a custom healthcare system built entirely by Pratyush (Founder of Beast AI / X Studios). "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
     "Jump straight into giving the medical analysis or answering the query instantly. "
+    "If an image is provided, thoroughly analyze the physical visual symptoms alongside the text inputs. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
     "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
 def init_secure_engine():
-    """Initializes client and chat simultaneously inside state cache to guarantee immunity from closed pipes"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
-        
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     try:
         active_key = KEYS_POOL[idx]
         new_client = genai.Client(api_key=active_key)
-        new_chat = new_client.chats.create(
-            model="gemini-2.5-flash",
-            config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
-        )
         st.session_state.secure_client = new_client
-        st.session_state.secure_chat = new_chat
-        return new_chat
-    except Exception as e:
+        return new_client
+    except Exception:
         st.session_state.current_key_index += 1
-        idx = st.session_state.current_key_index % len(KEYS_POOL)
-        active_key = KEYS_POOL[idx]
-        new_client = genai.Client(api_key=active_key)
-        new_chat = new_client.chats.create(
-            model="gemini-2.5-flash",
-            config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
-        )
-        st.session_state.secure_client = new_client
-        st.session_state.secure_chat = new_chat
-        return new_chat
+        return init_secure_engine()
 
-# Verify engine integrity on run
-if "secure_chat" not in st.session_state or not st.session_state.secure_chat:
+if "secure_client" not in st.session_state or not st.session_state.secure_client:
     init_secure_engine()
 
 if "messages_display" not in st.session_state:
     st.session_state.messages_display = []
 
 # ==============================================================================
-# 3. PATIENT ENTRY PORTAL LAYOUT (SUPER FIXED PHOTO ENGINE)
+# 3. PATIENT ENTRY PORTAL LAYOUT
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
-# Main File Uploader Widget
 uploaded_image = st.file_uploader(
     "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
     type=["jpg", "jpeg", "png"],
     key="bio_scanner_upload_field"
 )
 
-# 🔥 ABSOLUTE FIX: Photo load hote hi sabse pehle yahan bina kisi lag ke show hogi
 if uploaded_image is not None:
     st.markdown("<br>", unsafe_allow_html=True)
     try:
-        # File buffer se read karke live screen par inject karne ka shortcut
         preview_img = Image.open(uploaded_image)
-        st.image(
-            preview_img, 
-            caption="✅ BIOMETRIC DATA SCANNED SUCCESSFULLY", 
-            use_container_width=True
-        )
+        st.image(preview_img, caption="✅ BIOMETRIC DATA SCANNED SUCCESSFULLY", use_container_width=True)
     except Exception as img_err:
-        st.error(f"❌ Scanner Visual Error: {img_err}. File template corrupted.")
+        st.error(f"❌ Scanner Visual Error: {img_err}")
 
 st.markdown("<br>", unsafe_allow_html=True)
-
-# Patient Core Metrics Inputs (Gender, Age, Blood)
 col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
     gender = st.selectbox("Gender Select", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
-
 with col2:
     st.markdown('<div class="section-header">ENTER AGE</div>', unsafe_allow_html=True)
     age = st.number_input("Age Input", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
-
 with col3:
     st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
     blood_type = st.selectbox("Blood Select", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
-
-          except Exception as primary_error:
-            status_placeholder.empty()
-            
-            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
-            st.session_state.current_key_index += 1
-            st.session_state.secure_chat = None
-            st.session_state.secure_client = None
-            
-            try:
-                # Instant hidden failover retry execution
-                init_secure_engine()
-                backup_client = st.session_state.secure_client
-                
-                response_stream = backup_client.models.generate_content_stream(
-                    model="gemini-2.5-flash",
-                    contents=full_meta_prompt,
-                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
-                )
-                
-                full_response = ""
-                for chunk in response_stream:
-                    if chunk.text:
-                        full_response += chunk.text
-                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
-                        
-                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
-                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-                
-            except Exception as cluster_overload:
-                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
+for msg in st.session_state.messages_display:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE)
+# 4. CORE INFERENCE PIPELINE (HYPER-FAST STREAMING ENGINE)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # 🧬 BASE METADATA CONTEXT
     full_meta_prompt = [
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
@@ -308,7 +190,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"▪ QUERY LOG: {user_query}"
     ]
     
-    # 📸 DIRECT INTEGRATION: PHOTO BYPASS BUFFER
     if uploaded_image is not None:
         try:
             opened_img = Image.open(uploaded_image)
@@ -316,12 +197,10 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
     
-    # Inject user text bubble on screen
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
-    # Open dynamic assistant channel
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
@@ -332,15 +211,9 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
-        
-        # Pull or build safe client session state
-        if "secure_client" not in st.session_state or not st.session_state.secure_client:
-            init_secure_engine()
-            
-        active_client = st.session_state.secure_client
+        active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 CORE STREAM BLOCK: Watertight call handling both text and images
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=full_meta_prompt,
@@ -349,43 +222,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             status_placeholder.empty()
             
             full_response = ""
-            # Capture data chunks instantly from the live stream
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
-            
-            # Final output wrap-up
-            response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
-            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            
-        except Exception as primary_error:
-            status_placeholder.empty()
-            
-            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
-            st.session_state.current_key_index += 1
-            st.session_state.secure_chat = None
-            st.session_state.secure_client = None
-            
-            try:
-                # Instant hidden failover retry execution
-                init_secure_engine()
-                backup_client = st.session_state.secure_client
-                
-                response_stream = backup_client.models.generate_content_stream(
-                    model="gemini-2.5-flash",
-                    contents=full_meta_prompt,
-                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
-                )
-                
-                full_response = ""
-                for chunk in response_stream:
-                    if chunk.text:
-                        full_response += chunk.text
-                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
-                        
-                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
-                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-                
-            except Exception as cluster_overload:
-                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
+                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>',
