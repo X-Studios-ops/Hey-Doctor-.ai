@@ -162,14 +162,14 @@ if "current_key_index" not in st.session_state:
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
-    "Do not acknowledge that this is a repeated conversation. Jump straight into giving the medical analysis. "
+    "Jump straight into giving the medical analysis. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
     "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
 def create_fresh_session():
-    """Client reset system using exact stable naming configuration"""
+    """Client reset system using the definitive stable model tag"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
@@ -178,7 +178,7 @@ def create_fresh_session():
         active_key = KEYS_POOL[idx]
         st.session_state.ai_client = genai.Client(api_key=active_key)
         st.session_state.chat_session = st.session_state.ai_client.chats.create(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",  # Switched to production configuration safety tag
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
         return True
@@ -210,15 +210,15 @@ col1, col2, col3 = st.columns(3)
 
 with col1:
     st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
-    gender = st.selectbox("Patient Gender Configuration", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
+    gender = st.selectbox("Gender Select", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
 
 with col2:
     st.markdown('<div class="section-header">ENTER AGE</div>', unsafe_allow_html=True)
-    age = st.number_input("Patient Age Input", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
+    age = st.number_input("Age Input", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
 
 with col3:
     st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
-    blood_type = st.selectbox("Patient Blood Type Dropdown", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
+    blood_type = st.selectbox("Blood Select", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
@@ -259,7 +259,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
-            # --- CLEANED TRANSMISSION TYPEWRITER ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
@@ -271,7 +270,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper() or "NOT_FOUND" in str(e).upper():
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
                 if "ai_client" in st.session_state: del st.session_state.ai_client
