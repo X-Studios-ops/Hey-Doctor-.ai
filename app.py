@@ -3,116 +3,105 @@ import google.genai as genai
 import time
 
 # ==============================================================================
-# 1. PAGE CONFIGURATION & PREMIUM BLACK MAGIC THEME (UI/UX)
+# 1. PAGE CONFIGURATION & CYBERPUNK MEDICAL THEME (UI/UX)
 # ==============================================================================
 st.set_page_config(
-    page_title="Heydoctor.ai | Advanced Medical Concierge",
+    page_title="Heydoctor.ai | Advanced Bio-Scanner",
     page_icon="🩺",
     layout="centered"
 )
 
-# Custom CSS for the full Premium Design, Hacker Typing, and Medical Scanner
+# Custom High-End Cyberpunk Glowing CSS
 st.markdown("""
     <style>
-    /* Global Background and Typography */
+    /* Full Dark Cyberpunk Background */
     .stApp {
-        background: linear-gradient(135deg, #0B1511 0%, #040806 100%);
+        background: linear-gradient(135deg, #050E0B 0%, #020403 100%);
         color: #E2E8F0;
+        font-family: 'Courier New', monospace;
     }
     
-    /* Header Custom Styling */
+    /* Main Title Metallic Glow */
     .main-title {
-        font-size: 3.2rem;
-        font-weight: 800;
+        font-size: 3.5rem;
+        font-weight: 900;
         text-align: center;
-        background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+        background: linear-gradient(90deg, #10B981 0%, #059669 50%, #34D399 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-top: 50px;
-        margin-bottom: 5px;
-        text-shadow: 0px 4px 20px rgba(16, 185, 129, 0.4);
+        margin-top: 20px;
+        margin-bottom: 2px;
+        letter-spacing: 2px;
+        filter: drop-shadow(0px 0px 15px rgba(16, 185, 129, 0.6));
     }
     
-    /* Premium Badge (Active Status) */
+    /* Premium Sub-Badge */
     .premium-badge-container {
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
     .premium-badge {
-        background: linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.1) 100%);
+        background: rgba(16, 185, 129, 0.08);
         border: 1px solid #10B981;
         color: #34D399;
-        padding: 6px 16px;
-        border-radius: 30px;
-        font-size: 13px;
-        font-weight: 600;
+        padding: 5px 18px;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: bold;
         display: inline-block;
-        box-shadow: 0px 4px 15px rgba(16, 185, 129, 0.2);
-        letter-spacing: 0.5px;
+        box-shadow: 0px 0px 10px rgba(16, 185, 129, 0.3);
     }
     
-    /* Input field styling */
-    div[data-testid="stChatInput"] textarea {
-        background-color: rgba(20, 35, 30, 0.5) !important;
-        border: 1px solid rgba(16, 185, 129, 0.2) !important;
-        color: #E2E8F0 !important;
-        border-radius: 12px !important;
+    /* Section Headings */
+    .section-header {
+        color: #34D399;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
     }
-    div[data-testid="stChatInput"] button {
-        background-color: #10B981 !important;
-        color: white !important;
+
+    /* File Uploader Cyber Styling */
+    div[data-testid="stFileUploader"] {
+        border: 2px dashed rgba(16, 185, 129, 0.4) !important;
+        background-color: rgba(6, 18, 14, 0.6) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.1);
+    }
+    div[data-testid="stFileUploader"] label {
+        color: #34D399 !important;
+        font-weight: bold !important;
+    }
+
+    /* Cyber Inputs Look */
+    div[data-baseweb="select"], div[data-baseweb="input"] {
+        background-color: rgba(6, 18, 14, 0.8) !important;
+        border: 1px solid rgba(16, 185, 129, 0.3) !important;
         border-radius: 8px !important;
     }
     
-    /* 🦾 MEDICAL SCANNER LOADING ANIMATION */
-    @keyframes scan-animation {
-        0% { transform: translateY(-100%) translateX(-100%); opacity: 0; }
-        20% { opacity: 0.8; }
-        100% { transform: translateY(100%) translateX(100%); opacity: 0; }
-    }
-    .medical-scanner {
-        position: relative;
-        width: 100%;
-        height: 200px;
-        background: rgba(16, 185, 129, 0.03);
-        border: 1px solid rgba(16, 185, 129, 0.1);
-        border-radius: 15px;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-    .medical-scanner::after {
-        content: "";
-        position: absolute;
-        top: 0; left: 0;
-        width: 200%; height: 200%;
-        background: linear-gradient(135deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.3) 50%, rgba(16,185,129,0) 100%);
-        animation: scan-animation 2s linear infinite;
-    }
-    .scanner-text {
-        position: absolute;
-        bottom: 10px; left: 15px;
-        color: #10B981;
-        font-family: 'Courier New', monospace;
-        font-size: 12px;
-        font-weight: bold;
-    }
-    
-    /* Hacker Styling for AI Response Container */
+    /* Chat Response Container */
     .hacker-response-container {
         color: #E2E8F0;
         font-family: 'Courier New', monospace;
-        line-height: 1.6;
-        padding: 10px;
+        line-height: 1.7;
+        padding: 15px;
+        background: rgba(10, 25, 20, 0.3);
+        border-left: 3px solid #10B981;
+        border-radius: 4px;
+        margin-bottom: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Top UI Branding
+# Top Branding
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
-st.markdown('<div class="premium-badge-container"><div class="premium-badge">✨ Multi-Engine Enterprise Mode: Active</div></div>', unsafe_allow_html=True)
+st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. MULTI-API KEY ROTATOR LOGIC (ANTI-EXHAUST SYSTEM)
+# 2. MULTI-API KEY ROTATOR LOGIC
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C"]:
@@ -126,12 +115,12 @@ if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
 # ==============================================================================
-# 3. CHAT INITIALIZATION & UI MESSAGES
+# 3. CHAT INITIALIZATION & CORE PERSONA
 # ==============================================================================
 GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge, lifestyle companion, "
-    "and wellness advisor. Provide highly accurate, professional, and empathetic medical insights. "
-    "Always maintain your specialist persona and end with a friendly disclaimer that you are an AI."
+    "You are Heydoctor.ai, an elite-tier, enterprise-grade AI health concierge. "
+    "Analyze symptoms along with provided patient metrics (Age, Gender, Blood Type). "
+    "Provide highly accurate, professional medical insights. End with an AI disclaimer."
 )
 
 if "messages_display" not in st.session_state:
@@ -154,55 +143,93 @@ if "chat_session" not in st.session_state:
         st.error(f"Engine connection failed: {e}")
         st.stop()
 
-# Chat History Renderer
+# ==============================================================================
+# 4. NEW ADVANCED METERICS GRAPHICS (BIO-SCANNER INPUTS)
+# ==============================================================================
+st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
+
+# File Uploader Section for Medical Images
+uploaded_image = st.file_uploader(
+    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
+    type=["jpg", "jpeg", "png"],
+    key="bio_scanner_upload"
+)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# 3-Column Patient Bio Metrics Grid (Gender, Age, Blood Type)
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
+    gender = st.selectbox("", ["Male", "Female", "AB", "Custom", "Other"], label_visibility="collapsed")
+
+with col2:
+    st.markdown('<div class="section-header">ENTER AGE</div>', unsafe_allow_html=True)
+    age = st.number_input("", min_value=1, max_value=120, value=18, step=1, label_visibility="collapsed")
+
+with col3:
+    st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
+    blood_type = st.selectbox("", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], label_visibility="collapsed")
+
+st.markdown("<br><hr style='border-color: rgba(16, 185, 129, 0.2);'>", unsafe_allow_html=True)
+
+# Old Chat History Renderer
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. LIVE INPUT HANDLER (Premium UI + Hacker Typewriter)
+# 5. STREAMLINED ACTION HANDLER (PRO INFERENCE ENGINE)
 # ==============================================================================
-if user_query := st.chat_input("Enter physical symptoms, medication queries...", key="heydoctor_chat_input"):
+if user_query := st.chat_input("Enter specific physical symptoms or upload photo queries..."):
+    
+    # Context pack banana taaki AI patient ka Age/Gender/Blood group yaad rakhe
+    full_meta_prompt = (
+        f"[PATIENT DATA COMPILING]\n"
+        f"▪ GENDER: {gender}\n"
+        f"▪ AGE: {age}\n"
+        f"▪ BLOOD TYPE: {blood_type}\n"
+        f"▪ CHIEF COMPLAINT: {user_query}"
+    )
     
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
     with st.chat_message("assistant"):
-        # 🦾 MEDICAL SCANNER LOADING
-        scanner_placeholder = st.empty()
-        scanner_placeholder.markdown("""
-            <div class="medical-scanner">
-                <div class="scanner-text">
-                    SYSTEM::INITIALIZING...<br>
-                    SCANNING BIOMARKERS...<br>
-                    QUERYING MEDICAL DATABASE...
-                </div>
+        # Custom Terminal-Style Medical Loading Text
+        status_placeholder = st.empty()
+        status_placeholder.markdown("""
+            <div style="color: #10B981; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5;">
+                ⚡ SYSTEM::INITIALIZING BIO-SCAN ENGINE...<br>
+                🧬 ANALYZING BIOMARKERS AND PATIENT METRICS...<br>
+                📥 PATIENT DATA PACKET INJECTED SUCCESSFULLY.
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
         
         try:
-            response = st.session_state.chat_session.send_message(user_query)
-            scanner_placeholder.empty()
+            # Send message to Gemini with all the metadata embedded
+            response = st.session_state.chat_session.send_message(full_meta_prompt)
+            status_placeholder.empty() # Remove loader text
             
-            # --- TYPEWRITER EFFECT ---
+            # --- PROFESSIONAL TYPEWRITER ANIMATION ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
                 typed_response += char
-                html_output = f'<div class="hacker-response-container">{typed_response}</div>'
-                response_placeholder.markdown(html_output, unsafe_allow_html=True)
-                time.sleep(0.007) 
+                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
+                time.sleep(0.005) 
             
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
         except Exception as e:
-            scanner_placeholder.empty()
+            status_placeholder.empty()
             if "429" in str(e) or "EXHAUSTED" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
-                st.warning("⚠️ Engine optimized due to high load. Click Enter again to resend safely!")
+                st.warning("⚠️ High Load Switch triggered. Press Enter to re-send data securely!")
             else:
-                st.error(f"Medical Engine Interrupted: {e}")
+                st.error(f"Inference Interrupted: {e}")
