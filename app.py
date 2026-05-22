@@ -3,49 +3,55 @@ import google.genai as genai
 import time
 
 # ==============================================================================
-# 1. ULTIMATE NEON PREMIUM INJECTOR (THEME & GLOW)
+# 1. ADVANCED HIGH-END CYBERPUNK MAIN FRAME CONFIGURATION (UI/UX)
 # ==============================================================================
 st.set_page_config(
-    page_title="Heydoctor.ai | Advanced Bio-Scanner",
+    page_title="Heydoctor.ai | Advanced Multi-Engine Bio-Scanner",
     page_icon="🩺",
     layout="centered"
 )
 
-# Hardcore CSS Override to force custom layout structure
+# Deep Cyber Styling: Multi-Color Gradient, Neon Glows, Monospace Terminal Font
 st.markdown("""
     <style>
-    /* Force background and cyberpunk font */
+    /* Full Dark Cyborg Mainframe Background */
     html, body, [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #06130E 0%, #020504 100%) !important;
+        background: linear-gradient(135deg, #040907 0%, #010202 100%) !important;
         color: #E2E8F0 !important;
         font-family: 'Courier New', monospace !important;
     }
     
-    /* Premium Title Design */
+    /* Ultimate Metallic Gradient Title (image_17.png blueprint style) */
     .main-title {
-        font-size: 3.5rem;
+        font-size: 3.8rem;
         font-weight: 900;
         text-align: center;
-        background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
+        background: linear-gradient(90deg, #10B981 0%, #34D399 50%, #10B981 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-top: 20px;
-        filter: drop-shadow(0px 0px 15px rgba(16, 185, 129, 0.5));
+        margin-top: 25px;
+        letter-spacing: 2.5px;
+        filter: drop-shadow(0px 0px 25px rgba(16, 185, 129, 0.6));
     }
     
-    .premium-badge-container { text-align: center; margin-bottom: 30px; }
+    /* High-Status Badge (Active Mode) */
+    .premium-badge-container {
+        text-align: center;
+        margin-bottom: 35px;
+    }
     .premium-badge {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid #10B981;
+        background: rgba(16, 185, 129, 0.05);
+        border: 2px solid rgba(16, 185, 129, 0.5);
         color: #34D399;
-        padding: 6px 16px;
+        padding: 5px 18px;
         border-radius: 4px;
         font-size: 11px;
         font-weight: bold;
-        letter-spacing: 1px;
+        display: inline-block;
+        box-shadow: 0px 0px 15px rgba(16, 185, 129, 0.25);
     }
     
-    /* Sci-Fi Container Custom Headers */
+    /* Interface Section Headings (image_17.png) */
     .section-header {
         color: #34D399;
         font-size: 13px;
@@ -53,64 +59,65 @@ st.markdown("""
         letter-spacing: 1.5px;
         margin-bottom: 12px;
         text-transform: uppercase;
-        text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
     }
 
-    /* Force Border Glow on Image Uploader */
+    /* Heavy Duty Image Uploader Box */
     div[data-testid="stFileUploader"] {
-        border: 2px solid #10B981 !important;
-        background-color: rgba(6, 22, 16, 0.6) !important;
-        border-radius: 8px !important;
-        box-shadow: 0 0 20px rgba(16, 185, 129, 0.15) !important;
-    }
-
-    /* Custom Styling for the Multi-Columns Selectors */
-    div[data-baseweb="select"], div[data-baseweb="input"] {
-        background-color: rgba(4, 11, 8, 0.95) !important;
-        border: 1px solid #10B981 !important;
+        border: 1px dashed rgba(16, 185, 129, 0.4) !important;
+        background-color: rgba(6, 18, 14, 0.4) !important;
         border-radius: 6px !important;
-        box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
+        padding: 25px !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.05);
     }
     
-    /* Custom Output Terminal Box */
+    /* Sleek Multi-Color Selector Matrix */
+    div[data-baseweb="select"], div[data-baseweb="input"] {
+        background-color: rgba(5, 15, 12, 0.95) !important;
+        border: 1px solid rgba(16, 185, 129, 0.4) !important;
+        border-radius: 4px !important;
+        box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.05);
+    }
+    
+    /* Hacker-Style Chat Response Terminal */
     .hacker-response-container {
         color: #E2E8F0;
         font-family: 'Courier New', monospace;
         line-height: 1.6;
         padding: 15px;
-        background: rgba(5, 16, 12, 0.7);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        border-radius: 6px;
-        box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.1);
+        background: rgba(8, 20, 16, 0.6);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        border-radius: 4px;
         margin-bottom: 12px;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# Main Multi-Color Neon Branding
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. MULTI-API KEY MANAGMENT
+# 2. MULTI-API KEY MANAGMENT & CONCIERGE SETUP
 # ==============================================================================
+# Get all active keys safely from Streamlit Secrets
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C"]:
     if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
         KEYS_POOL.append(st.secrets[key_name])
 
+# Old single key fallback
 if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
     KEYS_POOL.append(st.secrets["GEMINI_API_KEY"])
 
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# ==============================================================================
-# 3. CHAT INITIALIZATION & MEMORY SETUP
-# ==============================================================================
+# ------------------------------------------------------------------------------
+# Core AI Persona Initializer (System Instruction Lock)
+# ------------------------------------------------------------------------------
 GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier AI health concierge. "
-    "Provide advanced clinical insights based on patient data metrics."
-    "Always conclude with an AI administrative safety disclaimer."
+    "You are Heydoctor.ai, an elite-tier AI health concierge. Provide advanced medical insights. "
+    "Maintain specialist persona. Conclude with an administrative AI disclosure."
 )
 
 if "messages_display" not in st.session_state:
@@ -118,7 +125,7 @@ if "messages_display" not in st.session_state:
 
 if "chat_session" not in st.session_state:
     if not KEYS_POOL:
-        st.error("🚨 API Key missing! Check Streamlit Secrets.")
+        st.error("🚨 API Key missing! Please configure Streamlit Secrets (A, B, C).")
         st.stop()
         
     idx = st.session_state.current_key_index % len(KEYS_POOL)
@@ -130,14 +137,16 @@ if "chat_session" not in st.session_state:
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
     except Exception as e:
-        st.error(f"Mainframe pipeline offline: {e}")
+        st.error(f"Engine connection failure: {e}")
         st.stop()
 
 # ==============================================================================
-# 4. DIGITAL BIO-METRIC STRUCTURED INPUTS
+# 3. ADVANCED BIO-SCANNER INTERFACE LAYOUT (as requested)
 # ==============================================================================
+# Header with extra space
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
+# Large file uploader section
 uploaded_image = st.file_uploader(
     "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
     type=["jpg", "jpeg", "png"],
@@ -146,7 +155,7 @@ uploaded_image = st.file_uploader(
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Parameters Input Grid
+# 3-Column Patient Bio Metrics Grid (Gender, Age, Blood Type side-by-side)
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -161,24 +170,25 @@ with col3:
     st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
     blood_type = st.selectbox("", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], label_visibility="collapsed")
 
-st.markdown("<br><hr style='border-color: rgba(16, 185, 129, 0.2);'>", unsafe_allow_html=True)
+st.markdown("<br><hr style='border-color: rgba(16, 185, 129, 0.1);'>", unsafe_allow_html=True)
 
-# History Renderer
+# Screen par persistent historical log dikhana
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 5. CORE INFERENCE HANDLER
+# 4. INFERENCE TRANSMISSION & TRANSACTION LOG (ANTI-EXHAUST SYSTEM)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload photo queries..."):
     
+    # Structure comprehensive system string payload (persists Age, Gender, Blood Type)
     full_meta_prompt = (
-        f"[PATIENT REPORT LOG]\n"
-        f"▪ GENDER: {gender}\n"
-        f"▪ AGE: {age}\n"
-        f"▪ BLOOD TYPE: {blood_type}\n"
-        f"▪ QUERY: {user_query}"
+        f"[METRIC COMPILATION TRANSMISSION]\n"
+        f"▪ GENDER CONFIGURATION: {gender}\n"
+        f"▪ METRIC AGE: {age}\n"
+        f"▪ BLOOD TYPE CLASSIFICATION: {blood_type}\n"
+        f"▪ STATEMENT LOG: {user_query}"
     )
     
     with st.chat_message("user"):
@@ -186,10 +196,11 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload photo
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
     with st.chat_message("assistant"):
+        # Custom Terminal-Style Medical Loading Text
         status_placeholder = st.empty()
         status_placeholder.markdown("""
-            <div style="color: #10B981; font-family: 'Courier New', monospace; font-size: 12px;">
-                ⚡ COMPILING PATIENT BIOMARKERS...<br>
+            <div style="color: #10B981; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.5;">
+                ⚡ ACTION::PARSING QUANTUM BIOMARKERS...<br>
                 🧬 DATA INJECTED INTO CORE CONCIERGE ENGINE...
             </div>
         """, unsafe_allow_html=True)
@@ -197,23 +208,29 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload photo
         response_placeholder = st.empty()
         
         try:
+            # Send message to Gemini with all the persistent metadata
             response = st.session_state.chat_session.send_message(full_meta_prompt)
-            status_placeholder.empty()
+            status_placeholder.empty() # Remove loader
             
+            # --- PROFESSIONAL TYPEWRITER ANIMATION (HACKER TERMINAL LOOK) ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
                 typed_response += char
-                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
+                html_output = f'<div class="hacker-response-container">{typed_response}</div>'
+                response_placeholder.markdown(html_output, unsafe_allow_html=True)
+                # Faster speed (0.005) because Gemini responses are long
                 time.sleep(0.005) 
             
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
         except Exception as e:
             status_placeholder.empty()
+            # If current key fails due to Quota Exhaustion (429)
             if "429" in str(e) or "EXHAUSTED" in str(e).upper():
-                st.session_state.current_key_index += 1
+                st.session_state.current_key_index += 1 # Index badhao
+                # Clear session state so next interaction reloads with fresh key
                 if "chat_session" in st.session_state: del st.session_state.chat_session
-                st.warning("⚠️ High load route switch. Please hit enter again to authorize data packet!")
+                st.warning("⚠️ Mainframe route optimized due to high load. Click enter again to re-send data securely!")
             else:
-                st.error(f"Transmission Interrupted: {e}")
+                st.error(f"Medical Inference Pipeline Failure: {e}")
