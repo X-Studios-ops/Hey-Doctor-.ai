@@ -152,7 +152,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE 5-API CLUSTER ROUTING & INSTANT INITIALIZATION
+# 2. SECURE 5-API CLUSTER ROUTING & WATERTIGHT RUNTIME
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
@@ -168,43 +168,47 @@ if "current_key_index" not in st.session_state:
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
-    "Jump straight into giving the medical analysis or answering the query. "
+    "Jump straight into giving the medical analysis or answering the query instantly. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
     "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
-def get_chat_session():
-    """Returns a valid chat session directly without any warning triggers"""
+def init_secure_engine():
+    """Initializes client and chat simultaneously inside state cache to guarantee immunity from closed pipes"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
         
-    # Check if session exists in state, if yes return it directly
-    if "chat_session" in st.session_state and st.session_state.chat_session:
-        return st.session_state.chat_session
-        
-    # If not exists, create it quietly right now
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     try:
         active_key = KEYS_POOL[idx]
-        ai_client = genai.Client(api_key=active_key)
-        st.session_state.chat_session = ai_client.chats.create(
+        new_client = genai.Client(api_key=active_key)
+        new_chat = new_client.chats.create(
             model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
-        return st.session_state.chat_session
+        # Store both together safely
+        st.session_state.secure_client = new_client
+        st.session_state.secure_chat = new_chat
+        return new_chat
     except Exception as e:
-        # Fallback rotate instantly if setup fails on boot
+        # Emergency failover step
         st.session_state.current_key_index += 1
         idx = st.session_state.current_key_index % len(KEYS_POOL)
         active_key = KEYS_POOL[idx]
-        ai_client = genai.Client(api_key=active_key)
-        st.session_state.chat_session = ai_client.chats.create(
+        new_client = genai.Client(api_key=active_key)
+        new_chat = new_client.chats.create(
             model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
-        return st.session_state.chat_session
+        st.session_state.secure_client = new_client
+        st.session_state.secure_chat = new_chat
+        return new_chat
+
+# Verify engine integrity on run
+if "secure_chat" not in st.session_state or not st.session_state.secure_chat:
+    init_secure_engine()
 
 if "messages_display" not in st.session_state:
     st.session_state.messages_display = []
@@ -271,11 +275,14 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         
         response_placeholder = st.empty()
         
-        # Pull active live session cleanly
-        active_session = get_chat_session()
-        
         try:
-            response = active_session.send_message(full_meta_prompt)
+            # Direct dynamic state validation call
+            if "secure_chat" not in st.session_state or st.session_state.secure_chat is None:
+                current_chat = init_secure_engine()
+            else:
+                current_chat = st.session_state.secure_chat
+                
+            response = current_chat.send_message(full_meta_prompt)
             status_placeholder.empty()
             
             full_response = response.text
@@ -289,14 +296,14 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            # If an error happens, cycle the key instantly and retry once completely hidden from the UI
+            # If closed pipeline error or quota hit, instantly refresh engine cache silently
             st.session_state.current_key_index += 1
-            st.session_state.chat_session = None  # Clear bad session
+            st.session_state.secure_chat = None
+            st.session_state.secure_client = None
             
             try:
-                # Instant retry mechanism with fresh key
-                backup_session = get_chat_session()
-                response = backup_session.send_message(full_meta_prompt)
+                backup_chat = init_secure_engine()
+                response = backup_chat.send_message(full_meta_prompt)
                 full_response = response.text
                 typed_response = ""
                 for char in full_response:
@@ -304,5 +311,5 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                     response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
                     time.sleep(0.005)
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            except Exception as final_error:
-                st.error(f"Inference cluster overload: {final_error}. Please try sending again in a moment!")
+            except Exception as cluster_err:
+                st.error(f"Inference cluster overload: {cluster_err}. Please refresh and send once more!")
