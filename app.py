@@ -158,9 +158,125 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# 🌟 Strict No Greeting / Emojis Setup
+# 🌟 HIGH-POWER STYLISH EMOJI PERSONA
 GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
-    "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
-    "Do not acknowledge that this is a repeated conversation. Jump straight into giving the medical analysis. "
-    "1. Always use lots
+    "You are Heydoctor.ai, an elite-tier AI health concierge, premium wellness advisor, and lifestyle expert. "
+    "Your response style must be visually outstanding, engaging, and easy to read. "
+    "1. Always use lots of context-specific medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 🏋️, 💊, 📉, 🔴). "
+    "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of text. "
+    "3. Keep your tone highly professional yet modern, encouraging, and clear. "
+    "4. Always analyze provided patient parameters (Age, Gender, Blood Type) dynamically. "
+    "5. Conclude every message with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
+)
+
+def create_fresh_session():
+    """Client reset system using the high-availability model"""
+    if not KEYS_POOL:
+        st.error("🚨 API Key configuration missing in Streamlit Secrets.")
+        st.stop()
+    idx = st.session_state.current_key_index % len(KEYS_POOL)
+    try:
+        active_key = KEYS_POOL[idx]
+        st.session_state.ai_client = genai.Client(api_key=active_key)
+        st.session_state.chat_session = st.session_state.ai_client.chats.create(
+            model="gemini-1.5-flash",  # Changed to the most stable high-availability model
+            config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+        )
+        return True
+    except Exception as e:
+        st.error(f"Failed to boot engine: {e}")
+        return False
+
+# Session management patch
+if "chat_session" not in st.session_state or "ai_client" not in st.session_state:
+    create_fresh_session()
+
+if "messages_display" not in st.session_state:
+    st.session_state.messages_display = []
+
+# ==============================================================================
+# 3. PATIENT ENTRY PORTAL LAYOUT
+# ==============================================================================
+st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
+
+uploaded_image = st.file_uploader(
+    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
+    type=["jpg", "jpeg", "png"],
+    key="bio_scanner_upload_field"
+)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
+    gender = st.selectbox("Patient Gender Configuration", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
+
+with col2:
+    st.markdown('<div class="section-header">ENTER AGE</div>', unsafe_allow_html=True)
+    age = st.number_input("Patient Age Input", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
+
+with col3:
+    st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
+    blood_type = st.selectbox("Patient Blood Type Dropdown", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
+
+st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
+
+# Persistent Historical Rendering Panel
+for msg in st.session_state.messages_display:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# ==============================================================================
+# 4. CORE INFERENCE PIPELINE
+# ==============================================================================
+if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
+    
+    full_meta_prompt = (
+        f"[CORE REGISTRY REPORT]\n"
+        f"▪ GENDER CLASSIFICATION: {gender}\n"
+        f"▪ METRIC AGE: {age}\n"
+        f"▪ BLOOD TYPE: {blood_type}\n"
+        f"▪ QUERY LOG: {user_query}"
+    )
+    
+    with st.chat_message("user"):
+        st.markdown(user_query)
+    st.session_state.messages_display.append({"role": "user", "content": user_query})
+    
+    with st.chat_message("assistant"):
+        status_placeholder = st.empty()
+        status_placeholder.markdown("""
+            <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
+                ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
+                🧬 METRICS INJECTED SECURELY INTO CONCIERGE ENGINE...
+            </div>
+        """, unsafe_allow_html=True)
+        
+        response_placeholder = st.empty()
+        
+        try:
+            response = st.session_state.chat_session.send_message(full_meta_prompt)
+            status_placeholder.empty()
+            
+            full_response = response.text
+            typed_response = ""
+            for char in full_response:
+                typed_response += char
+                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
+                time.sleep(0.005) 
+            
+            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+            
+        except Exception as e:
+            status_placeholder.empty()
+            # Handle rate-limit, closed clients, or 503 server overloads gracefully
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
+                st.session_state.current_key_index += 1
+                if "chat_session" in st.session_state: del st.session_state.chat_session
+                if "ai_client" in st.session_state: del st.session_state.ai_client
+                create_fresh_session()
+                st.warning("⚠️ High load pipeline reset. Press Enter once more to authorize data packets securely!")
+            else:
+                st.error(f"Inference failure: {e}")
