@@ -218,26 +218,34 @@ if "messages_display" not in st.session_state:
     st.session_state.messages_display = []
 
 # ==============================================================================
-# 3. PATIENT ENTRY PORTAL LAYOUT
+# 3. PATIENT ENTRY PORTAL LAYOUT (SUPER FIXED PHOTO ENGINE)
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
+# Main File Uploader Widget
 uploaded_image = st.file_uploader(
     "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
     type=["jpg", "jpeg", "png"],
     key="bio_scanner_upload_field"
 )
 
-# === IS TUKDE KO FILE_UPLOADER KE THEEK NEECHE PASTE KARO ===
+# 🔥 ABSOLUTE FIX: Photo load hote hi sabse pehle yahan bina kisi lag ke show hogi
 if uploaded_image is not None:
+    st.markdown("<br>", unsafe_allow_html=True)
     try:
+        # File buffer se read karke live screen par inject karne ka shortcut
         preview_img = Image.open(uploaded_image)
-        st.image(preview_img, caption="📸 BIOMETRIC IMAGE READY FOR ANALYSIS", use_container_width=True)
+        st.image(
+            preview_img, 
+            caption="✅ BIOMETRIC DATA SCANNED SUCCESSFULLY", 
+            use_container_width=True
+        )
     except Exception as img_err:
-        st.error(f"Image display failed: {img_err}")
-# ===========================================================
+        st.error(f"❌ Scanner Visual Error: {img_err}. File template corrupted.")
+
 st.markdown("<br>", unsafe_allow_html=True)
 
+# Patient Core Metrics Inputs (Gender, Age, Blood)
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -253,11 +261,6 @@ with col3:
     blood_type = st.selectbox("Blood Select", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
-
-# Persistent Historical Rendering Panel
-for msg in st.session_state.messages_display:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
 
 # ==============================================================================
 # 4. CORE INFERENCE PIPELINE (TEXT + 1-CLICK PHOTO SCAN + IDENTITY BYPASS)
