@@ -194,7 +194,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"----------------------------------------"
     )
     
-    # User ka message screen par dikhao
+    # User ka message screen par render karo
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
@@ -207,20 +207,27 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # 🔄 MEMORY BUILDER: Purani saari baatein + Naya prompt ek sath merge
-    # Isse AI ko aapki pichli baatein hamesha yaad rahengi
+    # 🔄 DYNAMIC PROMPT BUILDER WITH CONTEXT MEMORY
     current_prompt_payload = []
     
-    # Pehle purani chat history payload mein daalo
+    # Purani chat history ko loop mein daalo
     for past_msg in st.session_state.chat_history:
         current_prompt_payload.append(past_msg)
         
-    # Ab naya text header aur current image (agar hai) payload mein jodo
+    # Naya metadata aur image (agar hai) append karo
     current_prompt_payload.append(meta_header)
     if uploaded_img_data is not None:
         current_prompt_payload.append(uploaded_img_data)
     
-    # Assistant continuous streaming output frame open karo
+    # Dynamic Instruction tweak: Agar chat chal chuki hai, toh intro repeat mat karne ko bolo
+    dynamic_instruction = GOD_MODE_SYSTEM_INSTRUCTION
+    if len(st.session_state.chat_history) > 0:
+        dynamic_instruction += (
+            "\nANTI-REPETITION RULE: You have already introduced yourself and mentioned your creator Pratyush in the previous messages. "
+            "DO NOT repeat the announcement or introduction paragraph now. Jump straight into answering the current query directly and concisely."
+        )
+    
+    # Assistant continuous streaming frame open karo
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
@@ -234,11 +241,11 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 FIRING STREAM WITH FULL LONG-TERM CONTEXT MEMORY
+            # 🚀 FIRING STREAM WITH DYNAMIC CONTEXT
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=current_prompt_payload,
-                config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+                config={"system_instruction": dynamic_instruction}
             )
             status_placeholder.empty()
             
@@ -251,7 +258,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-            # 💾 BACKEND MEMORY LOCK: AI ke dimag mein save karne ke liye roll call
+            # 💾 BACKEND MEMORY LOCK
             st.session_state.chat_history.append(f"User: {user_query}")
             st.session_state.chat_history.append(f"Heydoctor.ai: {full_response}")
             
@@ -271,7 +278,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 response_stream = backup_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=current_prompt_payload,
-                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+                    config={"system_instruction": dynamic_instruction}
                 )
                 status_placeholder.empty()
                 
