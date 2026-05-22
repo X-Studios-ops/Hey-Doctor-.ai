@@ -261,7 +261,13 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             for char in full_response:
                 typed_response += char
                 response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
-                time.slice_delay = 0.005
+                # --- TRANSMISSION TYPEWRITER ---
+            full_response = response.text
+            typed_response = ""
+            for char in full_response:
+                typed_response += char
+                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
+                time.sleep(0.005)
                 time.sleep(0.005) 
             
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
