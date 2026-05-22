@@ -178,10 +178,11 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (HYPER-FAST STREAMING ENGINE)
+# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
+    # 🧬 BASE METADATA CONTEXT
     full_meta_prompt = [
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
@@ -190,6 +191,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"▪ QUERY LOG: {user_query}"
     ]
     
+    # 📸 DIRECT INTEGRATION: PHOTO BYPASS BUFFER
     if uploaded_image is not None:
         try:
             opened_img = Image.open(uploaded_image)
@@ -197,10 +199,12 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
     
+    # Inject user text bubble on screen
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
+    # Open dynamic assistant channel
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
@@ -211,9 +215,12 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
+        
+        # Pull or build safe client session state
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
+            # 🚀 CORE STREAM BLOCK
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=full_meta_prompt,
@@ -222,7 +229,42 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             status_placeholder.empty()
             
             full_response = ""
+            # Capture data chunks instantly from the live stream
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>',
+                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+            
+            # Final output wrap-up (No extra commas here!)
+            response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+            
+        except Exception as primary_error:
+            status_placeholder.empty()
+            
+            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
+            st.session_state.current_key_index += 1
+            st.session_state.secure_client = None
+            
+            try:
+                # Instant hidden failover retry execution
+                init_secure_engine()
+                backup_client = st.session_state.secure_client
+                
+                response_stream = backup_client.models.generate_content_stream(
+                    model="gemini-2.5-flash",
+                    contents=full_meta_prompt,
+                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+                )
+                
+                full_response = ""
+                for chunk in response_stream:
+                    if chunk.text:
+                        full_response += chunk.text
+                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+                        
+                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+                
+            except Exception as cluster_overload:
+                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
