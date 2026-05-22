@@ -228,6 +228,14 @@ uploaded_image = st.file_uploader(
     key="bio_scanner_upload_field"
 )
 
+# === IS TUKDE KO FILE_UPLOADER KE THEEK NEECHE PASTE KARO ===
+if uploaded_image is not None:
+    try:
+        preview_img = Image.open(uploaded_image)
+        st.image(preview_img, caption="📸 BIOMETRIC IMAGE READY FOR ANALYSIS", use_container_width=True)
+    except Exception as img_err:
+        st.error(f"Image display failed: {img_err}")
+# ===========================================================
 st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
