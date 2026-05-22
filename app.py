@@ -178,52 +178,66 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE WITH 503 FIX)
+# 4. CORE INFERENCE PIPELINE (ULTRA MEMORY + HIGH-SPEED MULTIMODAL STREAM)
 # ==============================================================================
+# 🧠 MEMORY CORES INITIALIZATION
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
     # 🧬 BASE METADATA CONTEXT
-    full_meta_prompt = [
-        f"[CORE REGISTRY REPORT]\n"
-        f"▪ GENDER CLASSIFICATION: {gender}\n"
-        f"▪ METRIC AGE: {age}\n"
-        f"▪ BLOOD TYPE: {blood_type}\n"
-        f"▪ QUERY LOG: {user_query}"
-    ]
+    meta_header = (
+        f"[PATIENT METRICS REGISTERED]\n"
+        f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
+        f"▪ CURRENT QUERY: {user_query}\n"
+        f"----------------------------------------"
+    )
     
-    # 📸 DIRECT INTEGRATION: PHOTO BYPASS BUFFER
-    if uploaded_image is not None:
-        try:
-            opened_img = Image.open(uploaded_image)
-            full_meta_prompt.append(opened_img)
-        except Exception as img_err:
-            st.error(f"Biometric Image block reading failed: {img_err}")
-    
-    # Inject user text bubble on screen
+    # User ka message screen par dikhao
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
-    # Open dynamic assistant channel
+    # 📸 IMAGE CAPTURE BUFFER
+    uploaded_img_data = None
+    if uploaded_image is not None:
+        try:
+            uploaded_img_data = Image.open(uploaded_image)
+        except Exception as img_err:
+            st.error(f"Biometric Image block reading failed: {img_err}")
+
+    # 🔄 MEMORY BUILDER: Purani saari baatein + Naya prompt ek sath merge
+    # Isse AI ko aapki pichli baatein hamesha yaad rahengi
+    current_prompt_payload = []
+    
+    # Pehle purani chat history payload mein daalo
+    for past_msg in st.session_state.chat_history:
+        current_prompt_payload.append(past_msg)
+        
+    # Ab naya text header aur current image (agar hai) payload mein jodo
+    current_prompt_payload.append(meta_header)
+    if uploaded_img_data is not None:
+        current_prompt_payload.append(uploaded_img_data)
+    
+    # Assistant continuous streaming output frame open karo
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
-                🧬 METRICS & IMAGES ROUTED TO HYPER-STREAM INFERENCE MATRIX...
+                ⚡ SYSTEM::SYNCING FULL MEMORY CORES...<br>
+                🧬 INJECTING ENTIRE CHAT HISTORY INTO MATRIX ENGINE...
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
-        
-        # Pull or build safe client session state
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 FIRST ATTEMPT TO STREAM
+            # 🚀 FIRING STREAM WITH FULL LONG-TERM CONTEXT MEMORY
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
-                contents=full_meta_prompt,
+                contents=current_prompt_payload,
                 config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
             )
             status_placeholder.empty()
@@ -237,24 +251,26 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
+            # 💾 BACKEND MEMORY LOCK: AI ke dimag mein save karne ke liye roll call
+            st.session_state.chat_history.append(f"User: {user_query}")
+            st.session_state.chat_history.append(f"Heydoctor.ai: {full_response}")
+            
         except Exception as primary_error:
             status_placeholder.markdown("""
                 <div style="color: #F59E0B; font-family: 'Courier New', monospace; font-size: 11px;">
-                    ⚠️ CORES OVERLOAD (503) :: RETRIGGERING BACKUP ENGINES INSTANTLY...
+                    ⚠️ CORES OVERLOAD (503) :: RETRIGGERING BACKUP WITH MEMORY LOGS...
                 </div>
             """, unsafe_allow_html=True)
             
-            # 🔄 5-KEY ACTIVE CORES SWAP TRIGGER
+            # 🔄 KEY FAILOVER SWAP ROUTINE
             st.session_state.current_key_index += 1
             st.session_state.secure_client = None
             
             try:
-                # Force-initiate backup dynamic key routing
                 backup_client = init_secure_engine()
-                
                 response_stream = backup_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
-                    contents=full_meta_prompt,
+                    contents=current_prompt_payload,
                     config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
                 )
                 status_placeholder.empty()
@@ -268,6 +284,10 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
+                # Backup memory save
+                st.session_state.chat_history.append(f"User: {user_query}")
+                st.session_state.chat_history.append(f"Heydoctor.ai: {full_response}")
+                
             except Exception as cluster_overload:
                 status_placeholder.empty()
-                st.error("🚨 All API Core routes are currently heavily rate-limited by Google. Please click again in 10 seconds or check your Streamlit Secrets.")
+                st.error("🚨 All API routes are rate-limited. Please wait 10 seconds or re-fire your request.")
