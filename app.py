@@ -3,14 +3,15 @@ import google.genai as genai
 import time
 
 # ==============================================================================
-# 1. PAGE SETUP & MULTICOLOR NEON INJECTOR
+# 1. PAGE SETUP, MULTICOLOR NEON INJECTOR & GOOGLE VERIFICATION
 # ==============================================================================
 st.set_page_config(
     page_title="Heydoctor.ai | Advanced Medical Core",
     page_icon="🩺",
     layout="centered"
 )
-# 🔑 TERI ASSLI GOOGLE SEARCH CONSOLE VERIFICATION TAG INJECTED HERE
+
+# 🔑 GOOGLE SEARCH CONSOLE VERIFICATION TAG
 st.markdown("""
     <head>
         <meta name="google-site-verification" content="lfm3sejmWeeXFmm02FkosXVTAjiBRidxSnWI8CpuOIs" />
@@ -144,17 +145,16 @@ st.markdown("""
         <div class="scanner-text">
             STATUS::LIVE<br>
             BIO_SCAN::ACTIVE<br>
-            QUOTA::GEMINI_STABLE_FRAME
+            QUOTA::GEMINI_5X_CLUSTER
         </div>
         <div class="bio-scan-line"></div>
     </div>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE 5-API CLUSTER ROUTING & SELF-HEALING SYSTEM
+# 2. SECURE 5-API CLUSTER ROUTING & INSTANT INITIALIZATION
 # ==============================================================================
 KEYS_POOL = []
-# Dynamic Loop configured for all 5 Keys (A, B, C, D, E)
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
     if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
         KEYS_POOL.append(st.secrets[key_name])
@@ -164,37 +164,47 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
-# 🌟 Strict No Greeting / Emojis Setup
+
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
-    "Jump straight into giving the medical analysis. "
+    "Jump straight into giving the medical analysis or answering the query. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
     "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
-def create_fresh_session():
-    """Client reset system using the definitive stable model tag"""
+def get_chat_session():
+    """Returns a valid chat session directly without any warning triggers"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
+        
+    # Check if session exists in state, if yes return it directly
+    if "chat_session" in st.session_state and st.session_state.chat_session:
+        return st.session_state.chat_session
+        
+    # If not exists, create it quietly right now
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     try:
         active_key = KEYS_POOL[idx]
-        st.session_state.ai_client = genai.Client(api_key=active_key)
-        st.session_state.chat_session = st.session_state.ai_client.chats.create(
-            model="gemini-2.5-flash",  # Switched to production configuration safety tag
+        ai_client = genai.Client(api_key=active_key)
+        st.session_state.chat_session = ai_client.chats.create(
+            model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
-        return True
+        return st.session_state.chat_session
     except Exception as e:
-        st.error(f"Failed to boot engine: {e}")
-        return False
-
-# Session management checks
-if "chat_session" not in st.session_state or "ai_client" not in st.session_state:
-    create_fresh_session()
+        # Fallback rotate instantly if setup fails on boot
+        st.session_state.current_key_index += 1
+        idx = st.session_state.current_key_index % len(KEYS_POOL)
+        active_key = KEYS_POOL[idx]
+        ai_client = genai.Client(api_key=active_key)
+        st.session_state.chat_session = ai_client.chats.create(
+            model="gemini-2.5-flash",
+            config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+        )
+        return st.session_state.chat_session
 
 if "messages_display" not in st.session_state:
     st.session_state.messages_display = []
@@ -255,14 +265,17 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
                 ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
-                🧬 METRICS INJECTED SECURELY INTO CONCIERGE ENGINE...
+                🧬 METRICS INJECTED SECURELY INTO 5-KEY ENGINE CLUSTER...
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
         
+        # Pull active live session cleanly
+        active_session = get_chat_session()
+        
         try:
-            response = st.session_state.chat_session.send_message(full_meta_prompt)
+            response = active_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
             full_response = response.text
@@ -276,11 +289,20 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
-                st.session_state.current_key_index += 1
-                if "chat_session" in st.session_state: del st.session_state.chat_session
-                if "ai_client" in st.session_state: del st.session_state.ai_client
-                create_fresh_session()
-                st.warning("⚠️ High load pipeline reset. Press Enter once more to authorize data packets securely!")
-            else:
-                st.error(f"Inference failure: {e}")
+            # If an error happens, cycle the key instantly and retry once completely hidden from the UI
+            st.session_state.current_key_index += 1
+            st.session_state.chat_session = None  # Clear bad session
+            
+            try:
+                # Instant retry mechanism with fresh key
+                backup_session = get_chat_session()
+                response = backup_session.send_message(full_meta_prompt)
+                full_response = response.text
+                typed_response = ""
+                for char in full_response:
+                    typed_response += char
+                    response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
+                    time.sleep(0.005)
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+            except Exception as final_error:
+                st.error(f"Inference cluster overload: {final_error}. Please try sending again in a moment!")
