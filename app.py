@@ -3,7 +3,7 @@ import google.genai as genai
 import time
 
 # ==============================================================================
-# 1. ADVANCED STYLED CONFIGURATION (CONCEPT RE-ALIGNMENT)
+# 1. ULTIMATE NEON PREMIUM INJECTOR (THEME & GLOW)
 # ==============================================================================
 st.set_page_config(
     page_title="Heydoctor.ai | Advanced Bio-Scanner",
@@ -11,96 +11,87 @@ st.set_page_config(
     layout="centered"
 )
 
-# Advanced Glowing Cyber CSS to match the layout blueprint closely
+# Hardcore CSS Override to force custom layout structure
 st.markdown("""
     <style>
-    /* Premium Dark Mainframe Background */
-    .stApp {
-        background: radial-gradient(circle at top, #0C1E17 0%, #030605 100%);
-        color: #E2E8F0;
-        font-family: 'Courier New', monospace;
+    /* Force background and cyberpunk font */
+    html, body, [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #06130E 0%, #020504 100%) !important;
+        color: #E2E8F0 !important;
+        font-family: 'Courier New', monospace !important;
     }
     
-    /* Neon Glow Title Styling */
+    /* Premium Title Design */
     .main-title {
-        font-size: 3.6rem;
+        font-size: 3.5rem;
         font-weight: 900;
         text-align: center;
-        background: linear-gradient(90deg, #10B981 0%, #059669 50%, #34D399 100%);
+        background: linear-gradient(90deg, #10B981 0%, #34D399 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-top: 15px;
-        margin-bottom: 2px;
-        letter-spacing: 3px;
-        filter: drop-shadow(0px 0px 20px rgba(16, 185, 129, 0.5));
+        margin-top: 20px;
+        filter: drop-shadow(0px 0px 15px rgba(16, 185, 129, 0.5));
     }
     
-    /* Status Badge Container */
-    .premium-badge-container {
-        text-align: center;
-        margin-bottom: 35px;
-    }
+    .premium-badge-container { text-align: center; margin-bottom: 30px; }
     .premium-badge {
-        background: rgba(16, 185, 129, 0.05);
+        background: rgba(16, 185, 129, 0.1);
         border: 1px solid #10B981;
         color: #34D399;
-        padding: 6px 20px;
+        padding: 6px 16px;
         border-radius: 4px;
         font-size: 11px;
         font-weight: bold;
-        display: inline-block;
         letter-spacing: 1px;
-        box-shadow: 0px 0px 12px rgba(16, 185, 129, 0.25);
     }
     
-    /* Structured Interface Headers */
+    /* Sci-Fi Container Custom Headers */
     .section-header {
         color: #34D399;
         font-size: 13px;
         font-weight: bold;
         letter-spacing: 1.5px;
-        margin-bottom: 8px;
+        margin-bottom: 12px;
         text-transform: uppercase;
-        border-bottom: 1px solid rgba(16, 185, 129, 0.2);
-        padding-bottom: 4px;
+        text-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
     }
 
-    /* Bio-Scanner Box Customization */
+    /* Force Border Glow on Image Uploader */
     div[data-testid="stFileUploader"] {
-        border: 1px dashed #10B981 !important;
-        background-color: rgba(6, 20, 15, 0.4) !important;
-        border-radius: 6px !important;
-        padding: 25px !important;
-        box-shadow: 0 0 15px rgba(16, 185, 129, 0.05);
+        border: 2px solid #10B981 !important;
+        background-color: rgba(6, 22, 16, 0.6) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.15) !important;
     }
 
-    /* Custom Input Wrappers for Dropdowns and Numeric Inputs */
+    /* Custom Styling for the Multi-Columns Selectors */
     div[data-baseweb="select"], div[data-baseweb="input"] {
-        background-color: rgba(4, 10, 8, 0.9) !important;
-        border: 1px solid rgba(16, 185, 129, 0.4) !important;
-        border-radius: 4px !important;
+        background-color: rgba(4, 11, 8, 0.95) !important;
+        border: 1px solid #10B981 !important;
+        border-radius: 6px !important;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.1);
     }
     
-    /* Terminal Output Panel */
+    /* Custom Output Terminal Box */
     .hacker-response-container {
         color: #E2E8F0;
         font-family: 'Courier New', monospace;
         line-height: 1.6;
         padding: 15px;
-        background: rgba(6, 15, 12, 0.5);
-        border: 1px solid rgba(16, 185, 129, 0.2);
-        border-radius: 4px;
+        background: rgba(5, 16, 12, 0.7);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        border-radius: 6px;
+        box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.1);
         margin-bottom: 12px;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Main Brand Elements
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. MULTI-API KEY MANAGMENT & ROUTING
+# 2. MULTI-API KEY MANAGMENT
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C"]:
@@ -114,12 +105,12 @@ if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
 # ==============================================================================
-# 3. BACKEND SESSION INITIALIZATION
+# 3. CHAT INITIALIZATION & MEMORY SETUP
 # ==============================================================================
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge. "
-    "Analyze context strings provided alongside patient data parameters. "
-    "Provide clinical insight. Conclude with an administrative AI disclosure."
+    "Provide advanced clinical insights based on patient data metrics."
+    "Always conclude with an AI administrative safety disclaimer."
 )
 
 if "messages_display" not in st.session_state:
@@ -127,7 +118,7 @@ if "messages_display" not in st.session_state:
 
 if "chat_session" not in st.session_state:
     if not KEYS_POOL:
-        st.error("🚨 API Key missing! Check Streamlit Secrets configuration.")
+        st.error("🚨 API Key missing! Check Streamlit Secrets.")
         st.stop()
         
     idx = st.session_state.current_key_index % len(KEYS_POOL)
@@ -139,23 +130,23 @@ if "chat_session" not in st.session_state:
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
     except Exception as e:
-        st.error(f"Engine pipeline offline: {e}")
+        st.error(f"Mainframe pipeline offline: {e}")
         st.stop()
 
 # ==============================================================================
-# 4. DATA MATRIX PRESENTATION (LAYOUT GRID)
+# 4. DIGITAL BIO-METRIC STRUCTURED INPUTS
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
 uploaded_image = st.file_uploader(
-    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR DIAGNOSTIC SCAN", 
+    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
     type=["jpg", "jpeg", "png"],
     key="bio_scanner_upload"
 )
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Parameters Input Matrix
+# Parameters Input Grid
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -170,25 +161,24 @@ with col3:
     st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
     blood_type = st.selectbox("", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], label_visibility="collapsed")
 
-st.markdown("<br><hr style='border-color: rgba(16, 185, 129, 0.15);'>", unsafe_allow_html=True)
+st.markdown("<br><hr style='border-color: rgba(16, 185, 129, 0.2);'>", unsafe_allow_html=True)
 
-# Persistent Historical Log Renderer
+# History Renderer
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 5. CORE TRANSACTION PIPELINE (TRANSMISSION HANDLER)
+# 5. CORE INFERENCE HANDLER
 # ==============================================================================
-if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
+if user_query := st.chat_input("Enter specific physical symptoms or upload photo queries..."):
     
-    # Structure comprehensive system string payload
     full_meta_prompt = (
-        f"[METRIC COMPILATION]\n"
-        f"▪ GENDER CONFIGURATION: {gender}\n"
-        f"▪ METRIC AGE: {age}\n"
-        f"▪ BLOOD CLASSIFICATION: {blood_type}\n"
-        f"▪ STATEMENT LOG: {user_query}"
+        f"[PATIENT REPORT LOG]\n"
+        f"▪ GENDER: {gender}\n"
+        f"▪ AGE: {age}\n"
+        f"▪ BLOOD TYPE: {blood_type}\n"
+        f"▪ QUERY: {user_query}"
     )
     
     with st.chat_message("user"):
@@ -198,9 +188,9 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
-            <div style="color: #10B981; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                ⚡ ACTION::PARSING QUANTUM BIOMARKERS...<br>
-                🧬 METRICS MERGED WITH CORE CONCIERGE VECTOR...
+            <div style="color: #10B981; font-family: 'Courier New', monospace; font-size: 12px;">
+                ⚡ COMPILING PATIENT BIOMARKERS...<br>
+                🧬 DATA INJECTED INTO CORE CONCIERGE ENGINE...
             </div>
         """, unsafe_allow_html=True)
         
@@ -210,7 +200,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
-            # --- TERMINAL TYPEWRITER RENDERING ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
@@ -225,6 +214,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             if "429" in str(e) or "EXHAUSTED" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
-                st.warning("⚠️ Stream Route Reset. Re-enter query payload to authorize transmission.")
+                st.warning("⚠️ High load route switch. Please hit enter again to authorize data packet!")
             else:
-                st.error(f"Inference Failure: {e}")
+                st.error(f"Transmission Interrupted: {e}")
