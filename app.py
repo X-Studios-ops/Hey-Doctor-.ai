@@ -1,6 +1,7 @@
 import streamlit as st
 import google.genai as genai
 import time
+from PIL import Image
 
 # ==============================================================================
 # 1. PAGE SETUP, MULTICOLOR NEON INJECTOR & GOOGLE VERIFICATION
@@ -251,18 +252,28 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE
+# 4. CORE INFERENCE PIPELINE (TEXT + 1-CLICK PHOTO SCAN + IDENTITY BYPASS)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    full_meta_prompt = (
+    # 🧬 Dynamic Metadata Registry Injection
+    full_meta_prompt = [
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
         f"▪ METRIC AGE: {age}\n"
         f"▪ BLOOD TYPE: {blood_type}\n"
         f"▪ QUERY LOG: {user_query}"
-    )
+    ]
     
+    # 📸 Instant Media Scan Buffer (Pehli hi baar mein bina lag ke photo scan)
+    if uploaded_image is not None:
+        try:
+            opened_img = Image.open(uploaded_image)
+            full_meta_prompt.append(opened_img)
+        except Exception as img_err:
+            st.error(f"Biometric Image parsing failed: {img_err}")
+    
+    # Screen UI Refresh
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
@@ -272,45 +283,11 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
                 ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
-                🧬 METRICS INJECTED SECURELY INTO 5-KEY ENGINE CLUSTER...
+                🧬 METRICS & BIOMETRIC IMAGES INJECTED SECURELY INTO 5-KEY ENGINE CLUSTER...
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
         
-        try:
-            if "secure_chat" not in st.session_state or st.session_state.secure_chat is None:
-                current_chat = init_secure_engine()
-            else:
-                current_chat = st.session_state.secure_chat
-                
-            response = current_chat.send_message(full_meta_prompt)
-            status_placeholder.empty()
-            
-            full_response = response.text
-            typed_response = ""
-            for char in full_response:
-                typed_response += char
-                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
-                time.sleep(0.005) 
-            
-            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            
-        except Exception as e:
-            status_placeholder.empty()
-            st.session_state.current_key_index += 1
-            st.session_state.secure_chat = None
-            st.session_state.secure_client = None
-            
-            try:
-                backup_chat = init_secure_engine()
-                response = backup_chat.send_message(full_meta_prompt)
-                full_response = response.text
-                typed_response = ""
-                for char in full_response:
-                    typed_response += char
-                    response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
-                    time.sleep(0.005)
-                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            except Exception as cluster_err:
-                st.error(f"Inference cluster overload: {cluster_err}. Please refresh and send once more!")
+        # Pull active robust secure chat session
+        current_chat = st.session_state.secure_chat if "secure_chat" in st.session_state and st.session_state.secure_chat else init_secure_engine()
