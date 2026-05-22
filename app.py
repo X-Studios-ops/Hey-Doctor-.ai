@@ -158,10 +158,15 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
+# 🌟 NEW HIGH-SPEED EMOJI PERSONA CONFIGURATION (SYSTEM INSTRUCTIONS)
 GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier AI health concierge. "
-    "Analyze symptoms along with patient metadata parameters to provide advanced clinical insights. "
-    "Conclude with an administrative AI disclosure."
+    "You are Heydoctor.ai, an elite-tier AI health concierge, premium wellness advisor, and lifestyle expert. "
+    "Your response style must be visually outstanding, engaging, and easy to read. "
+    "1. Always use lots of context-specific medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 🏋️, 💊, 📉, 🔴). "
+    "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of boring text. "
+    "3. Keep your tone highly professional yet modern, encouraging, and clear. "
+    "4. Always analyze provided patient parameters (Age, Gender, Blood Type) dynamically. "
+    "5. Conclude every message with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
 def create_fresh_session():
@@ -204,7 +209,6 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
-# Label text warning fix patch (Labels applied contextually)
 with col1:
     st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
     gender = st.selectbox("Patient Gender Configuration", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
@@ -253,7 +257,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         response_placeholder = st.empty()
         
         try:
-            # Client call wrapper verification
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
