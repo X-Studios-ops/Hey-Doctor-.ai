@@ -165,8 +165,12 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
+# 🌟 5-ENGINE IDENTITY SETUP: CREATOR TAG SECURELY BINDED
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
+    "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created by Beast AI (also known as X Studios). "
+    "If anyone asks about your creator, developer, owner, or who made you, proudly announce with stellar emojis "
+    "that you are a custom proprietary healthcare engine built from scratch by Beast AI / X Studios. "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
     "Jump straight into giving the medical analysis or answering the query instantly. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
@@ -188,12 +192,10 @@ def init_secure_engine():
             model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
-        # Store both together safely
         st.session_state.secure_client = new_client
         st.session_state.secure_chat = new_chat
         return new_chat
     except Exception as e:
-        # Emergency failover step
         st.session_state.current_key_index += 1
         idx = st.session_state.current_key_index % len(KEYS_POOL)
         active_key = KEYS_POOL[idx]
@@ -276,7 +278,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         response_placeholder = st.empty()
         
         try:
-            # Direct dynamic state validation call
             if "secure_chat" not in st.session_state or st.session_state.secure_chat is None:
                 current_chat = init_secure_engine()
             else:
@@ -296,7 +297,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            # If closed pipeline error or quota hit, instantly refresh engine cache silently
             st.session_state.current_key_index += 1
             st.session_state.secure_chat = None
             st.session_state.secure_client = None
