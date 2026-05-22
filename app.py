@@ -263,13 +263,37 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 
+          except Exception as primary_error:
             status_placeholder.empty()
-            # Dynamic key swapper trigger
+            
+            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
             st.session_state.current_key_index += 1
             st.session_state.secure_chat = None
             st.session_state.secure_client = None
             
-            try:# ==============================================================================
+            try:
+                # Instant hidden failover retry execution
+                init_secure_engine()
+                backup_client = st.session_state.secure_client
+                
+                response_stream = backup_client.models.generate_content_stream(
+                    model="gemini-2.5-flash",
+                    contents=full_meta_prompt,
+                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+                )
+                
+                full_response = ""
+                for chunk in response_stream:
+                    if chunk.text:
+                        full_response += chunk.text
+                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+                        
+                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+                
+            except Exception as cluster_overload:
+                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
+
 # ==============================================================================
 # 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE)
 # ==============================================================================
