@@ -145,10 +145,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE API CLUSTER ROUTING & SELF-HEALING SYSTEM
+# 2. SECURE 5-API CLUSTER ROUTING & SELF-HEALING SYSTEM
 # ==============================================================================
 KEYS_POOL = []
-for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C"]:
+# Dynamic Loop configured for all 5 Keys (A, B, C, D, E)
+for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
     if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
         KEYS_POOL.append(st.secrets[key_name])
 
@@ -157,7 +158,6 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
-
 # 🌟 Strict No Greeting / Emojis Setup
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
