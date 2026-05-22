@@ -178,7 +178,7 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE)
+# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE WITH 503 FIX)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
@@ -220,7 +220,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 CORE STREAM BLOCK
+            # 🚀 FIRST ATTEMPT TO STREAM
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=full_meta_prompt,
@@ -229,33 +229,35 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             status_placeholder.empty()
             
             full_response = ""
-            # Capture data chunks instantly from the live stream
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
                     response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
             
-            # Final output wrap-up (No extra commas here!)
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
         except Exception as primary_error:
-            status_placeholder.empty()
+            status_placeholder.markdown("""
+                <div style="color: #F59E0B; font-family: 'Courier New', monospace; font-size: 11px;">
+                    ⚠️ CORES OVERLOAD (503) :: RETRIGGERING BACKUP ENGINES INSTANTLY...
+                </div>
+            """, unsafe_allow_html=True)
             
-            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
+            # 🔄 5-KEY ACTIVE CORES SWAP TRIGGER
             st.session_state.current_key_index += 1
             st.session_state.secure_client = None
             
             try:
-                # Instant hidden failover retry execution
-                init_secure_engine()
-                backup_client = st.session_state.secure_client
+                # Force-initiate backup dynamic key routing
+                backup_client = init_secure_engine()
                 
                 response_stream = backup_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=full_meta_prompt,
                     config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
                 )
+                status_placeholder.empty()
                 
                 full_response = ""
                 for chunk in response_stream:
@@ -267,4 +269,5 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
             except Exception as cluster_overload:
-                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
+                status_placeholder.empty()
+                st.error("🚨 All API Core routes are currently heavily rate-limited by Google. Please click again in 10 seconds or check your Streamlit Secrets.")
