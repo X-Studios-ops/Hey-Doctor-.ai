@@ -263,11 +263,10 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (TEXT + 1-CLICK PHOTO SCAN + IDENTITY BYPASS)
+# 4. CORE INFERENCE PIPELINE (ULTRA-FAST STREAMING BYPASS)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # 🧬 Dynamic Metadata Registry Injection
     full_meta_prompt = [
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
@@ -276,15 +275,13 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"▪ QUERY LOG: {user_query}"
     ]
     
-    # 📸 Instant Media Scan Buffer (Pehli hi baar mein bina lag ke photo scan)
     if uploaded_image is not None:
         try:
             opened_img = Image.open(uploaded_image)
             full_meta_prompt.append(opened_img)
         except Exception as img_err:
-            st.error(f"Biometric Image parsing failed: {img_err}")
+            st.error(f"Image parsing failed: {img_err}")
     
-    # Screen UI Refresh
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
@@ -294,11 +291,59 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
                 ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
-                🧬 METRICS & BIOMETRIC IMAGES INJECTED SECURELY INTO 5-KEY ENGINE CLUSTER...
+                🧬 INJECTING DATA INTO HYPER-STREAM ENGINE...
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
         
-        # Pull active robust secure chat session
-        current_chat = st.session_state.secure_chat if "secure_chat" in st.session_state and st.session_state.secure_chat else init_secure_engine()
+        # Pull client direct connection
+        if "secure_client" not in st.session_state or not st.session_state.secure_client:
+            init_secure_engine()
+            
+        active_client = st.session_state.secure_client
+        
+        try:
+            # 🚀 STRIKE FIX: Direct generate_content_stream for 10x faster response
+            response_stream = active_client.models.generate_content_stream(
+                model="gemini-2.5-flash",
+                contents=full_meta_prompt,
+                config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+            )
+            status_placeholder.empty()
+            
+            full_response = ""
+            # Real-time text chunk rendering loop
+            for chunk in response_stream:
+                if chunk.text:
+                    full_response += chunk.text
+                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+            
+            # Final clean state fix
+            response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+            
+        except Exception as e:
+            status_placeholder.empty()
+            # Dynamic key swapper trigger
+            st.session_state.current_key_index += 1
+            st.session_state.secure_chat = None
+            st.session_state.secure_client = None
+            
+            try:
+                init_secure_engine()
+                backup_client = st.session_state.secure_client
+                response_stream = backup_client.models.generate_content_stream(
+                    model="gemini-2.5-flash",
+                    contents=full_meta_prompt,
+                    config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
+                )
+                full_response = ""
+                for chunk in response_stream:
+                    if chunk.text:
+                        full_response += chunk.text
+                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+            except Exception as cluster_err:
+                st.error(f"Inference cluster overload: {cluster_err}. Please refresh and send once more!")
