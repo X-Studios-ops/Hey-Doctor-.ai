@@ -271,11 +271,11 @@ st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_al
             
             try:# ==============================================================================
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (PHOTO ANALYSIS + HIGH-SPEED STREAMING)
+# 4. CORE INFERENCE PIPELINE (HYPER-FAST MULTIMODAL STREAMING ENGINE)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # 🧬 BASE METADATA PAYLOAD
+    # 🧬 BASE METADATA CONTEXT
     full_meta_prompt = [
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
@@ -284,41 +284,39 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"▪ QUERY LOG: {user_query}"
     ]
     
-    # 📸 BIOMETRIC PHOTO PAYLOAD INJECTION
+    # 📸 DIRECT INTEGRATION: PHOTO BYPASS BUFFER
     if uploaded_image is not None:
         try:
-            # Re-read and ensure image data is available for prompt list
             opened_img = Image.open(uploaded_image)
             full_meta_prompt.append(opened_img)
         except Exception as img_err:
-            st.error(f"Failed to inject biometric data: {img_err}")
+            st.error(f"Biometric Image block reading failed: {img_err}")
     
-    # Render user query to the screen
+    # Inject user text bubble on screen
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
-    # Open assistant chat bubble
+    # Open dynamic assistant channel
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
                 ⚡ SYSTEM::PARSING LOGICAL VECTORS...<br>
-                🧬 METRICS & BIOMETRIC PHOTOS INJECTED SECURELY INTO HYPER-STREAM ENGINE...
+                🧬 METRICS & IMAGES ROUTED TO HYPER-STREAM INFERENCE MATRIX...
             </div>
         """, unsafe_allow_html=True)
         
         response_placeholder = st.empty()
         
-        # Pull direct client connection for stream control
+        # Pull or build safe client session state
         if "secure_client" not in st.session_state or not st.session_state.secure_client:
             init_secure_engine()
             
         active_client = st.session_state.secure_client
         
         try:
-            # 🚀 PHOTO-STREAM BYPASS ACTIVATED
-            # model="gemini-2.5-flash" automatically handles multimodal inputs in stream
+            # 🚀 CORE STREAM BLOCK: Watertight call handling both text and images
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=full_meta_prompt,
@@ -327,40 +325,43 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             status_placeholder.empty()
             
             full_response = ""
-            # Capture streamed chunks in real-time
+            # Capture data chunks instantly from the live stream
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Display response inside the hacker container with typing effect
                     response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
             
-            # Final clean render
+            # Final output wrap-up
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-        except Exception as e:
+        except Exception as primary_error:
             status_placeholder.empty()
-            st.error(f"System Overload: {e}")
-            # Dynamic key swapper trigger
+            
+            # 🔄 5-KEY ACTIVE CORES SWAP ROUTINE
             st.session_state.current_key_index += 1
             st.session_state.secure_chat = None
             st.session_state.secure_client = None
             
             try:
-                # Instant key hot-swap retry
+                # Instant hidden failover retry execution
                 init_secure_engine()
                 backup_client = st.session_state.secure_client
+                
                 response_stream = backup_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=full_meta_prompt,
                     config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
                 )
+                
                 full_response = ""
                 for chunk in response_stream:
                     if chunk.text:
                         full_response += chunk.text
                         response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+                        
                 response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            except Exception as cluster_err:
-                st.error(f"Inference cluster overload: {cluster_err}. Please refresh and send once more!")
+                
+            except Exception as cluster_overload:
+                st.error(f"Inference cluster overload: {cluster_overload}. Please refresh and re-send.")
