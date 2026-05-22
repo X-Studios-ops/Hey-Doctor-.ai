@@ -158,19 +158,18 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# 🌟 HIGH-POWER STYLISH EMOJI PERSONA
+# 🌟 Strict No Greeting / Emojis Setup
 GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier AI health concierge, premium wellness advisor, and lifestyle expert. "
-    "Your response style must be visually outstanding, engaging, and easy to read. "
-    "1. Always use lots of context-specific medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 🏋️, 💊, 📉, 🔴). "
-    "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of text. "
-    "3. Keep your tone highly professional yet modern, encouraging, and clear. "
-    "4. Always analyze provided patient parameters (Age, Gender, Blood Type) dynamically. "
-    "5. Conclude every message with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
+    "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
+    "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
+    "Do not acknowledge that this is a repeated conversation. Jump straight into giving the medical analysis. "
+    "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
+    "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
+    "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
 def create_fresh_session():
-    """Client reset system using the high-availability model"""
+    """Client reset system using exact stable naming configuration"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
@@ -179,7 +178,7 @@ def create_fresh_session():
         active_key = KEYS_POOL[idx]
         st.session_state.ai_client = genai.Client(api_key=active_key)
         st.session_state.chat_session = st.session_state.ai_client.chats.create(
-            model="gemini-1.5-flash",  # Changed to the most stable high-availability model
+            model="gemini-1.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
         return True
@@ -187,7 +186,7 @@ def create_fresh_session():
         st.error(f"Failed to boot engine: {e}")
         return False
 
-# Session management patch
+# Session management checks
 if "chat_session" not in st.session_state or "ai_client" not in st.session_state:
     create_fresh_session()
 
@@ -260,6 +259,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
+            # --- CLEANED TRANSMISSION TYPEWRITER ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
@@ -271,8 +271,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            # Handle rate-limit, closed clients, or 503 server overloads gracefully
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper() or "NOT_FOUND" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
                 if "ai_client" in st.session_state: del st.session_state.ai_client
