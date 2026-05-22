@@ -165,15 +165,15 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 )
 
 def create_fresh_session():
-    """Client band hone par ya crash hone par naya session generate karne ka self-healing function"""
+    """Client reset system"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     try:
         active_key = KEYS_POOL[idx]
-        ai_client = genai.Client(api_key=active_key)
-        st.session_state.chat_session = ai_client.chats.create(
+        st.session_state.ai_client = genai.Client(api_key=active_key)
+        st.session_state.chat_session = st.session_state.ai_client.chats.create(
             model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
@@ -182,8 +182,8 @@ def create_fresh_session():
         st.error(f"Failed to boot engine: {e}")
         return False
 
-# Session checker
-if "chat_session" not in st.session_state:
+# Session management patch
+if "chat_session" not in st.session_state or "ai_client" not in st.session_state:
     create_fresh_session()
 
 if "messages_display" not in st.session_state:
@@ -204,17 +204,18 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns(3)
 
+# Label text warning fix patch (Labels applied contextually)
 with col1:
     st.markdown('<div class="section-header">SELECT GENDER</div>', unsafe_allow_html=True)
-    gender = st.selectbox("", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
+    gender = st.selectbox("Patient Gender Configuration", ["Male", "Female", "AB", "Custom"], key="patient_gender_selector", label_visibility="collapsed")
 
 with col2:
     st.markdown('<div class="section-header">ENTER AGE</div>', unsafe_allow_html=True)
-    age = st.number_input("", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
+    age = st.number_input("Patient Age Input", min_value=1, max_value=120, value=18, step=1, key="patient_age_input", label_visibility="collapsed")
 
 with col3:
     st.markdown('<div class="section-header">BLOOD TYPE</div>', unsafe_allow_html=True)
-    blood_type = st.selectbox("", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
+    blood_type = st.selectbox("Patient Blood Type Dropdown", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"], key="patient_blood_selector", label_visibility="collapsed")
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
@@ -224,7 +225,7 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE WITH AUTO-RESET
+# 4. CORE INFERENCE PIPELINE
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
@@ -251,8 +252,8 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         
         response_placeholder = st.empty()
         
-        # Closed Client Bypass Guard
         try:
+            # Client call wrapper verification
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
@@ -267,10 +268,11 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            # Agar rate limit error (429) ya client closed error aaye toh key automatic reset hogi
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper():
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "SESSION" in str(e).upper():
                 st.session_state.current_key_index += 1
-                create_fresh_session() # Force rebuild session instantly
-                st.warning("⚠️ Connection refreshed to optimize pipeline load. Please hit enter once more to send safely!")
+                if "chat_session" in st.session_state: del st.session_state.chat_session
+                if "ai_client" in st.session_state: del st.session_state.ai_client
+                create_fresh_session()
+                st.warning("⚠️ High load pipeline reset. Press Enter once more to authorize data packets!")
             else:
                 st.error(f"Inference failure: {e}")
