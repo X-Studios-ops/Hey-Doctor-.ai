@@ -158,9 +158,10 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# 🌟 HIGH-POWER STYLISH EMOJI PERSONA
+# 🌟 NO-GREETING HIGH-POWER STYLISH EMOJI PERSONA
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge, premium wellness advisor, and lifestyle expert. "
+    "CRITICAL RULE: Never greet the user with repetitive phrases like 'Hello again', 'Hi again', or 'Greetings again' under any circumstances. Jump directly into answering. "
     "Your response style must be visually outstanding, engaging, and easy to read. "
     "1. Always use lots of context-specific medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 🏋️, 💊, 📉, 🔴). "
     "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of text. "
@@ -179,7 +180,7 @@ def create_fresh_session():
         active_key = KEYS_POOL[idx]
         st.session_state.ai_client = genai.Client(api_key=active_key)
         st.session_state.chat_session = st.session_state.ai_client.chats.create(
-            model="gemini-1.5-flash",  # Changed to the most stable high-availability model
+            model="gemini-1.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
         return True
@@ -271,7 +272,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            # Handle rate-limit, closed clients, or 503 server overloads gracefully
             if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
