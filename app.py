@@ -10,6 +10,12 @@ st.set_page_config(
     page_icon="🩺",
     layout="centered"
 )
+# 🔑 TERI ASSLI GOOGLE SEARCH CONSOLE VERIFICATION TAG INJECTED HERE
+st.markdown("""
+    <head>
+        <meta name="google-site-verification" content="lfm3sejmWeeXFmm02FkosXVTAjiBRidxSnWI8CpuOIs" />
+    </head>
+""", unsafe_allow_html=True)
 
 # Heavy-duty custom CSS override to enforce neon multi-color highlights and animations
 st.markdown("""
