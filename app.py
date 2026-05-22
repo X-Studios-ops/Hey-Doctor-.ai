@@ -138,7 +138,7 @@ st.markdown("""
         <div class="scanner-text">
             STATUS::LIVE<br>
             BIO_SCAN::ACTIVE<br>
-            QUOTA::GEMINI_FLASH
+            QUOTA::GEMINI_STABLE_FRAME
         </div>
         <div class="bio-scan-line"></div>
     </div>
@@ -158,19 +158,19 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# 🌟 NEW HIGH-SPEED EMOJI PERSONA CONFIGURATION (SYSTEM INSTRUCTIONS)
+# 🌟 HIGH-POWER STYLISH EMOJI PERSONA
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge, premium wellness advisor, and lifestyle expert. "
     "Your response style must be visually outstanding, engaging, and easy to read. "
     "1. Always use lots of context-specific medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 🏋️, 💊, 📉, 🔴). "
-    "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of boring text. "
+    "2. Format your response beautifully using bold headings, concise bullet points, and neat spacing. Never write dense walls of text. "
     "3. Keep your tone highly professional yet modern, encouraging, and clear. "
     "4. Always analyze provided patient parameters (Age, Gender, Blood Type) dynamically. "
     "5. Conclude every message with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
 def create_fresh_session():
-    """Client reset system"""
+    """Client reset system using the high-availability model"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
@@ -179,7 +179,7 @@ def create_fresh_session():
         active_key = KEYS_POOL[idx]
         st.session_state.ai_client = genai.Client(api_key=active_key)
         st.session_state.chat_session = st.session_state.ai_client.chats.create(
-            model="gemini-2.5-flash",
+            model="gemini-1.5-flash",  # Changed to the most stable high-availability model
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
         return True
@@ -271,11 +271,12 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             
         except Exception as e:
             status_placeholder.empty()
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "SESSION" in str(e).upper():
+            # Handle rate-limit, closed clients, or 503 server overloads gracefully
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper() or "503" in str(e) or "UNAVAILABLE" in str(e).upper():
                 st.session_state.current_key_index += 1
                 if "chat_session" in st.session_state: del st.session_state.chat_session
                 if "ai_client" in st.session_state: del st.session_state.ai_client
                 create_fresh_session()
-                st.warning("⚠️ High load pipeline reset. Press Enter once more to authorize data packets!")
+                st.warning("⚠️ High load pipeline reset. Press Enter once more to authorize data packets securely!")
             else:
                 st.error(f"Inference failure: {e}")
