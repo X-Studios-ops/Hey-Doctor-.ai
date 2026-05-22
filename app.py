@@ -52,7 +52,7 @@ st.markdown("""
         box-shadow: 0px 0px 15px rgba(0, 242, 254, 0.2);
     }
 
-    /* 🦾 ADVANCED BIO-SCANNER ANIMATION (New) */
+    /* 🦾 ADVANCED BIO-SCANNER ANIMATION */
     @keyframes scan {
         0% { transform: translateY(-100%); }
         100% { transform: translateY(100%); }
@@ -100,7 +100,7 @@ st.markdown("""
 
     /* Photo Scan Drop-Zone Custom Overrides */
     div[data-testid="stFileUploader"] {
-        border: 1px dashed #00F2FE !important;
+        border: 1px solid #00F2FE !important;
         background-color: rgba(4, 15, 12, 0.7) !important;
         border-radius: 4px !important;
         box-shadow: 0 0 20px rgba(0, 242, 254, 0.1) !important;
@@ -132,7 +132,7 @@ st.markdown("""
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
-# 🦾 Add the Animation Block (New)
+# 🦾 Animation Block
 st.markdown("""
     <div class="bio-scan-container">
         <div class="scanner-text">
@@ -145,7 +145,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE API CLUSTER ROUTING
+# 2. SECURE API CLUSTER ROUTING & SELF-HEALING SYSTEM
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C"]:
@@ -158,23 +158,17 @@ if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
-# ==============================================================================
-# 3. CORE PROCESSING LOGIC SETUP
-# ==============================================================================
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge. "
     "Analyze symptoms along with patient metadata parameters to provide advanced clinical insights. "
     "Conclude with an administrative AI disclosure."
 )
 
-if "messages_display" not in st.session_state:
-    st.session_state.messages_display = []
-
-if "chat_session" not in st.session_state:
+def create_fresh_session():
+    """Client band hone par ya crash hone par naya session generate karne ka self-healing function"""
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
-        
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     try:
         active_key = KEYS_POOL[idx]
@@ -183,12 +177,20 @@ if "chat_session" not in st.session_state:
             model="gemini-2.5-flash",
             config={"system_instruction": GOD_MODE_SYSTEM_INSTRUCTION}
         )
+        return True
     except Exception as e:
-        st.error(f"Core pipeline connection offline: {e}")
-        st.stop()
+        st.error(f"Failed to boot engine: {e}")
+        return False
+
+# Session checker
+if "chat_session" not in st.session_state:
+    create_fresh_session()
+
+if "messages_display" not in st.session_state:
+    st.session_state.messages_display = []
 
 # ==============================================================================
-# 4. PATIENT ENTRY PORTAL LAYOUT
+# 3. PATIENT ENTRY PORTAL LAYOUT
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
@@ -200,7 +202,6 @@ uploaded_image = st.file_uploader(
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# Symmetric Layout Alignment Panels
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -223,11 +224,10 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 5. CORE INFERENCE PIPELINE
+# 4. CORE INFERENCE PIPELINE WITH AUTO-RESET
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # Bundle metrics safely to avoid parsing mismatch errors
     full_meta_prompt = (
         f"[CORE REGISTRY REPORT]\n"
         f"▪ GENDER CLASSIFICATION: {gender}\n"
@@ -251,32 +251,26 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         
         response_placeholder = st.empty()
         
+        # Closed Client Bypass Guard
         try:
             response = st.session_state.chat_session.send_message(full_meta_prompt)
             status_placeholder.empty()
             
-            # --- TRANSMISSION TYPEWRITER ---
             full_response = response.text
             typed_response = ""
             for char in full_response:
                 typed_response += char
                 response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
-                # --- TRANSMISSION TYPEWRITER ---
-            full_response = response.text
-            typed_response = ""
-            for char in full_response:
-                typed_response += char
-                response_placeholder.markdown(f'<div class="hacker-response-container">{typed_response}</div>', unsafe_allow_html=True)
-                time.sleep(0.005)
                 time.sleep(0.005) 
             
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
         except Exception as e:
             status_placeholder.empty()
-            if "429" in str(e) or "EXHAUSTED" in str(e).upper():
+            # Agar rate limit error (429) ya client closed error aaye toh key automatic reset hogi
+            if "429" in str(e) or "EXHAUSTED" in str(e).upper() or "CLOSED" in str(e).upper():
                 st.session_state.current_key_index += 1
-                if "chat_session" in st.session_state: del st.session_state.chat_session
-                st.warning("⚠️ High load pipeline reset. Press Enter to re-authorize data packets!")
+                create_fresh_session() # Force rebuild session instantly
+                st.warning("⚠️ Connection refreshed to optimize pipeline load. Please hit enter once more to send safely!")
             else:
                 st.error(f"Inference failure: {e}")
