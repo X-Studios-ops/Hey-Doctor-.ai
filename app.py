@@ -11,7 +11,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# Heavy-duty custom CSS override to enforce neon multi-color highlights
+# Heavy-duty custom CSS override to enforce neon multi-color highlights and animations
 st.markdown("""
     <style>
     /* Full Application Metallic Canvas */
@@ -30,6 +30,7 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-top: 15px;
+        margin-bottom: 2px;
         letter-spacing: 2px;
         filter: drop-shadow(0px 0px 20px rgba(0, 242, 254, 0.4));
     }
@@ -50,6 +51,40 @@ st.markdown("""
         letter-spacing: 1px;
         box-shadow: 0px 0px 15px rgba(0, 242, 254, 0.2);
     }
+
+    /* 🦾 ADVANCED BIO-SCANNER ANIMATION (New) */
+    @keyframes scan {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+    .bio-scan-container {
+        position: relative;
+        width: 100%;
+        height: 120px;
+        background: rgba(4, 15, 12, 0.7);
+        border: 1px solid rgba(0, 242, 254, 0.3);
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 25px;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.1);
+    }
+    .bio-scan-line {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: #00F2FE;
+        opacity: 0.8;
+        box-shadow: 0 0 10px #00F2FE;
+        animation: scan 1.5s linear infinite;
+    }
+    .scanner-text {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: #00F2FE;
+        font-size: 10px;
+        opacity: 0.6;
+    }
     
     /* Structured Section Group Label */
     .section-header {
@@ -65,7 +100,7 @@ st.markdown("""
 
     /* Photo Scan Drop-Zone Custom Overrides */
     div[data-testid="stFileUploader"] {
-        border: 1px solid #00F2FE !important;
+        border: 1px dashed #00F2FE !important;
         background-color: rgba(4, 15, 12, 0.7) !important;
         border-radius: 4px !important;
         box-shadow: 0 0 20px rgba(0, 242, 254, 0.1) !important;
@@ -96,6 +131,18 @@ st.markdown("""
 # Top Brand Presentation
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
+
+# 🦾 Add the Animation Block (New)
+st.markdown("""
+    <div class="bio-scan-container">
+        <div class="scanner-text">
+            STATUS::LIVE<br>
+            BIO_SCAN::ACTIVE<br>
+            QUOTA::GEMINI_FLASH
+        </div>
+        <div class="bio-scan-line"></div>
+    </div>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # 2. SECURE API CLUSTER ROUTING
