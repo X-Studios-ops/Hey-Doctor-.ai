@@ -292,11 +292,10 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# BLOCK 7: DYNAMIC INFERENCE PIPELINE WITH HOT-SWAP WHILE WRAPPER
+# BLOCK 7: DYNAMIC INFERENCE PIPELINE (HARD ROTATION LOGIC)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # Metadata string block construction
     meta_header = (
         f"[PATIENT METRICS REGISTERED]\n"
         f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
@@ -315,7 +314,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # Build memory payload array context parameters
     current_prompt_payload = []
     recent_history = st.session_state.chat_history[-4:]
     for past_msg in recent_history:
@@ -344,28 +342,26 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         status_placeholder = st.empty()
         response_placeholder = st.empty()
         
-        # 🛡️ THE LOOP-BASED SECURE HOT-SWAP SWAPPER INTERFACE
         stream_success = False
         attempts = 0
         max_attempts = len(KEYS_POOL) if KEYS_POOL else 1
         
         while not stream_success and attempts < max_attempts:
-            current_core_id = (st.session_state.current_key_index % max_attempts) + 1
+            # Safely point to the next index in the available pool
+            idx = st.session_state.current_key_index % max_attempts
+            active_key = KEYS_POOL[idx]
+            
             status_placeholder.markdown(f"""
                 <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE_{current_core_id})...<br>
+                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE_{idx + 1})...<br>
                     🧬 ROUTING PIPELINE THROUGH SECURE MULTI-KEY CLUSTER POOL...
                 </div>
             """, unsafe_allow_html=True)
             
             try:
-                # Active Client extraction router block
-                if st.session_state.secure_client is None:
-                    active_client = init_secure_engine()
-                else:
-                    active_client = st.session_state.secure_client
+                # Force create a brand new client context with the selected rotated key index
+                active_client = genai.Client(api_key=active_key)
                 
-                # Execution of network live chunk buffer generator
                 response_stream = active_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=current_prompt_payload,
@@ -392,16 +388,14 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
                 st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
                 
-                stream_success = True  # Signal successful loop validation completion termination
+                stream_success = True  
                 
             except Exception as cluster_fault_error:
-                # 🚨 ATOMIC FAILOVER CONTEXT LOGIC: Reset stale target instance memory variables instantly!
-                st.session_state.secure_client = None
+                # 🚨 HOT-SWAP TRIGGER: Hitting rate limit pushes pointer to next key and loops instantly
                 st.session_state.current_key_index += 1
                 attempts += 1
-                time.sleep(0.4)
+                time.sleep(0.3)
         
-        # In case all paths are fully exhausted inside loop thresholds
         if not stream_success:
             status_placeholder.empty()
             st.error("🚨 All API routes inside the master clusters are heavily rate-limited by Google. Please wait 15 seconds for quota refresh.")
