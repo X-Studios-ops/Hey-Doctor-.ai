@@ -92,7 +92,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. GLOBAL STATE INITIALIZATION (PREVENTS INITIAL RERUN KEYERRORS)
+# 2. GLOBAL STATE INITIALIZATION
 # ==============================================================================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -104,7 +104,7 @@ if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
 # ==============================================================================
-# 3. SECURE 5-API CLUSTER ROUTING & CONFIGURATION
+# 3. SECURE 5-API CLUSTER ROUTING & CONSTANTS
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
@@ -202,7 +202,7 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Render historical messages safely from state
+# History pipeline render
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
@@ -212,7 +212,6 @@ for msg in st.session_state.messages_display:
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # 🧬 CURRENT TURN META CONTENT
     meta_header = (
         f"[PATIENT METRICS REGISTERED]\n"
         f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
@@ -231,10 +230,8 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # 🔄 NATIVE STRUCTURED PAYLOAD BUILDER
     current_prompt_payload = []
     
-    # Slice history to keep only last 4 messages in native SDK structure
     recent_history = st.session_state.chat_history[-4:]
     for past_msg in recent_history:
         current_prompt_payload.append({
@@ -242,7 +239,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             "parts": past_msg["parts"]
         })
         
-    # Inject current turn details
     current_parts = [meta_header]
     if uploaded_img_data is not None:
         current_parts.append(uploaded_img_data)
@@ -272,7 +268,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 FIRING STREAM WITH STRUCTURED DICT DATA
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=current_prompt_payload,
@@ -289,7 +284,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-            # Save strictly in structured format
             st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
             st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
             
