@@ -176,20 +176,27 @@ if "secure_client" not in st.session_state:
     st.session_state.secure_client = None
 
 # ==============================================================================
-# BLOCK 4: CLUSTER ALLOCATION & CORE HOT-SWAP DEF ENGINE
+# 4. SECURE 5-API CLUSTER ROUTING & CONSTANTS (EXTENDED HARD ROTATION CORE)
 # ==============================================================================
 KEYS_POOL = []
-CLUSTER_TARGETS = ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]
 
-for key_name in CLUSTER_TARGETS:
-    if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
-        KEYS_POOL.append(st.secrets[key_name])
+# Core Engine Target Extraction
+if hasattr(st, "secrets") and "GEMINI_API_KEY_A" in st.secrets and st.secrets["GEMINI_API_KEY_A"]:
+    KEYS_POOL.append(st.secrets["GEMINI_API_KEY_A"])
+if hasattr(st, "secrets") and "GEMINI_API_KEY_B" in st.secrets and st.secrets["GEMINI_API_KEY_B"]:
+    KEYS_POOL.append(st.secrets["GEMINI_API_KEY_B"])
+if hasattr(st, "secrets") and "GEMINI_API_KEY_C" in st.secrets and st.secrets["GEMINI_API_KEY_C"]:
+    KEYS_POOL.append(st.secrets["GEMINI_API_KEY_C"])
+if hasattr(st, "secrets") and "GEMINI_API_KEY_D" in st.secrets and st.secrets["GEMINI_API_KEY_D"]:
+    KEYS_POOL.append(st.secrets["GEMINI_API_KEY_D"])
+if hasattr(st, "secrets") and "GEMINI_API_KEY_E" in st.secrets and st.secrets["GEMINI_API_KEY_E"]:
+    KEYS_POOL.append(st.secrets["GEMINI_API_KEY_E"])
 
-# Sourcing standard fallback route
-if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+# Fallback Trigger Sequence
+if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
     KEYS_POOL.append(st.secrets["GEMINI_API_KEY"])
 
-# Global System Instruction (Persona Definition Block)
+# Global Master Instruction Block Mapping
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -204,19 +211,23 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
-def init_secure_engine():
-    """Initializes the active Google GenAI client based on session state key index pool pointer."""
-    if not KEYS_POOL:
-        st.error("🚨 API Key configuration missing in Streamlit Secrets. Allocation mapping broken.")
-        st.stop()
-    
-    idx = st.session_state.current_key_index % len(KEYS_POOL)
-    active_key = KEYS_POOL[idx]
-    
-    # Generate client context instance
-    new_client = genai.Client(api_key=active_key)
-    st.session_state.secure_client = new_client
-    return new_client
+# 🚀 SEQUENTIAL VERIFICATION ENGINE: Bina loop block ke static pointers par assign karega
+if not KEYS_POOL:
+    st.error("🚨 CRITICAL ERROR: Multi-Key Registry Pool is completely empty. Please configure secrets.")
+    st.stop()
+
+# Array boundary filter checks
+master_pool_size = len(KEYS_POOL)
+target_key_pointer = st.session_state.current_key_index % master_pool_size
+selected_active_key = KEYS_POOL[target_key_pointer]
+
+# Session client validation injector
+if "secure_client" not in st.session_state or st.session_state.secure_client is None:
+    try:
+        st.session_state.secure_client = genai.Client(api_key=selected_active_key)
+    except Exception as initialization_fault:
+        st.session_state.current_key_index += 1
+        st.rerun()
 
 # ==============================================================================
 # BLOCK 5: FRONT-END PATIENT ENTRY INTAKE PANEL
