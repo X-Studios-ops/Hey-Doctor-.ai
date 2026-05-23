@@ -1,31 +1,44 @@
+# ==============================================================================
+# PROPRIETARY ARCHITECTURE: HEYDOCTOR.AI ADVANCED WELLNESS CORE
+# DEVELOPED & CODED FROM SCRATCH BY: PRATYUSH (FOUNDER OF X STUDIOS)
+# RUNTIME ENVIRONMENT: STREAMLIT NEON INTERACTIVE CONTEXT (MINIMALIST UI)
+# ==============================================================================
+
 import streamlit as st
 import google.genai as genai
 from PIL import Image
 import time
 
 # ==============================================================================
-# 1. PAGE SETUP, MULTICOLOR NEON INJECTOR & GOOGLE VERIFICATION
+# BLOCK 1: HARDWARE LAYER PAGE SETUP & HUD DISPLAY PARAMETERS
 # ==============================================================================
 st.set_page_config(
     page_title="Heydoctor.ai | Advanced Medical Core",
     page_icon="🩺",
-    layout="centered"
+    layout="centered",
+    initial_sidebar_state="collapsed"
 )
 
-# 🔑 GOOGLE SEARCH CONSOLE VERIFICATION TAG
+# 🔑 GOOGLE SEARCH CONSOLE HANDSHAKE COMPLIANCE TAG
 st.markdown("""
     <head>
         <meta name="google-site-verification" content="lfm3sejmWeeXFmm02FkosXVTAjiBRidxSnWI8CpuOIs" />
     </head>
 """, unsafe_allow_html=True)
 
+# ==============================================================================
+# BLOCK 2: CYBERPUNK MATRIX NEON THEME STYLE SHEET INJECTION
+# ==============================================================================
 st.markdown("""
     <style>
-    html, body, [data-testid="stAppViewContainer"] {
+    /* Global Root Visual Styling Overrides */
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
         background: radial-gradient(circle at center, #061510 0%, #010403 100%) !important;
         color: #F1F5F9 !important;
         font-family: 'Courier New', monospace !important;
     }
+    
+    /* Top Brand Dashboard Title */
     .main-title {
         font-size: 3.6rem;
         font-weight: 900;
@@ -33,66 +46,122 @@ st.markdown("""
         background: linear-gradient(90deg, #00F2FE 0%, #4FACFE 40%, #10B981 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-top: 15px;
+        margin-top: 25px;
         margin-bottom: 2px;
-        letter-spacing: 2px;
-        filter: drop-shadow(0px 0px 20px rgba(0, 242, 254, 0.4));
+        letter-spacing: 3px;
+        filter: drop-shadow(0px 0px 25px rgba(0, 242, 254, 0.4));
     }
-    .premium-badge-container { text-align: center; margin-bottom: 30px; }
+    
+    /* Subtitle Branding Badge */
+    .premium-badge-container { 
+        text-align: center; 
+        margin-bottom: 35px; 
+    }
     .premium-badge {
-        background: rgba(0, 242, 254, 0.05);
+        background: rgba(0, 242, 254, 0.04);
         border: 1px dashed #00F2FE;
         color: #00F2FE;
-        padding: 6px 18px;
+        padding: 8px 22px;
         border-radius: 4px;
         font-size: 11px;
         font-weight: bold;
-        letter-spacing: 1px;
-        box-shadow: 0px 0px 15px rgba(0, 242, 254, 0.2);
+        letter-spacing: 2px;
+        box-shadow: 0px 0px 20px rgba(0, 242, 254, 0.15);
     }
-    @keyframes scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
+    
+    /* Dynamic UI Radar Animation Layout */
+    @keyframes scan { 
+        0% { transform: translateY(-100%); } 
+        100% { transform: translateY(100%); } 
+    }
     .bio-scan-container {
-        position: relative; width: 100%; height: 120px;
-        background: rgba(4, 15, 12, 0.7); border: 1px solid rgba(0, 242, 254, 0.3);
-        border-radius: 6px; overflow: hidden; margin-bottom: 25px;
+        position: relative; 
+        width: 100%; 
+        height: 130px;
+        background: rgba(4, 15, 12, 0.85); 
+        border: 1px solid rgba(0, 242, 254, 0.35);
+        border-radius: 6px; 
+        overflow: hidden; 
+        margin-bottom: 30px;
     }
     .bio-scan-line {
-        position: absolute; width: 100%; height: 2px; background: #00F2FE;
-        box-shadow: 0 0 10px #00F2FE; animation: scan 1.5s linear infinite;
+        position: absolute; 
+        width: 100%; 
+        height: 3px; 
+        background: #00F2FE;
+        box-shadow: 0 0 15px #00F2FE; 
+        animation: scan 1.8s linear infinite;
     }
-    .scanner-text { position: absolute; top: 10px; left: 10px; color: #00F2FE; font-size: 10px; opacity: 0.6; }
+    .scanner-text { 
+        position: absolute; 
+        top: 12px; 
+        left: 12px; 
+        color: #00F2FE; 
+        font-size: 11px; 
+        font-family: 'Courier New', monospace;
+        line-height: 1.5; 
+        opacity: 0.75; 
+    }
+    
+    /* Component Layout Customizer Overrides */
     .section-header {
-        color: #10B981; font-size: 12px; font-weight: bold; letter-spacing: 2px;
-        margin-bottom: 10px; text-transform: uppercase; border-left: 3px solid #00F2FE; padding-left: 8px;
+        color: #10B981; 
+        font-size: 12px; 
+        font-weight: bold; 
+        letter-spacing: 2px;
+        margin-bottom: 12px; 
+        text-transform: uppercase; 
+        border-left: 3px solid #00F2FE; 
+        padding-left: 10px;
     }
     div[data-testid="stFileUploader"] {
-        border: 1px solid #00F2FE !important; background-color: rgba(4, 15, 12, 0.7) !important;
+        border: 1px dashed #00F2FE !important; 
+        background-color: rgba(4, 15, 12, 0.8) !important;
+        border-radius: 4px;
     }
-    div[data-baseweb="select"], div[data-baseweb="input"] {
-        background-color: rgba(2, 6, 5, 0.95) !important; border: 1px solid #10B981 !important;
+    div[data-baseweb="select"], div[data-baseweb="input"], div[data-baseweb="number-input"] {
+        background-color: rgba(2, 6, 5, 0.98) !important; 
+        border: 1px solid #10B981 !important;
     }
+    
+    /* Chat Box Streaming Containers */
     .hacker-response-container {
-        color: #F8FAFC; font-family: 'Courier New', monospace; line-height: 1.6; padding: 15px;
-        background: rgba(5, 14, 11, 0.8); border: 1px solid #00F2FE; border-radius: 4px; margin-bottom: 12px;
+        color: #F8FAFC; 
+        font-family: 'Courier New', monospace; 
+        line-height: 1.65; 
+        padding: 18px;
+        background: rgba(5, 14, 11, 0.85); 
+        border: 1px solid rgba(0, 242, 254, 0.6); 
+        border-radius: 4px; 
+        margin-bottom: 15px;
+        box-shadow: inset 0 0 10px rgba(0, 242, 254, 0.05);
     }
     [data-testid="stImage"] {
-        border: 1px solid #10B981; border-radius: 4px; margin-bottom: 25px;
+        border: 1px solid #10B981; 
+        border-radius: 6px; 
+        margin-bottom: 30px;
     }
     </style>
 """, unsafe_allow_html=True)
 
+# Header Text Render Execution Area
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 st.markdown('<div class="premium-badge-container"><div class="premium-badge">⚡ MULTI-ENGINE ENTERPRISE MODE: ACTIVE</div></div>', unsafe_allow_html=True)
 
 st.markdown("""
     <div class="bio-scan-container">
-        <div class="scanner-text">STATUS::LIVE<br>BIO_SCAN::ACTIVE<br>QUOTA::GEMINI_5X_CLUSTER</div>
+        <div class="scanner-text">
+            STATUS::CORE_READY<br>
+            BIO_SCAN::CLUSTER_LOADED<br>
+            FAILOVER_SYSTEM::HOT_SWAP_ROTATION_ENABLED<br>
+            ARCH_DESIGN::PRATYUSH_INTELLIGENCE_LAYER
+        </div>
         <div class="bio-scan-line"></div>
     </div>
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. GLOBAL STATE INITIALIZATION
+# BLOCK 3: ATOMIC MEMORY REGISTERS INITIALIZATION
 # ==============================================================================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -103,17 +172,24 @@ if "messages_display" not in st.session_state:
 if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
+if "secure_client" not in st.session_state:
+    st.session_state.secure_client = None
+
 # ==============================================================================
-# 3. BULLETPROOF 5-API CLUSTER CONFIGURATION
+# BLOCK 4: CLUSTER ALLOCATION & CORE HOT-SWAP DEF ENGINE
 # ==============================================================================
 KEYS_POOL = []
-for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
+CLUSTER_TARGETS = ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]
+
+for key_name in CLUSTER_TARGETS:
     if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
         KEYS_POOL.append(st.secrets[key_name])
 
+# Sourcing standard fallback route
 if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
     KEYS_POOL.append(st.secrets["GEMINI_API_KEY"])
 
+# Global System Instruction (Persona Definition Block)
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -128,19 +204,22 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
-# 🔄 PURE LOOP-BASED SECURE HOT-SWAP ENGINE
-def get_secure_client():
+def init_secure_engine():
+    """Initializes the active Google GenAI client based on session state key index pool pointer."""
     if not KEYS_POOL:
-        st.error("🚨 API Key configuration missing in Streamlit Secrets.")
+        st.error("🚨 API Key configuration missing in Streamlit Secrets. Allocation mapping broken.")
         st.stop()
     
-    # Pool size ke mutabik index safely lock karo
     idx = st.session_state.current_key_index % len(KEYS_POOL)
     active_key = KEYS_POOL[idx]
-    return genai.Client(api_key=active_key)
+    
+    # Generate client context instance
+    new_client = genai.Client(api_key=active_key)
+    st.session_state.secure_client = new_client
+    return new_client
 
 # ==============================================================================
-# 4. PATIENT ENTRY PORTAL LAYOUT
+# BLOCK 5: FRONT-END PATIENT ENTRY INTAKE PANEL
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
@@ -174,18 +253,18 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# 💰 ADSTERRA BANNER DISPLAY ZONE (MONETIZATION ACTIVE)
+# BLOCK 6: MONETIZATION FRAMEWORK - ADSTERRA ENCRYPTED DISPLAY CORE
 # ==============================================================================
 st.markdown("""
     <div style="
         border: 1px dashed #10B981; 
         background-color: rgba(16, 185, 129, 0.05); 
-        padding: 10px; 
+        padding: 12px; 
         text-align: center; 
         border-radius: 4px;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     ">
-        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 5px;">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">
             📢 SPONSORED ENCRYPTED ADVERT
         </span>
         <div style="display: flex; justify-content: center; align-items: center; min-height: 90px;">
@@ -196,16 +275,17 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# History pipeline render
+# Render complete UI Display log records synchronously to keep track across loops
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 5. CORE INFERENCE PIPELINE (INFINITE ROTATION ENGINE)
+# BLOCK 7: DYNAMIC INFERENCE PIPELINE WITH HOT-SWAP WHILE WRAPPER
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
+    # Metadata string block construction
     meta_header = (
         f"[PATIENT METRICS REGISTERED]\n"
         f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
@@ -224,6 +304,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
+    # Build memory payload array context parameters
     current_prompt_payload = []
     recent_history = st.session_state.chat_history[-4:]
     for past_msg in recent_history:
@@ -252,21 +333,28 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         status_placeholder = st.empty()
         response_placeholder = st.empty()
         
-        # 🛡️ THE INFINITE ROTATION LOOP: Jab tak chalega nahi, loop rukega nahi!
+        # 🛡️ THE LOOP-BASED SECURE HOT-SWAP SWAPPER INTERFACE
         stream_success = False
         attempts = 0
         max_attempts = len(KEYS_POOL) if KEYS_POOL else 1
         
         while not stream_success and attempts < max_attempts:
+            current_core_id = (st.session_state.current_key_index % max_attempts) + 1
             status_placeholder.markdown(f"""
                 <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE {st.session_state.current_key_index % max_attempts + 1})...<br>
-                    🧬 ROUTING PIPELINE THROUGH SECURE MULTI-KEY CLUSTER...
+                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE_{current_core_id})...<br>
+                    🧬 ROUTING PIPELINE THROUGH SECURE MULTI-KEY CLUSTER POOL...
                 </div>
             """, unsafe_allow_html=True)
             
             try:
-                active_client = get_secure_client()
+                # Active Client extraction router block
+                if st.session_state.secure_client is None:
+                    active_client = init_secure_engine()
+                else:
+                    active_client = st.session_state.secure_client
+                
+                # Execution of network live chunk buffer generator
                 response_stream = active_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=current_prompt_payload,
@@ -276,28 +364,33 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 status_placeholder.empty()
                 full_response = ""
                 
-                # Live streaming chunks capture
                 for chunk in response_stream:
                     if chunk.text:
                         full_response += chunk.text
-                        response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
+                        response_placeholder.markdown(
+                            f'<div class="hacker-response-container">{full_response}▒</div>', 
+                            unsafe_allow_html=True
+                        )
                 
-                response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
+                response_placeholder.markdown(
+                    f'<div class="hacker-response-container">{full_response}</div>', 
+                    unsafe_allow_html=True
+                )
+                
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-                
-                # History data save
                 st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
                 st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
                 
-                stream_success = True  # Engine ran perfectly, exit loop!
+                stream_success = True  # Signal successful loop validation completion termination
                 
-            except Exception as e:
-                # Agar error aaya (503 ya 429), toh silently next key par shift karo aur loop chalne do
+            except Exception as cluster_fault_error:
+                # 🚨 ATOMIC FAILOVER CONTEXT LOGIC: Reset stale target instance memory variables instantly!
+                st.session_state.secure_client = None
                 st.session_state.current_key_index += 1
                 attempts += 1
-                time.sleep(0.5)  # Soft delay to let the network settle
+                time.sleep(0.4)
         
-        # Agar saari ki saari keys block ho chuki hain pool mein
+        # In case all paths are fully exhausted inside loop thresholds
         if not stream_success:
             status_placeholder.empty()
-            st.error("🚨 All API cores in the cluster are heavily rate-limited by Google. Please wait 15 seconds for cool-down.")
+            st.error("🚨 All API routes inside the master clusters are heavily rate-limited by Google. Please wait 15 seconds for quota refresh.")
