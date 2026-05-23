@@ -92,51 +92,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 2. SECURE 5-API CLUSTER ROUTING
-# ==============================================================================
-KEYS_POOL = []
-for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
-    if hasattr(st, "secrets") and key_name in st.secrets and st.secrets[key_name]:
-        KEYS_POOL.append(st.secrets[key_name])
-
-if not KEYS_POOL and hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
-    KEYS_POOL.append(st.secrets["GEMINI_API_KEY"])
-
-if "current_key_index" not in st.session_state:
-    st.session_state.current_key_index = 0
-
-GOD_MODE_SYSTEM_INSTRUCTION = (
-    "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
-    "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
-    "the brilliant tech founder behind Beast AI and X Studios. "
-    "If anyone asks about your creator, developer, owner, or who made you, proudly announce with amazing emojis "
-    "that you are a custom healthcare system built entirely by Pratyush (Founder of Beast AI / X Studios). "
-    "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
-    "Jump straight into giving the medical analysis or answering the query instantly. "
-    "If an image is provided, thoroughly analyze the physical visual symptoms alongside the text inputs. "
-    "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
-    "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
-    "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
-)
-
-def init_secure_engine():
-    if not KEYS_POOL:
-        st.error("🚨 API Key configuration missing in Streamlit Secrets.")
-        st.stop()
-    idx = st.session_state.current_key_index % len(KEYS_POOL)
-    try:
-        active_key = KEYS_POOL[idx]
-        new_client = genai.Client(api_key=active_key)
-        st.session_state.secure_client = new_client
-        return new_client
-    except Exception:
-        st.session_state.current_key_index += 1
-        return init_secure_engine()
-
-if "secure_client" not in st.session_state or not st.session_state.secure_client:
-    init_secure_engine()
-
-# ==============================================================================
 # 3. PATIENT ENTRY PORTAL LAYOUT
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
