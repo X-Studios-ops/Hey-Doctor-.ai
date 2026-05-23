@@ -292,7 +292,7 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# BLOCK 7: DYNAMIC INFERENCE PIPELINE (HARD ROTATION LOGIC)
+# BLOCK 7: DYNAMIC INFERENCE PIPELINE (ULTRA RE-INITIALIZATION CORE)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
@@ -347,22 +347,25 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         max_attempts = len(KEYS_POOL) if KEYS_POOL else 1
         
         while not stream_success and attempts < max_attempts:
-            # Safely point to the next index in the available pool
             idx = st.session_state.current_key_index % max_attempts
             active_key = KEYS_POOL[idx]
             
             status_placeholder.markdown(f"""
                 <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE_{idx + 1})...<br>
-                    🧬 ROUTING PIPELINE THROUGH SECURE MULTI-KEY CLUSTER POOL...
+                    ⚡ SYSTEM::REFRESHING API LAYER CONTAINER...<br>
+                    🧬 EXECUTING VIA ACTIVE CORE_{idx + 1}...
                 </div>
             """, unsafe_allow_html=True)
             
             try:
-                # Force create a brand new client context with the selected rotated key index
-                active_client = genai.Client(api_key=active_key)
+                # 🔥 FORCE FRESH ENGINE START: Purane client ko mita kar har baar naya context import karenge
+                import os
+                os.environ["GEMINI_API_KEY"] = active_key
                 
-                response_stream = active_client.models.generate_content_stream(
+                # Bina purane cache ke bilkul zero se client initiate karo
+                force_fresh_client = genai.Client(api_key=active_key)
+                
+                response_stream = force_fresh_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=current_prompt_payload,
                     config={"system_instruction": dynamic_instruction}
@@ -391,11 +394,11 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 stream_success = True  
                 
             except Exception as cluster_fault_error:
-                # 🚨 HOT-SWAP TRIGGER: Hitting rate limit pushes pointer to next key and loops instantly
+                # 🚨 HOT-SWAP HARD HIT: Error aate hi pointer badhao aur agle turn par fresh context inject karo
                 st.session_state.current_key_index += 1
                 attempts += 1
-                time.sleep(0.3)
+                time.sleep(0.2)
         
         if not stream_success:
             status_placeholder.empty()
-            st.error("🚨 All API routes inside the master clusters are heavily rate-limited by Google. Please wait 15 seconds for quota refresh.")
+            st.error("🚨 All configured unique API keys are globally rate-limited. Please take a 15-second cool-down break.")            st.error("🚨 All configured unique API keys are globally rate-limited. Please take a 15-second cool-down break.")            st.error("🚨 All API routes inside the master clusters are heavily rate-limited by Google. Please wait 15 seconds for quota refresh.")
