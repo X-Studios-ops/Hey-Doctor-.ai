@@ -136,10 +136,6 @@ def init_secure_engine():
 if "secure_client" not in st.session_state or not st.session_state.secure_client:
     init_secure_engine()
 
-# Keys ka index session state mein lock karo taaki page rerun par reset na ho
-if "current_key_index" not in st.session_state:
-    st.session_state.current_key_index = 0
-
 # ==============================================================================
 # 3. PATIENT ENTRY PORTAL LAYOUT
 # ==============================================================================
@@ -174,15 +170,42 @@ with col3:
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
-for msg in st.session_state.messages_display:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
+# ==============================================================================
+# 💰 ADSTERRA BANNER DISPLAY ZONE (MONETIZATION ACTIVE)
+# ==============================================================================
+st.markdown("""
+    <div style="
+        border: 1px dashed #10B981; 
+        background-color: rgba(16, 185, 129, 0.05); 
+        padding: 10px; 
+        text-align: center; 
+        border-radius: 4px;
+        margin-bottom: 20px;
+    ">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 5px;">
+            📢 SPONSORED ENCRYPTED ADVERT
+        </span>
+        <div style="display: flex; justify-content: center; align-items: center; min-height: 90px;">
+            <iframe src="https://www.effectiveratecpm.com/watchnew?key=YOUR_ADSTERRA_ID_HERE" 
+                    width="728" height="90" frameborder="0" scrolling="no">
+            </iframe>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # 4. CORE INFERENCE PIPELINE (NATIVE SLICED MEMORY - ZERO LATENCY ENGINE)
 # ==============================================================================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
+# 🔑 CRASH FIX: messages_display ko page startup par hi safe-initialize karo
+if "messages_display" not in st.session_state:
+    st.session_state.messages_display = []
+
+for msg in st.session_state.messages_display:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
 
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
