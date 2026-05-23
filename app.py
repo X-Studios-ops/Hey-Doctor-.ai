@@ -1,11 +1,12 @@
 # ==============================================================================
 # PROPRIETARY ARCHITECTURE: HEYDOCTOR.AI ULTRA STABLE ENTERPRISE CORE
 # DEVELOPED & OPTIMIZED BY: PRATYUSH (FOUNDER OF BEAST AI / X STUDIOS)
-# RUNTIME INFRASTRUCTURE: SMART API ROTATION + EXPLICIT PAYLOAD FAULT-TOLERANCE
+# RUNTIME INFRASTRUCTURE: SMART API ROTATION + HARD-RESET RUNTIME COOLDOWN
 # ==============================================================================
 
 import streamlit as st
 import google.genai as genai
+from google.genai import types  
 from PIL import Image
 import time
 
@@ -19,9 +20,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ==============================================================================
-# GOOGLE VERIFICATION
-# ==============================================================================
+# GOOGLE SEARCH CONSOLE HANDSHAKE
 st.markdown("""
 <head>
 <meta name="google-site-verification" content="lfm3sejmWeeXFmm02FkosXVTAjiBRidxSnWI8CpuOIs"/>
@@ -29,7 +28,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# CYBERPUNK UI
+# CYBERPUNK MATRIX NEON THEME
 # ==============================================================================
 st.markdown("""
 <style>
@@ -103,29 +102,15 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
     border-left: 3px solid #00F2FE;
     padding-left: 10px;
 }
-div[data-testid="stFileUploader"] {
-    border: 1px dashed #00F2FE !important;
-    background-color: rgba(4, 15, 12, 0.8) !important;
-}
-div[data-baseweb="select"], div[data-baseweb="input"], div[data-baseweb="number-input"] {
-    background-color: rgba(2, 6, 5, 0.98) !important; 
-    border: 1px solid #10B981 !important;
-}
-.hacker-response-container {
-    color: #F8FAFC;
-    line-height: 1.7;
-    padding: 18px;
-    background: rgba(5, 14, 11, 0.85);
-    border: 1px solid rgba(0, 242, 254, 0.6);
-    border-radius: 4px;
-    margin-bottom: 15px;
+div[data-testid="stChatMessage"] {
+    background: rgba(5, 14, 11, 0.85) !important;
+    border: 1px solid rgba(0, 242, 254, 0.2) !important;
+    border-radius: 6px;
+    margin-bottom: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================================================================
-# HEADER
-# ==============================================================================
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 
 st.markdown("""
@@ -139,27 +124,12 @@ st.markdown("""
 <div class="scanner-text">
 STATUS::ONLINE<br>
 SMART_ROUTER::LOAD_BALANCED_ACTIVE<br>
-FAILOVER_ENGINE::ZERO_LATENCY_HOT_SWAP<br>
+FAILOVER_ENGINE::AUTOMATIC_HARD_RESET_ENABLED<br>
 OPTIMIZATION::BY_PRATYUSH_X_STUDIOS
 </div>
 <div class="bio-scan-line"></div>
 </div>
 """, unsafe_allow_html=True)
-
-# ==============================================================================
-# SESSION STATE MEMORY MANAGEMENT
-# ==============================================================================
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-if "messages_display" not in st.session_state:
-    st.session_state.messages_display = []
-
-if "api_health" not in st.session_state:
-    st.session_state.api_health = {}
-
-if "client_cache" not in st.session_state:
-    st.session_state.client_cache = {}
 
 # ==============================================================================
 # SECURE ALLOCATION POOL REGISTRY
@@ -182,16 +152,31 @@ if not KEYS_POOL:
     st.error("🚨 CRITICAL METRIC: NO API KEYS DECLARED IN ENVIRONMENT CONFIG.")
     st.stop()
 
+# ==============================================================================
+# SESSION STATE MEMORY MANAGEMENT
+# ==============================================================================
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+if "messages_display" not in st.session_state:
+    st.session_state.messages_display = []
+
+if "api_health" not in st.session_state:
+    st.session_state.api_health = {}
+
 for key in KEYS_POOL:
     if key not in st.session_state.api_health:
-        st.session_state.api_health[key] = {
-            "fails": 0,
-            "cooldown_until": 0.0
-        }
+        st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
 
-# ==============================================================================
-# HIGH-AVAILABILITY CLUSTER ROUTER
-# ==============================================================================
+# SIDEBAR CONTROLLER FOR SYSTEM MAINTENANCE
+with st.sidebar:
+    st.markdown("### 🛠️ CORE ADMINISTRATIVE NODE")
+    if st.button("🔄 FORCE RESET API POOL COOLDOWNS"):
+        st.session_state.api_health = {}
+        for key in KEYS_POOL:
+            st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
+        st.success("✅ ALL CLUSTER NODES FLUSHED & HEALTH RESTORED!")
+
 def get_best_available_key():
     current_time = time.time()
     available_keys = []
@@ -202,23 +187,20 @@ def get_best_available_key():
             available_keys.append(key)
 
     if not available_keys:
-        return None
+        return KEYS_POOL[0]
 
-    # Pick the core node with the absolute minimal fault footprint
     return min(available_keys, key=lambda k: st.session_state.api_health[k]["fails"])
 
 def mark_key_failed(key):
     data = st.session_state.api_health[key]
     data["fails"] += 1
-    cooldown = min(120, 4 * data["fails"])  # Dynamic ceiling delay
-    data["cooldown_until"] = time.time() + cooldown
+    data["cooldown_until"] = time.time() + 10.0 
 
 def reset_key_health(key):
-    st.session_state.api_health[key]["fails"] = 0
+    if key in st.session_state.api_health:
+        st.session_state.api_health[key]["fails"] = 0
 
-# ==============================================================================
-# GLOBAL SYSTEM PARAMETERS (GOD MODE INTRODUCTION OVERRIDE)
-# ==============================================================================
+# SYSTEM INSTRUCTION
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -227,7 +209,6 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
     "that you are a custom healthcare system built entirely by Pratyush (Founder of Beast AI / X Studios). "
     "CRITICAL RULE: Never say 'Hello again', 'Hi again', 'Welcome back', or repeat greetings in your replies. "
     "Jump straight into giving the medical analysis or answering the query instantly. "
-    "If an image is provided, thoroughly analyze the physical visual symptoms alongside the text inputs. "
     "1. Always use lots of relevant medical, health, and warning emojis (e.g., 🩺, 🧪, 💡, ⚠️, 🥗, 💊). "
     "2. Format beautifully using bold headings and clean bullet points. No dense walls of text. "
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
@@ -251,9 +232,6 @@ if uploaded_image is not None:
     except Exception as e:
         st.error(f"Scanner Interdiction Fault: {e}")
 
-# ==============================================================================
-# METRICS CAPTURE PORTS
-# ==============================================================================
 col1, col2, col3 = st.columns(3)
 with col1:
     gender = st.selectbox("Gender", ["Male", "Female", "Other"])
@@ -264,36 +242,23 @@ with col3:
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
-# ==============================================================================
-# MONETIZATION INTERNET FRAMEWORK (ADSTERRA CORE ACTIVE)
-# ==============================================================================
+# ADSTERRA INTERNET FRAMEWORK
 st.markdown("""
-    <div style="
-        border: 1px dashed #10B981; 
-        background-color: rgba(16, 185, 129, 0.05); 
-        padding: 12px; 
-        text-align: center; 
-        border-radius: 4px;
-        margin-bottom: 25px;
-    ">
-        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">
-            📢 SPONSORED ENCRYPTED ADVERT
-        </span>
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 25px;">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
         <div style="display: flex; justify-content: center; align-items: center; min-height: 90px;">
-            <iframe src="https://www.effectiveratecpm.com/watchnew?key=YOUR_ADSTERRA_ID_HERE" 
-                    width="728" height="90" frameborder="0" scrolling="no">
-            </iframe>
+            <iframe src="https://www.effectiveratecpm.com/watchnew?key=YOUR_ADSTERRA_ID_HERE" width="728" height="90" frameborder="0" scrolling="no"></iframe>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
-# Synchronous logs historical display render
+# History render execution block
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
 # ==============================================================================
-# CORE PROCESSING LAYER (ZERO LATENCY PIPELINE STRUCTURE)
+# PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
 
@@ -301,15 +266,12 @@ if user_query := st.chat_input("Describe symptoms or data metrics here..."):
 Gender: {gender} | Age: {age} | Blood Type: {blood_type}
 
 CURRENT QUERY MATRIX:
-{user_query}
-"""
+{user_query}"""
+
     with st.chat_message("user"):
         st.markdown(user_query)
 
-    st.session_state.messages_display.append({
-        "role": "user",
-        "content": user_query
-    })
+    st.session_state.messages_display.append({"role": "user", "content": user_query})
 
     uploaded_img_data = None
     if uploaded_image is not None:
@@ -318,19 +280,20 @@ CURRENT QUERY MATRIX:
         except Exception:
             uploaded_img_data = None
 
-    # 🔄 FIXED RAW LIST CONTEXT PATTERN (Bypasses Pydantic Structure Crashes)
-    current_prompt_payload = []
-    recent_history = st.session_state.chat_history[-4:]
-
-    for item in recent_history:
-        for p in item["parts"]:
-            current_prompt_payload.append(p)
-
-    current_prompt_payload.append(meta_header)
+    # --- UPGRADE: DIRECT LIST INJECTION WITHOUT CONVERSION LOOP ---
+    # `st.session_state.chat_history` contains natively valid types.Content nodes now.
+    current_prompt_payload = list(st.session_state.chat_history)
+    
+    # Pack parameters inside a standard native content item array block
+    current_turn_parts = [meta_header]
     if uploaded_img_data is not None:
-        current_prompt_payload.append(uploaded_img_data)
+        # Native inclusion avoids server-side encoding mismatch anomalies
+        current_turn_parts.append(uploaded_img_data)
+        
+    current_prompt_payload.append(
+        types.Content(role="user", parts=current_turn_parts)
+    )
 
-    # Execution turn pipeline
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
         status_placeholder = st.empty()
@@ -342,11 +305,6 @@ CURRENT QUERY MATRIX:
         while not stream_success and attempts < max_attempts:
             active_key = get_best_available_key()
 
-            if active_key is None:
-                status_placeholder.empty()
-                st.error("🚨 MASTER POOL CONTEXT WARNING: All AI channels cooling down. Retry in 15 seconds.")
-                break
-
             try:
                 status_placeholder.markdown("""
                 <div style="color:#00F2FE; font-size:12px; font-family:'Courier New',monospace;">
@@ -355,21 +313,17 @@ CURRENT QUERY MATRIX:
                 </div>
                 """, unsafe_allow_html=True)
 
-                # Fetch/Inject Client from Instance Buffer registry
-                if active_key not in st.session_state.client_cache:
-                    st.session_state.client_cache[active_key] = genai.Client(api_key=active_key)
-                
-                client = st.session_state.client_cache[active_key]
+                client = genai.Client(api_key=active_key)
 
-                # Execution targeting advanced 2.5 flash endpoints
+                config_schema = types.GenerateContentConfig(
+                    system_instruction=GOD_MODE_SYSTEM_INSTRUCTION,
+                    temperature=0.5
+                )
+
                 response_stream = client.models.generate_content_stream(
                     model="gemini-2.5-flash",
-                    contents=current_prompt_payload,
-                    config={
-                        "system_instruction": GOD_MODE_SYSTEM_INSTRUCTION,
-                        "temperature": 0.5,
-                        "timeout": 4.0  # Dynamic drop pointer threshold prevent websockets hang
-                    }
+                    contents=current_prompt_payload, 
+                    config=config_schema
                 )
 
                 status_placeholder.empty()
@@ -378,33 +332,23 @@ CURRENT QUERY MATRIX:
                 for chunk in response_stream:
                     if chunk.text:
                         full_response += chunk.text
-                        response_placeholder.markdown(
-                            f'<div class="hacker-response-container">{full_response}▒</div>',
-                            unsafe_allow_html=True
-                        )
+                        response_placeholder.markdown(full_response + "▒")
 
-                response_placeholder.markdown(
-                    f'<div class="hacker-response-container">{full_response}</div>',
-                    unsafe_allow_html=True
+                response_placeholder.markdown(full_response)
+
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+                
+                # --- FIX: APPEND GENUINE TYPES.CONTENT INSTANCES INTO STATE ---
+                st.session_state.chat_history.append(
+                    types.Content(role="user", parts=[meta_header])
+                )
+                st.session_state.chat_history.append(
+                    types.Content(role="model", parts=[full_response])
                 )
 
-                st.session_state.messages_display.append({
-                    "role": "assistant",
-                    "content": full_response
-                })
-
-                st.session_state.chat_history.append({
-                    "role": "user",
-                    "parts": [user_query]
-                })
-
-                st.session_state.chat_history.append({
-                    "role": "model",
-                    "parts": [full_response]
-                })
-
-                if len(st.session_state.chat_history) > 10:
-                    st.session_state.chat_history = st.session_state.chat_history[-10:]
+                # Trim buffer memory tracking list
+                if len(st.session_state.chat_history) > 6:
+                    st.session_state.chat_history = st.session_state.chat_history[-6:]
 
                 reset_key_health(active_key)
                 stream_success = True
@@ -414,14 +358,14 @@ CURRENT QUERY MATRIX:
                 attempts += 1
                 status_placeholder.markdown(f"""
                 <div style="color:#FF4B4B; font-size:11px; font-family:'Courier New',monospace;">
-                    ⚠️ DISPATCH ANOMALY TRACED: SWAPPING INSTANCE ENGINE NODE...
+                    ⚠️ NODE SWITCH DETECTED: {str(e)[:60]}...
                 </div>
                 """, unsafe_allow_html=True)
-                time.sleep(0.1)
+                time.sleep(0.5)
 
         if not stream_success:
             status_placeholder.empty()
-            st.error("🚨 SYSTEM ERROR: Enterprise channels fully exhausted. Automatic cooldown refresh active.")
+            st.error("🚨 INSTANCE COOLDOWN TRIGGERED: Click 'FORCE RESET API POOL COOLDOWNS' in the left sidebar to clear memory leaks.")
 
     if uploaded_img_data is not None:
         uploaded_img_data.close()
