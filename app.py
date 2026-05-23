@@ -280,15 +280,22 @@ CURRENT QUERY MATRIX:
         except Exception:
             uploaded_img_data = None
 
-    # --- UPGRADE: DIRECT LIST INJECTION WITHOUT CONVERSION LOOP ---
-    # `st.session_state.chat_history` contains natively valid types.Content nodes now.
-    current_prompt_payload = list(st.session_state.chat_history)
+    # --- FIX 1: DYNAMIC ONSITE MAP FOR THE ENTIRE PAYLOAD WINDOW ---
+    current_prompt_payload = []
     
-    # Pack parameters inside a standard native content item array block
-    current_turn_parts = [meta_header]
+    # Session state data ko explicitly raw map karke types compile karenge 
+    for past_turn in st.session_state.chat_history:
+        current_prompt_payload.append(
+            types.Content(
+                role=past_turn["role"],
+                parts=[types.Part.from_text(text=past_turn["text"])]
+            )
+        )
+    
+    # Current user response node formation
+    current_turn_parts = [types.Part.from_text(text=meta_header)]
     if uploaded_img_data is not None:
-        # Native inclusion avoids server-side encoding mismatch anomalies
-        current_turn_parts.append(uploaded_img_data)
+        current_turn_parts.append(types.Part.from_image(uploaded_img_data))
         
     current_prompt_payload.append(
         types.Content(role="user", parts=current_turn_parts)
@@ -338,13 +345,9 @@ CURRENT QUERY MATRIX:
 
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
-                # --- FIX: APPEND GENUINE TYPES.CONTENT INSTANCES INTO STATE ---
-                st.session_state.chat_history.append(
-                    types.Content(role="user", parts=[meta_header])
-                )
-                st.session_state.chat_history.append(
-                    types.Content(role="model", parts=[full_response])
-                )
+                # --- FIX 2: STATE STORAGE AS CLEAN SAFE DICTIONARIES ---
+                st.session_state.chat_history.append({"role": "user", "text": meta_header})
+                st.session_state.chat_history.append({"role": "model", "text": full_response})
 
                 # Trim buffer memory tracking list
                 if len(st.session_state.chat_history) > 6:
@@ -369,3 +372,4 @@ CURRENT QUERY MATRIX:
 
     if uploaded_img_data is not None:
         uploaded_img_data.close()
+                        
