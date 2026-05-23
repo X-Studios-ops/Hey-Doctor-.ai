@@ -136,8 +136,9 @@ def init_secure_engine():
 if "secure_client" not in st.session_state or not st.session_state.secure_client:
     init_secure_engine()
 
-if "messages_display" not in st.session_state:
-    st.session_state.messages_display = []
+# Keys ka index session state mein lock karo taaki page rerun par reset na ho
+if "current_key_index" not in st.session_state:
+    st.session_state.current_key_index = 0
 
 # ==============================================================================
 # 3. PATIENT ENTRY PORTAL LAYOUT
