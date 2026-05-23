@@ -180,13 +180,11 @@ for msg in st.session_state.messages_display:
 # ==============================================================================
 # 4. CORE INFERENCE PIPELINE (ULTRA MEMORY + HIGH-SPEED MULTIMODAL STREAM)
 # ==============================================================================
-# 🧠 MEMORY CORES INITIALIZATION
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
-    # 🧬 BASE METADATA CONTEXT
     meta_header = (
         f"[PATIENT METRICS REGISTERED]\n"
         f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
@@ -194,12 +192,10 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         f"----------------------------------------"
     )
     
-    # User ka message screen par render karo
     with st.chat_message("user"):
         st.markdown(user_query)
     st.session_state.messages_display.append({"role": "user", "content": user_query})
     
-    # 📸 IMAGE CAPTURE BUFFER
     uploaded_img_data = None
     if uploaded_image is not None:
         try:
@@ -207,27 +203,23 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # 🔄 DYNAMIC PROMPT BUILDER WITH CONTEXT MEMORY
+    # 🔄 SAFE MEMORY LOGIC: Purani text baatein yaad rakhega
     current_prompt_payload = []
     
-    # Purani chat history ko loop mein daalo
     for past_msg in st.session_state.chat_history:
-        current_prompt_payload.append(past_msg)
+        current_prompt_payload.append(f"{past_msg['role']}: {past_msg['parts'][0]}")
         
-    # Naya metadata aur image (agar hai) append karo
     current_prompt_payload.append(meta_header)
     if uploaded_img_data is not None:
         current_prompt_payload.append(uploaded_img_data)
     
-    # Dynamic Instruction tweak: Agar chat chal chuki hai, toh intro repeat mat karne ko bolo
     dynamic_instruction = GOD_MODE_SYSTEM_INSTRUCTION
     if len(st.session_state.chat_history) > 0:
         dynamic_instruction += (
-            "\nANTI-REPETITION RULE: You have already introduced yourself and mentioned your creator Pratyush in the previous messages. "
-            "DO NOT repeat the announcement or introduction paragraph now. Jump straight into answering the current query directly and concisely."
+            "\nANTI-REPETITION RULE: You have already introduced yourself and mentioned your creator Pratyush. "
+            "DO NOT repeat the announcement paragraph now. Jump straight into answering directly and shortly."
         )
     
-    # Assistant continuous streaming frame open karo
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
@@ -241,7 +233,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 FIRING STREAM WITH DYNAMIC CONTEXT
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=current_prompt_payload,
@@ -258,9 +249,9 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-            # 💾 BACKEND MEMORY LOCK
-            st.session_state.chat_history.append(f"User: {user_query}")
-            st.session_state.chat_history.append(f"Heydoctor.ai: {full_response}")
+            # 💾 ONLY SAVE TEXT IN HISTORY (Anti-Crash Memory Lock)
+            st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
+            st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
             
         except Exception as primary_error:
             status_placeholder.markdown("""
@@ -269,7 +260,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 </div>
             """, unsafe_allow_html=True)
             
-            # 🔄 KEY FAILOVER SWAP ROUTINE
             st.session_state.current_key_index += 1
             st.session_state.secure_client = None
             
@@ -291,9 +281,8 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
                 response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
-                # Backup memory save
-                st.session_state.chat_history.append(f"User: {user_query}")
-                st.session_state.chat_history.append(f"Heydoctor.ai: {full_response}")
+                st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
+                st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
                 
             except Exception as cluster_overload:
                 status_placeholder.empty()
