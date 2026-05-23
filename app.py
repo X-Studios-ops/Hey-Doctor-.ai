@@ -178,13 +178,14 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (HYPER-SPEED OPTIMIZED CONTEXT STREAM)
+# 4. CORE INFERENCE PIPELINE (NATIVE SLICED MEMORY - ZERO LATENCY ENGINE)
 # ==============================================================================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
+    # 🧬 CURRENT TURN META CONTENT
     meta_header = (
         f"[PATIENT METRICS REGISTERED]\n"
         f"▪ GENDER: {gender} | AGE: {age} | BLOOD TYPE: {blood_type}\n"
@@ -203,17 +204,26 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # 🔄 SPEED-BOOST MEMORY ENGINE: Sirf aakhiri 4 messages bhejenge taaki latency na aaye
+    # 🔄 NATIVE STRUCTURED PAYLOAD BUILDER
     current_prompt_payload = []
     
-    # Slice history to keep only last 4 turns for lightning-fast speeds
+    # Slice history to keep only last 4 messages in native SDK structure
     recent_history = st.session_state.chat_history[-4:]
     for past_msg in recent_history:
-        current_prompt_payload.append(f"{past_msg['role']}: {past_msg['parts'][0]}")
+        current_prompt_payload.append({
+            "role": past_msg["role"],
+            "parts": past_msg["parts"]
+        })
         
-    current_prompt_payload.append(meta_header)
+    # Inject current turn details
+    current_parts = [meta_header]
     if uploaded_img_data is not None:
-        current_prompt_payload.append(uploaded_img_data)
+        current_parts.append(uploaded_img_data)
+        
+    current_prompt_payload.append({
+        "role": "user",
+        "parts": current_parts
+    })
     
     dynamic_instruction = GOD_MODE_SYSTEM_INSTRUCTION
     if len(st.session_state.chat_history) > 0:
@@ -235,7 +245,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
-            # 🚀 FIRING STREAM
+            # 🚀 FIRING STREAM WITH STRUCTURED DICT DATA
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=current_prompt_payload,
@@ -252,7 +262,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-            # Save to backend database logs
+            # Save strictly in structured format
             st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
             st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
             
