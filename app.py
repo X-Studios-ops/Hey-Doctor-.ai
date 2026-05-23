@@ -104,7 +104,7 @@ if "current_key_index" not in st.session_state:
     st.session_state.current_key_index = 0
 
 # ==============================================================================
-# 3. SECURE 5-API CLUSTER ROUTING & CONSTANTS
+# 3. BULLETPROOF 5-API CLUSTER CONFIGURATION
 # ==============================================================================
 KEYS_POOL = []
 for key_name in ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E"]:
@@ -128,22 +128,16 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
     "3. Conclude with a bold, friendly safety disclaimer stating you are an advanced AI concierge."
 )
 
-def init_secure_engine():
+# 🔄 PURE LOOP-BASED SECURE HOT-SWAP ENGINE
+def get_secure_client():
     if not KEYS_POOL:
         st.error("🚨 API Key configuration missing in Streamlit Secrets.")
         st.stop()
+    
+    # Pool size ke mutabik index safely lock karo
     idx = st.session_state.current_key_index % len(KEYS_POOL)
-    try:
-        active_key = KEYS_POOL[idx]
-        new_client = genai.Client(api_key=active_key)
-        st.session_state.secure_client = new_client
-        return new_client
-    except Exception:
-        st.session_state.current_key_index += 1
-        return init_secure_engine()
-
-if "secure_client" not in st.session_state or not st.session_state.secure_client:
-    init_secure_engine()
+    active_key = KEYS_POOL[idx]
+    return genai.Client(api_key=active_key)
 
 # ==============================================================================
 # 4. PATIENT ENTRY PORTAL LAYOUT
@@ -208,7 +202,7 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 5. CORE INFERENCE PIPELINE (NATIVE SLICED MEMORY - ZERO LATENCY ENGINE)
+# 5. CORE INFERENCE PIPELINE (INFINITE ROTATION ENGINE)
 # ==============================================================================
 if user_query := st.chat_input("Enter specific physical symptoms or upload data logs..."):
     
@@ -231,7 +225,6 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             st.error(f"Biometric Image block reading failed: {img_err}")
 
     current_prompt_payload = []
-    
     recent_history = st.session_state.chat_history[-4:]
     for past_msg in recent_history:
         current_prompt_payload.append({
@@ -257,67 +250,54 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
     
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
-        status_placeholder.markdown("""
-            <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                ⚡ SYSTEM::COMPRESSING MEMORY BUFFERS...<br>
-                🧬 RE-ROUTING MULTIMODAL CHUNKS VIA HYPER-SPEED BYPASS...
-            </div>
-        """, unsafe_allow_html=True)
-        
         response_placeholder = st.empty()
-        active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
-        try:
-            response_stream = active_client.models.generate_content_stream(
-                model="gemini-2.5-flash",
-                contents=current_prompt_payload,
-                config={"system_instruction": dynamic_instruction}
-            )
-            status_placeholder.empty()
-            
-            full_response = ""
-            for chunk in response_stream:
-                if chunk.text:
-                    full_response += chunk.text
-                    response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
-            
-            response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
-            st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-            
-            st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
-            st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
-            
-        except Exception as primary_error:
-            status_placeholder.markdown("""
-                <div style="color: #F59E0B; font-family: 'Courier New', monospace; font-size: 11px;">
-                    ⚠️ CORES OVERLOAD (503) :: DYNAMIC HOT-SWAP ACTIVATED...
+        # 🛡️ THE INFINITE ROTATION LOOP: Jab tak chalega nahi, loop rukega nahi!
+        stream_success = False
+        attempts = 0
+        max_attempts = len(KEYS_POOL) if KEYS_POOL else 1
+        
+        while not stream_success and attempts < max_attempts:
+            status_placeholder.markdown(f"""
+                <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
+                    ⚡ SYSTEM::EXECUTING INFERENCE ROUTINE (CORE {st.session_state.current_key_index % max_attempts + 1})...<br>
+                    🧬 ROUTING PIPELINE THROUGH SECURE MULTI-KEY CLUSTER...
                 </div>
             """, unsafe_allow_html=True)
             
-            st.session_state.current_key_index += 1
-            st.session_state.secure_client = None
-            
             try:
-                backup_client = init_secure_engine()
-                response_stream = backup_client.models.generate_content_stream(
+                active_client = get_secure_client()
+                response_stream = active_client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=current_prompt_payload,
                     config={"system_instruction": dynamic_instruction}
                 )
-                status_placeholder.empty()
                 
+                status_placeholder.empty()
                 full_response = ""
+                
+                # Live streaming chunks capture
                 for chunk in response_stream:
                     if chunk.text:
                         full_response += chunk.text
                         response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}▒</div>', unsafe_allow_html=True)
-                        
+                
                 response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
+                # History data save
                 st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
                 st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
                 
-            except Exception as cluster_overload:
-                status_placeholder.empty()
-                st.error("🚨 All API routes are rate-limited. Please wait 10 seconds or re-fire your request.")
+                stream_success = True  # Engine ran perfectly, exit loop!
+                
+            except Exception as e:
+                # Agar error aaya (503 ya 429), toh silently next key par shift karo aur loop chalne do
+                st.session_state.current_key_index += 1
+                attempts += 1
+                time.sleep(0.5)  # Soft delay to let the network settle
+        
+        # Agar saari ki saari keys block ho chuki hain pool mein
+        if not stream_success:
+            status_placeholder.empty()
+            st.error("🚨 All API cores in the cluster are heavily rate-limited by Google. Please wait 15 seconds for cool-down.")
