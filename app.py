@@ -178,7 +178,7 @@ for msg in st.session_state.messages_display:
         st.markdown(msg["content"])
 
 # ==============================================================================
-# 4. CORE INFERENCE PIPELINE (ULTRA MEMORY + HIGH-SPEED MULTIMODAL STREAM)
+# 4. CORE INFERENCE PIPELINE (HYPER-SPEED OPTIMIZED CONTEXT STREAM)
 # ==============================================================================
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
@@ -203,10 +203,12 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         except Exception as img_err:
             st.error(f"Biometric Image block reading failed: {img_err}")
 
-    # 🔄 SAFE MEMORY LOGIC: Purani text baatein yaad rakhega
+    # 🔄 SPEED-BOOST MEMORY ENGINE: Sirf aakhiri 4 messages bhejenge taaki latency na aaye
     current_prompt_payload = []
     
-    for past_msg in st.session_state.chat_history:
+    # Slice history to keep only last 4 turns for lightning-fast speeds
+    recent_history = st.session_state.chat_history[-4:]
+    for past_msg in recent_history:
         current_prompt_payload.append(f"{past_msg['role']}: {past_msg['parts'][0]}")
         
     current_prompt_payload.append(meta_header)
@@ -216,16 +218,16 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
     dynamic_instruction = GOD_MODE_SYSTEM_INSTRUCTION
     if len(st.session_state.chat_history) > 0:
         dynamic_instruction += (
-            "\nANTI-REPETITION RULE: You have already introduced yourself and mentioned your creator Pratyush. "
-            "DO NOT repeat the announcement paragraph now. Jump straight into answering directly and shortly."
+            "\nANTI-REPETITION RULE: Do not repeat your creator's name Pratyush or introduction paragraph again. "
+            "Reply directly, rapidly and keep it extremely short and to the point."
         )
     
     with st.chat_message("assistant"):
         status_placeholder = st.empty()
         status_placeholder.markdown("""
             <div style="color: #00F2FE; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.4;">
-                ⚡ SYSTEM::SYNCING FULL MEMORY CORES...<br>
-                🧬 INJECTING ENTIRE CHAT HISTORY INTO MATRIX ENGINE...
+                ⚡ SYSTEM::COMPRESSING MEMORY BUFFERS...<br>
+                🧬 RE-ROUTING MULTIMODAL CHUNKS VIA HYPER-SPEED BYPASS...
             </div>
         """, unsafe_allow_html=True)
         
@@ -233,6 +235,7 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
         active_client = st.session_state.secure_client if "secure_client" in st.session_state and st.session_state.secure_client else init_secure_engine()
         
         try:
+            # 🚀 FIRING STREAM
             response_stream = active_client.models.generate_content_stream(
                 model="gemini-2.5-flash",
                 contents=current_prompt_payload,
@@ -249,14 +252,14 @@ if user_query := st.chat_input("Enter specific physical symptoms or upload data 
             response_placeholder.markdown(f'<div class="hacker-response-container">{full_response}</div>', unsafe_allow_html=True)
             st.session_state.messages_display.append({"role": "assistant", "content": full_response})
             
-            # 💾 ONLY SAVE TEXT IN HISTORY (Anti-Crash Memory Lock)
+            # Save to backend database logs
             st.session_state.chat_history.append({"role": "user", "parts": [user_query]})
             st.session_state.chat_history.append({"role": "model", "parts": [full_response]})
             
         except Exception as primary_error:
             status_placeholder.markdown("""
                 <div style="color: #F59E0B; font-family: 'Courier New', monospace; font-size: 11px;">
-                    ⚠️ CORES OVERLOAD (503) :: RETRIGGERING BACKUP WITH MEMORY LOGS...
+                    ⚠️ CORES OVERLOAD (503) :: DYNAMIC HOT-SWAP ACTIVATED...
                 </div>
             """, unsafe_allow_html=True)
             
