@@ -243,28 +243,31 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# ADSTERRA INTERNET FRAMEWORK - LIVE REVENUE
+# ADSTERRA INTERNET FRAMEWORK - LIVE REVENUE (FIXED ENGINES)
 # ==============================================================================
 st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 25px;">
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
         <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 90px;">
-            
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '4c180b2176e3a1a287de9e6b76879287',
-                    'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
-
-        </div>
     </div>
 """, unsafe_allow_html=True)
 
+# Native HTML Components ke zariye Adsterra scripts ko bina text compression ke execute karo
+import streamlit.components.v1 as components
+
+components.html("""
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4c180b2176e3a1a287de9e6b76879287',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+    </div>
+""", height=100)
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
