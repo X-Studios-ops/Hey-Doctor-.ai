@@ -242,20 +242,28 @@ with col3:
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
-# ADSTERRA INTERNET FRAMEWORK
+# ==============================================================================
+# ADSTERRA INTERNET FRAMEWORK - LIVE REVENUE
+# ==============================================================================
 st.markdown("""
     <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 25px;">
         <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
         <div style="display: flex; justify-content: center; align-items: center; min-height: 90px;">
-            <iframe src="https://www.effectiveratecpm.com/watchnew?key=YOUR_ADSTERRA_ID_HERE" width="728" height="90" frameborder="0" scrolling="no"></iframe>
+            
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '4c180b2176e3a1a287de9e6b76879287',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+
         </div>
     </div>
 """, unsafe_allow_html=True)
-
-# History render execution block
-for msg in st.session_state.messages_display:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
 
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
