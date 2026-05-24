@@ -9,20 +9,7 @@ import google.genai as genai
 from google.genai import types  
 from PIL import Image
 import time
-# ==============================================================================
-# GOOGLE SEARCH CONSOLE INSTANT VERIFICATION BYPASS
-# ==============================================================================
-# Agar Google ka crawler tumhari verification file dhoondhne aaye, toh code direct text return kar dega
-if "google57dea9bee05efab5.html" in st.experimental_get_query_params() or (st.experimental_get_query_params().get("page") == ["google57dea9bee05efab5.html"]):
-    st.write("google-site-verification: google57dea9bee05efab5.html")
-    st.stop()
 
-# Tumhaare existing codes ka meta tag handshake jo tumne lagaya hai:
-st.markdown("""
-<head>
-<meta name="google-site-verification" content="lfm3sejmWeeXFmm02FkosXVTAjiBRidxSnWI8CpuOIs"/>
-</head>
-""", unsafe_allow_html=True)
 # ==============================================================================
 # PAGE CONFIG
 # ==============================================================================
