@@ -5,10 +5,11 @@
 # ==============================================================================
 
 import streamlit as st
-import streamlit.components.v1 as components
+import google.genai as genai          # <-- YEH LINE MISSING THI, AB SET HAI!
 from google.genai import types  
 from PIL import Image
 import time
+import streamlit.components.v1 as components
 
 # ==============================================================================
 # PAGE CONFIG
