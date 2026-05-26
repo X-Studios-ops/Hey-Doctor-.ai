@@ -118,17 +118,7 @@ st.markdown("""
 <div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
 </div>
 """, unsafe_allow_html=True)
-# --- 🔥 PRODUCT HUNT BADGE INTEGRATION START ---
-# Isko maine title aur badge ke theek niche centralize alignment ke sath set kar diya hai
-badge_code = """
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
-    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-    </a>
-</div>
-"""
-components.html(badge_code, height=70)
-# --- 🔥 PRODUCT HUNT BADGE INTEGRATION END ---
+
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
