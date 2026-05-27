@@ -112,15 +112,16 @@ div[data-testid="stChatMessage"] {
 </style>
 """, unsafe_allow_html=True)
 
-# Define Explicit Layout Zones
-hero_zone = st.container()
-scanner_zone = st.container()
+# Explicit Layout Windows
+landing_top_zone = st.container()
+ad_target_zone = st.container()
+content_scanner_zone = st.container()
 chat_output_zone = st.container()
 
 # ==============================================================================
-# 🔥 HERO ZONE: THE VERY TOP (ADSTERRA + PRODUCT HUNT)
+# HEADER & TOP BUTTONS
 # ==============================================================================
-with hero_zone:
+with landing_top_zone:
     st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
     st.markdown("""
     <div class="premium-badge-container">
@@ -128,10 +129,23 @@ with hero_zone:
     </div>
     """, unsafe_allow_html=True)
 
-    # TARGET POSITION: TOP REVENUE FRAMEWORK (OPENING SCREEN)
+    # PRODUCT HUNT BADGE
+    badge_code = """
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+        <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
+            <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
+        </a>
+    </div>
+    """
+    components.html(badge_code, height=70)
+
+# ==============================================================================
+# 🔥 TON LOGIC: EXACTLY BELOW THE "START FREE CONSULTATION" BUTTON TOP SECTION
+# ==============================================================================
+with ad_target_zone:
     st.markdown("""
-        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 8px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
-            <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 4px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
+        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
+            <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
         </div>
     """, unsafe_allow_html=True)
 
@@ -149,16 +163,7 @@ with hero_zone:
             <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
         </div>
     """, height=100)
-
-    # PRODUCT HUNT BADGE (CENTERED, RIGHT BELOW AD BANNERS)
-    badge_code = """
-    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 10px;">
-        <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-            <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-        </a>
-    </div>
-    """
-    components.html(badge_code, height=70)
+    st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================================================================
 # SECURE ALLOCATION POOL REGISTRY
@@ -174,7 +179,7 @@ if not KEYS_POOL:
     st.error("🚨 CRITICAL METRIC: NO API KEYS DECLARED IN ENVIRONMENT CONFIG.")
     st.stop()
 
-# SESSION MANAGEMENT
+# SESSION STATE MEMORY MANAGEMENT
 if "chat_history" not in st.session_state: st.session_state.chat_history = []
 if "messages_display" not in st.session_state: st.session_state.messages_display = []
 if "api_health" not in st.session_state: st.session_state.api_health = {}
@@ -216,9 +221,9 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 )
 
 # ==============================================================================
-# PHYSICAL PHOTO BIO-SCANNER AREA
+# PHYSICAL PHOTO BIO-SCANNER & ARTIFACTS AREA
 # ==============================================================================
-with scanner_zone:
+with content_scanner_zone:
     st.markdown("""
     <div class="bio-scan-container">
     <div class="scanner-text">
@@ -248,7 +253,7 @@ with scanner_zone:
     st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# RENDER HISTORICAL CHAT
+# HISTORICAL CONVERSATION DISPLAY BUFFER
 # ==============================================================================
 with chat_output_zone:
     for msg in st.session_state.messages_display:
@@ -256,7 +261,7 @@ with chat_output_zone:
             st.markdown(msg["content"])
 
 # ==============================================================================
-# PIPELINE STREAM ENGINE EXECUTION (NO AD HERE)
+# PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
     meta_header = f"""[PATIENT ARTIFACT REGISTERED]\nGender: {gender} | Age: {age} | Blood Type: {blood_type}\n\nCURRENT QUERY MATRIX:\n{user_query}"""
