@@ -130,6 +130,33 @@ badge_code = """
 """
 components.html(badge_code, height=70)
 
+# ==============================================================================
+# 🔥 ADJUSTED POSITION: ADSTERRA INTERNET FRAMEWORK (OPENING SCREEN BOOST)
+# ==============================================================================
+st.markdown("""
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
+    </div>
+""", unsafe_allow_html=True)
+
+components.html("""
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4c180b2176e3a1a287de9e6b76879287',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+    </div>
+""", height=100)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# --- METRICS & SCANNING INTERFACE ---
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
@@ -254,30 +281,6 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# ADSTERRA INTERNET FRAMEWORK - LIVE REVENUE (FIXED ENGINES)
-# ==============================================================================
-st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
-        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
-    </div>
-""", unsafe_allow_html=True)
-
-components.html("""
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '4c180b2176e3a1a287de9e6b76879287',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
-    </div>
-""", height=100)
-
-# ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
@@ -304,7 +307,6 @@ CURRENT QUERY MATRIX:
     current_prompt_payload = []
     
     for past_turn in st.session_state.chat_history:
-        # Streamlit roles are user/assistant, Gemini requests user/model explicitly
         clean_role = "user" if past_turn["role"] == "user" else "model"
         current_prompt_payload.append(
             types.Content(
@@ -313,7 +315,6 @@ CURRENT QUERY MATRIX:
             )
         )
     
-    # Current turn structure mapping
     current_turn_parts = [types.Part.from_text(text=meta_header)]
     if uploaded_img_data is not None:
         current_turn_parts.append(types.Part.from_image(uploaded_img_data))
@@ -366,7 +367,6 @@ CURRENT QUERY MATRIX:
 
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
-                # --- FIX 2: RE-EVALUATED STATE STORAGE MATCHING THE CORE MAP ---
                 st.session_state.chat_history.append({"role": "user", "text": meta_header})
                 st.session_state.chat_history.append({"role": "model", "text": full_response})
 
