@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.genai as genai          
+import google.genai as genai          # <-- ACTIVE AND SET
 from google.genai import types  
 from PIL import Image
 import time
@@ -29,7 +29,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# CYBERPUNK MATRIX NEON THEME (OPTIMIZED FOR VISUAL ALIGNMENT)
+# CYBERPUNK MATRIX NEON THEME
 # ==============================================================================
 st.markdown("""
 <style>
@@ -38,33 +38,16 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
     color: #F1F5F9 !important;
     font-family: 'Courier New', monospace !important;
 }
-.landing-container {
+.main-title {
+    font-size: 3.4rem;
+    font-weight: 900;
     text-align: center;
-    padding: 20px 0px;
-}
-.main-title-custom {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1.2;
-    color: #FFFFFF !important;
-    margin-bottom: 5px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-}
-.sub-title-custom {
-    font-size: 3rem;
-    font-weight: 800;
-    color: #10B981 !important;
-    margin-top: 0px;
-    margin-bottom: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-}
-.tagline-custom {
-    font-size: 1.1rem;
-    color: #94A3B8 !important;
-    max-width: 700px;
-    margin: 0 auto 30px auto;
-    line-height: 1.6;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+    background: linear-gradient(90deg, #00F2FE 0%, #4FACFE 40%, #10B981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 20px;
+    letter-spacing: 3px;
+    filter: drop-shadow(0px 0px 20px rgba(0, 242, 254, 0.3));
 }
 .premium-badge-container {
     text-align: center;
@@ -126,47 +109,32 @@ div[data-testid="stChatMessage"] {
     border-radius: 6px;
     margin-bottom: 10px;
 }
-/* Dispatch Banner Style */
-.dispatch-banner {
-    background-color: #3b1111 !important;
-    border-left: 5px solid #dc2626 !important;
-    padding: 12px 16px;
-    border-radius: 4px;
-    margin-top: 15px;
-    margin-bottom: 30px;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 13px;
-    color: #fca5a5 !important;
-}
 </style>
 """, unsafe_allow_html=True)
 
-# ==============================================================================
-# VISUAL LANDING HERO BLOCK (AS PER YOUR ATTACHED IMAGE)
-# ==============================================================================
+st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
+
 st.markdown("""
-<div class="landing-container">
-    <div class="main-title-custom">Advanced Multimodal</div>
-    <div class="sub-title-custom">AI Health Concierge</div>
-    <div class="tagline-custom">
-        Get instant, precision-driven wellness insights and actionable home remedies powered by advanced neural architecture.
-    </div>
+<div class="premium-badge-container">
+<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
 </div>
 """, unsafe_allow_html=True)
 
-# Custom Centered Consultation Trigger UI Button
-col_btn_1, col_btn_2, col_btn_3 = st.columns([1, 1.2, 1])
-with col_btn_2:
-    # Streamlit native button styled cleanly
-    consultation_trigger = st.button("Start Free Consultation", use_container_width=True, type="primary")
-
-st.markdown("<br>", unsafe_allow_html=True)
+# --- PRODUCT HUNT BADGE ---
+badge_code = """
+<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
+    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
+        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
+    </a>
+</div>
+"""
+components.html(badge_code, height=70)
 
 # ==============================================================================
-# 🔥 ADSTERRA AD PLACEMENT - IMMEDIATELY BELOW THE TRIGGER BUTTON
+# 🔥 TARGET POSITION: FIXED AD RIGHT BELOW PRODUCT HUNT EMBED NODE
 # ==============================================================================
 st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
         <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
     </div>
 """, unsafe_allow_html=True)
@@ -186,36 +154,9 @@ components.html("""
     </div>
 """, height=100)
 
-# ==============================================================================
-# 🚨 CRITICAL DISPATCH BANNER (IMAGE ALIGNED RED FOOTER PROTOCOL)
-# ==============================================================================
-st.markdown("""
-<div class="dispatch-banner">
-    🚨 <b>CRITICAL DISPATCH PROTOCOL:</b> If you are facing life-threatening medical events (e.g., crushing chest pressure, severe dyspnea), abort digital screening immediately. Dial <b>102</b> or <b>112</b> instantly.
-</div>
-""", unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
 
-st.markdown("---")
-
-# ==============================================================================
-# SYSTEM RUNTIME DIAGNOSTIC METRICS
-# ==============================================================================
-st.markdown("""
-<div class="premium-badge-container">
-<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
-</div>
-""", unsafe_allow_html=True)
-
-# --- PRODUCT HUNT BADGE INTEGRATION ---
-badge_code = """
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
-    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-    </a>
-</div>
-"""
-components.html(badge_code, height=70)
-
+# --- BIO-SCAN STATUS RUNTIME ---
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
@@ -340,6 +281,13 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
+# RENDER HISTORICAL CHAT 
+# ==============================================================================
+for msg in st.session_state.messages_display:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+
+# ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
@@ -362,12 +310,14 @@ CURRENT QUERY MATRIX:
         except Exception:
             uploaded_img_data = None
 
+    # --- FIX 1: SAFE ROLE MAPPING LOGIC FOR HISTORY POOL ---
     current_prompt_payload = []
     
     for past_turn in st.session_state.chat_history:
+        clean_role = "user" if past_turn["role"] == "user" else "model"
         current_prompt_payload.append(
             types.Content(
-                role=past_turn["role"],
+                role=clean_role,
                 parts=[types.Part.from_text(text=past_turn["text"])]
             )
         )
