@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.genai as genai          # <-- ACTIVE AND SET
+import google.genai as genai          
 from google.genai import types  
 from PIL import Image
 import time
@@ -29,7 +29,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# CYBERPUNK MATRIX NEON THEME
+# CYBERPUNK MATRIX NEON THEME (OPTIMIZED FOR VISUAL ALIGNMENT)
 # ==============================================================================
 st.markdown("""
 <style>
@@ -38,16 +38,33 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
     color: #F1F5F9 !important;
     font-family: 'Courier New', monospace !important;
 }
-.main-title {
-    font-size: 3.4rem;
-    font-weight: 900;
+.landing-container {
     text-align: center;
-    background: linear-gradient(90deg, #00F2FE 0%, #4FACFE 40%, #10B981 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-top: 20px;
-    letter-spacing: 3px;
-    filter: drop-shadow(0px 0px 20px rgba(0, 242, 254, 0.3));
+    padding: 20px 0px;
+}
+.main-title-custom {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #FFFFFF !important;
+    margin-bottom: 5px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+.sub-title-custom {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #10B981 !important;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+}
+.tagline-custom {
+    font-size: 1.1rem;
+    color: #94A3B8 !important;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+    line-height: 1.6;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 }
 .premium-badge-container {
     text-align: center;
@@ -109,77 +126,120 @@ div[data-testid="stChatMessage"] {
     border-radius: 6px;
     margin-bottom: 10px;
 }
+/* Dispatch Banner Style */
+.dispatch-banner {
+    background-color: #3b1111 !important;
+    border-left: 5px solid #dc2626 !important;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 13px;
+    color: #fca5a5 !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# Explicit Layout Containers
-top_landing_zone = st.container()
-ad_exact_middle_zone = st.container()
-protocol_warning_zone = st.container()
-content_scanner_zone = st.container()
-chat_output_zone = st.container()
-
 # ==============================================================================
-# TOP SECTION (TITLE & PRODUCT HUNT BADGE)
+# VISUAL LANDING HERO BLOCK (AS PER YOUR ATTACHED IMAGE)
 # ==============================================================================
-with top_landing_zone:
-    st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
-    st.markdown("""
-    <div class="premium-badge-container">
-    <div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
+st.markdown("""
+<div class="landing-container">
+    <div class="main-title-custom">Advanced Multimodal</div>
+    <div class="sub-title-custom">AI Health Concierge</div>
+    <div class="tagline-custom">
+        Get instant, precision-driven wellness insights and actionable home remedies powered by advanced neural architecture.
     </div>
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
-    # PRODUCT HUNT BADGE
-    badge_code = """
-    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
-        <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-            <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-        </a>
+# Custom Centered Consultation Trigger UI Button
+col_btn_1, col_btn_2, col_btn_3 = st.columns([1, 1.2, 1])
+with col_btn_2:
+    # Streamlit native button styled cleanly
+    consultation_trigger = st.button("Start Free Consultation", use_container_width=True, type="primary")
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 🔥 ADSTERRA AD PLACEMENT - IMMEDIATELY BELOW THE TRIGGER BUTTON
+# ==============================================================================
+st.markdown("""
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
     </div>
-    """
-    components.html(badge_code, height=70)
+""", unsafe_allow_html=True)
 
-# ==============================================================================
-# 🔥 TARGET LOCATION: EXACTLY BETWEEN "START FREE CONSULTATION" & "CRITICAL DISPATCH"
-# ==============================================================================
-with ad_exact_middle_zone:
-    st.markdown("""
-        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 10px; margin-top: 10px;">
-            <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
-        </div>
-    """, unsafe_allow_html=True)
-
-    components.html("""
-        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-            <script type="text/javascript">
-                atOptions = {
-                    'key' : '4c180b2176e3a1a287de9e6b76879287',
-                    'format' : 'iframe',
-                    'height' : 90,
-                    'width' : 728,
-                    'params' : {}
-                };
-            </script>
-            <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
-        </div>
-    """, height=100)
-
-# ==============================================================================
-# CRITICAL PROTOCOL WARNING LINE (BELOW AD)
-# ==============================================================================
-with protocol_warning_zone:
-    st.markdown("""
-    <div style="background-color: rgba(255, 75, 75, 0.08); border: 1px solid #FF4B4B; padding: 12px; border-radius: 4px; text-align: center; margin-bottom: 25px; margin-top: 10px;">
-        <span style="color: #FF4B4B; font-size: 11px; font-weight: bold; letter-spacing: 1px;">⚠️ CRITICAL DISPATCH PROTOCOL: If you are facing life-threatening medical events, abort digital screening immediately.</span>
+components.html("""
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4c180b2176e3a1a287de9e6b76879287',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
-    """, unsafe_allow_html=True)
+""", height=100)
+
+# ==============================================================================
+# 🚨 CRITICAL DISPATCH BANNER (IMAGE ALIGNED RED FOOTER PROTOCOL)
+# ==============================================================================
+st.markdown("""
+<div class="dispatch-banner">
+    🚨 <b>CRITICAL DISPATCH PROTOCOL:</b> If you are facing life-threatening medical events (e.g., crushing chest pressure, severe dyspnea), abort digital screening immediately. Dial <b>102</b> or <b>112</b> instantly.
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+# ==============================================================================
+# SYSTEM RUNTIME DIAGNOSTIC METRICS
+# ==============================================================================
+st.markdown("""
+<div class="premium-badge-container">
+<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
+</div>
+""", unsafe_allow_html=True)
+
+# --- PRODUCT HUNT BADGE INTEGRATION ---
+badge_code = """
+<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
+    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
+        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
+    </a>
+</div>
+"""
+components.html(badge_code, height=70)
+
+st.markdown("""
+<div class="bio-scan-container">
+<div class="scanner-text">
+STATUS::ONLINE<br>
+SMART_ROUTER::LOAD_BALANCED_ACTIVE<br>
+FAILOVER_ENGINE::AUTOMATIC_HARD_RESET_ENABLED<br>
+OPTIMIZATION::BY_PRATYUSH_X_STUDIOS
+</div>
+<div class="bio-scan-line"></div>
+</div>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # SECURE ALLOCATION POOL REGISTRY
 # ==============================================================================
 KEYS_POOL = []
-secret_keys = ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E", "GEMINI_API_KEY"]
+secret_keys = [
+    "GEMINI_API_KEY_A",
+    "GEMINI_API_KEY_B",
+    "GEMINI_API_KEY_C",
+    "GEMINI_API_KEY_D",
+    "GEMINI_API_KEY_E",
+    "GEMINI_API_KEY"
+]
 
 for key_name in secret_keys:
     if key_name in st.secrets and st.secrets[key_name]:
@@ -189,33 +249,53 @@ if not KEYS_POOL:
     st.error("🚨 CRITICAL METRIC: NO API KEYS DECLARED IN ENVIRONMENT CONFIG.")
     st.stop()
 
+# ==============================================================================
 # SESSION STATE MEMORY MANAGEMENT
-if "chat_history" not in st.session_state: st.session_state.chat_history = []
-if "messages_display" not in st.session_state: st.session_state.messages_display = []
-if "api_health" not in st.session_state: st.session_state.api_health = {}
+# ==============================================================================
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+if "messages_display" not in st.session_state:
+    st.session_state.messages_display = []
+
+if "api_health" not in st.session_state:
+    st.session_state.api_health = {}
 
 for key in KEYS_POOL:
     if key not in st.session_state.api_health:
         st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
 
+# SIDEBAR CONTROLLER FOR SYSTEM MAINTENANCE
 with st.sidebar:
     st.markdown("### 🛠️ CORE ADMINISTRATIVE NODE")
     if st.button("🔄 FORCE RESET API POOL COOLDOWNS"):
         st.session_state.api_health = {}
-        for key in KEYS_POOL: st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
+        for key in KEYS_POOL:
+            st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
         st.success("✅ ALL CLUSTER NODES FLUSHED & HEALTH RESTORED!")
 
 def get_best_available_key():
     current_time = time.time()
-    available_keys = [key for key in KEYS_POOL if current_time >= st.session_state.api_health[key]["cooldown_until"]]
-    return min(available_keys, key=lambda k: st.session_state.api_health[k]["fails"]) if available_keys else KEYS_POOL[0]
+    available_keys = []
+
+    for key in KEYS_POOL:
+        data = st.session_state.api_health[key]
+        if current_time >= data["cooldown_until"]:
+            available_keys.append(key)
+
+    if not available_keys:
+        return KEYS_POOL[0]
+
+    return min(available_keys, key=lambda k: st.session_state.api_health[k]["fails"])
 
 def mark_key_failed(key):
-    st.session_state.api_health[key]["fails"] += 1
-    st.session_state.api_health[key]["cooldown_until"] = time.time() + 10.0 
+    data = st.session_state.api_health[key]
+    data["fails"] += 1
+    data["cooldown_until"] = time.time() + 10.0 
 
 def reset_key_health(key):
-    if key in st.session_state.api_health: st.session_state.api_health[key]["fails"] = 0
+    if key in st.session_state.api_health:
+        st.session_state.api_health[key]["fails"] = 0
 
 # SYSTEM INSTRUCTION
 GOD_MODE_SYSTEM_INSTRUCTION = (
@@ -234,109 +314,138 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 # ==============================================================================
 # PHYSICAL PHOTO BIO-SCANNER AREA
 # ==============================================================================
-with content_scanner_zone:
-    st.markdown("""
-    <div class="bio-scan-container">
-    <div class="scanner-text">
-    STATUS::ONLINE<br>
-    SMART_ROUTER::LOAD_BALANCED_ACTIVE<br>
-    FAILOVER_ENGINE::AUTOMATIC_HARD_RESET_ENABLED<br>
-    OPTIMIZATION::BY_PRATYUSH_X_STUDIOS
-    </div>
-    <div class="bio-scan-line"></div>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
-    uploaded_image = st.file_uploader("DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", type=["jpg", "jpeg", "png"], key="medical_bio_uploader_field")
+st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
-    if uploaded_image is not None:
-        try:
-            preview = Image.open(uploaded_image)
-            st.image(preview, caption="✅ BIOMETRIC ARTIFACT CAPTURED", use_container_width=True)
-        except Exception as e:
-            st.error(f"Scanner Interdiction Fault: {e}")
+uploaded_image = st.file_uploader(
+    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
+    type=["jpg", "jpeg", "png"],
+    key="medical_bio_uploader_field"
+)
 
-    col1, col2, col3 = st.columns(3)
-    with col1: gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-    with col2: age = st.number_input("Age", min_value=1, max_value=120, value=18)
-    with col3: blood_type = st.selectbox("Blood", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
-    st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
+if uploaded_image is not None:
+    try:
+        preview = Image.open(uploaded_image)
+        st.image(preview, caption="✅ BIOMETRIC ARTIFACT CAPTURED", use_container_width=True)
+    except Exception as e:
+        st.error(f"Scanner Interdiction Fault: {e}")
 
-# ==============================================================================
-# HISTORICAL CHAT LAYERING
-# ==============================================================================
-with chat_output_zone:
-    for msg in st.session_state.messages_display:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+col1, col2, col3 = st.columns(3)
+with col1:
+    gender = st.selectbox("Gender", ["Male", "Female", "Other"])
+with col2:
+    age = st.number_input("Age", min_value=1, max_value=120, value=18)
+with col3:
+    blood_type = st.selectbox("Blood", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+
+st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
-    meta_header = f"""[PATIENT ARTIFACT REGISTERED]\nGender: {gender} | Age: {age} | Blood Type: {blood_type}\n\nCURRENT QUERY MATRIX:\n{user_query}"""
 
-    with chat_output_zone:
-        with st.chat_message("user"):
-            st.markdown(user_query)
-    
+    meta_header = f"""[PATIENT ARTIFACT REGISTERED]
+Gender: {gender} | Age: {age} | Blood Type: {blood_type}
+
+CURRENT QUERY MATRIX:
+{user_query}"""
+
+    with st.chat_message("user"):
+        st.markdown(user_query)
+
     st.session_state.messages_display.append({"role": "user", "content": user_query})
 
     uploaded_img_data = None
     if uploaded_image is not None:
-        try: uploaded_img_data = Image.open(uploaded_image)
-        except Exception: uploaded_img_data = None
+        try:
+            uploaded_img_data = Image.open(uploaded_image)
+        except Exception:
+            uploaded_img_data = None
 
     current_prompt_payload = []
+    
     for past_turn in st.session_state.chat_history:
-        clean_role = "user" if past_turn["role"] == "user" else "model"
-        current_prompt_payload.append(types.Content(role=clean_role, parts=[types.Part.from_text(text=past_turn["text"])]))
+        current_prompt_payload.append(
+            types.Content(
+                role=past_turn["role"],
+                parts=[types.Part.from_text(text=past_turn["text"])]
+            )
+        )
     
     current_turn_parts = [types.Part.from_text(text=meta_header)]
-    if uploaded_img_data is not None: current_turn_parts.append(types.Part.from_image(uploaded_img_data))
-    current_prompt_payload.append(types.Content(role="user", parts=current_turn_parts))
+    if uploaded_img_data is not None:
+        current_turn_parts.append(types.Part.from_image(uploaded_img_data))
+        
+    current_prompt_payload.append(
+        types.Content(role="user", parts=current_turn_parts)
+    )
 
-    with chat_output_zone:
-        with st.chat_message("assistant"):
-            response_placeholder = st.empty()
-            status_placeholder = st.empty()
-            stream_success = False
-            attempts = 0
-            max_attempts = len(KEYS_POOL)
+    with st.chat_message("assistant"):
+        response_placeholder = st.empty()
+        status_placeholder = st.empty()
 
-            while not stream_success and attempts < max_attempts:
-                active_key = get_best_available_key()
-                try:
-                    status_placeholder.markdown("""<div style="color:#00F2FE; font-size:12px; font-family:'Courier New',monospace;">⚡ CONNECTING SMART ENGINE ROUTER CORE...<br>🧠 STREAMING ANALYTICAL DICT SEGMENTS SECURELY...</div>""", unsafe_allow_html=True)
-                    client = genai.Client(api_key=active_key)
-                    config_schema = types.GenerateContentConfig(system_instruction=GOD_MODE_SYSTEM_INSTRUCTION, temperature=0.5)
-                    response_stream = client.models.generate_content_stream(model="gemini-2.5-flash", contents=current_prompt_payload, config=config_schema)
+        stream_success = False
+        attempts = 0
+        max_attempts = len(KEYS_POOL)
 
-                    status_placeholder.empty()
-                    full_response = ""
-                    for chunk in response_stream:
-                        if chunk.text:
-                            full_response += chunk.text
-                            response_placeholder.markdown(full_response + "▒")
+        while not stream_success and attempts < max_attempts:
+            active_key = get_best_available_key()
 
-                    response_placeholder.markdown(full_response)
-                    st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-                    st.session_state.chat_history.append({"role": "user", "text": meta_header})
-                    st.session_state.chat_history.append({"role": "model", "text": full_response})
+            try:
+                status_placeholder.markdown("""
+                <div style="color:#00F2FE; font-size:12px; font-family:'Courier New',monospace;">
+                    ⚡ CONNECTING SMART ENGINE ROUTER CORE...<br>
+                    🧠 STREAMING ANALYTICAL DICT SEGMENTS SECURELY...
+                </div>
+                """, unsafe_allow_html=True)
 
-                    if len(st.session_state.chat_history) > 6: st.session_state.chat_history = st.session_state.chat_history[-6:]
-                    reset_key_health(active_key)
-                    stream_success = True
+                client = genai.Client(api_key=active_key)
 
-                except Exception as e:
-                    mark_key_failed(active_key)
-                    attempts += 1
-                    status_placeholder.markdown(f"""<div style="color:#FF4B4B; font-size:11px; font-family:'Courier New',monospace;">⚠️ NODE SWITCH DETECTED: {str(e)[:60]}...</div>""", unsafe_allow_html=True)
-                    time.sleep(0.5)
+                config_schema = types.GenerateContentConfig(
+                    system_instruction=GOD_MODE_SYSTEM_INSTRUCTION,
+                    temperature=0.5
+                )
 
-            if not stream_success:
+                response_stream = client.models.generate_content_stream(
+                    model="gemini-2.5-flash",
+                    contents=current_prompt_payload, 
+                    config=config_schema
+                )
+
                 status_placeholder.empty()
-                st.error("🚨 INSTANCE COOLDOWN TRIGGERED: Click 'FORCE RESET API POOL COOLDOWNS' in the left sidebar to clear memory leaks.")
+                full_response = ""
 
-    if uploaded_img_data is not None: uploaded_img_data.close()
+                for chunk in response_stream:
+                    if chunk.text:
+                        full_response += chunk.text
+                        response_placeholder.markdown(full_response + "▒")
+
+                response_placeholder.markdown(full_response)
+
+                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+                
+                st.session_state.chat_history.append({"role": "user", "text": meta_header})
+                st.session_state.chat_history.append({"role": "model", "text": full_response})
+
+                if len(st.session_state.chat_history) > 6:
+                    st.session_state.chat_history = st.session_state.chat_history[-6:]
+
+                reset_key_health(active_key)
+                stream_success = True
+
+            except Exception as e:
+                mark_key_failed(active_key)
+                attempts += 1
+                status_placeholder.markdown(f"""
+                <div style="color:#FF4B4B; font-size:11px; font-family:'Courier New',monospace;">
+                    ⚠️ NODE SWITCH DETECTED: {str(e)[:60]}...
+                </div>
+                """, unsafe_allow_html=True)
+                time.sleep(0.5)
+
+        if not stream_success:
+            status_placeholder.empty()
+            st.error("🚨 INSTANCE COOLDOWN TRIGGERED: Click 'FORCE RESET API POOL COOLDOWNS' in the left sidebar to clear memory leaks.")
+
+    if uploaded_img_data is not None:
+        uploaded_img_data.close()
