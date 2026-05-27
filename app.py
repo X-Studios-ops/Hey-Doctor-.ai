@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.genai as genai          # <-- ACTIVE AND SET
+import google.genai as genai # <-- ACTIVE AND SET
 from google.genai import types  
 from PIL import Image
 import time
