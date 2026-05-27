@@ -112,29 +112,11 @@ div[data-testid="stChatMessage"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
-
-st.markdown("""
-<div class="premium-badge-container">
-<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
-</div>
-""", unsafe_allow_html=True)
-
-# --- PRODUCT HUNT BADGE ---
-badge_code = """
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
-    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-    </a>
-</div>
-"""
-components.html(badge_code, height=70)
-
 # ==============================================================================
-# 🔥 TARGET POSITION: FIXED AD RIGHT BELOW PRODUCT HUNT EMBED NODE
+# 🔥 ABSOLUTE FIRST LINE POSITION: MAXIMUM REVENUE IMPACT
 # ==============================================================================
 st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px; margin-top: 5px;">
         <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
     </div>
 """, unsafe_allow_html=True)
@@ -156,7 +138,27 @@ components.html("""
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# --- BIO-SCAN STATUS RUNTIME ---
+# ------------------------------------------------------------------------------
+# REST OF THE MAIN INTERFACE
+# ------------------------------------------------------------------------------
+st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
+
+st.markdown("""
+<div class="premium-badge-container">
+<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
+</div>
+""", unsafe_allow_html=True)
+
+# --- PRODUCT HUNT BADGE ---
+badge_code = """
+<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
+    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
+        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
+    </a>
+</div>
+"""
+components.html(badge_code, height=70)
+
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
@@ -281,7 +283,7 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# RENDER HISTORICAL CHAT 
+# RENDER HISTORICAL CHAT
 # ==============================================================================
 for msg in st.session_state.messages_display:
     with st.chat_message(msg["role"]):
@@ -310,7 +312,7 @@ CURRENT QUERY MATRIX:
         except Exception:
             uploaded_img_data = None
 
-    # --- FIX 1: SAFE ROLE MAPPING LOGIC FOR HISTORY POOL ---
+    # --- FIXED 1: SAFE ROLE MAPPING LOGIC FOR HISTORY POOL ---
     current_prompt_payload = []
     
     for past_turn in st.session_state.chat_history:
