@@ -112,16 +112,17 @@ div[data-testid="stChatMessage"] {
 </style>
 """, unsafe_allow_html=True)
 
-# Explicit Layout Windows
-landing_top_zone = st.container()
-ad_target_zone = st.container()
+# Explicit Layout Containers
+top_landing_zone = st.container()
+ad_exact_middle_zone = st.container()
+protocol_warning_zone = st.container()
 content_scanner_zone = st.container()
 chat_output_zone = st.container()
 
 # ==============================================================================
-# HEADER & TOP BUTTONS
+# TOP SECTION (TITLE & PRODUCT HUNT BADGE)
 # ==============================================================================
-with landing_top_zone:
+with top_landing_zone:
     st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
     st.markdown("""
     <div class="premium-badge-container">
@@ -140,11 +141,11 @@ with landing_top_zone:
     components.html(badge_code, height=70)
 
 # ==============================================================================
-# 🔥 TON LOGIC: EXACTLY BELOW THE "START FREE CONSULTATION" BUTTON TOP SECTION
+# 🔥 TARGET LOCATION: EXACTLY BETWEEN "START FREE CONSULTATION" & "CRITICAL DISPATCH"
 # ==============================================================================
-with ad_target_zone:
+with ad_exact_middle_zone:
     st.markdown("""
-        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
+        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 10px; margin-top: 10px;">
             <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
         </div>
     """, unsafe_allow_html=True)
@@ -163,7 +164,16 @@ with ad_target_zone:
             <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
         </div>
     """, height=100)
-    st.markdown("<br>", unsafe_allow_html=True)
+
+# ==============================================================================
+# CRITICAL PROTOCOL WARNING LINE (BELOW AD)
+# ==============================================================================
+with protocol_warning_zone:
+    st.markdown("""
+    <div style="background-color: rgba(255, 75, 75, 0.08); border: 1px solid #FF4B4B; padding: 12px; border-radius: 4px; text-align: center; margin-bottom: 25px; margin-top: 10px;">
+        <span style="color: #FF4B4B; font-size: 11px; font-weight: bold; letter-spacing: 1px;">⚠️ CRITICAL DISPATCH PROTOCOL: If you are facing life-threatening medical events, abort digital screening immediately.</span>
+    </div>
+    """, unsafe_allow_html=True)
 
 # ==============================================================================
 # SECURE ALLOCATION POOL REGISTRY
@@ -207,6 +217,7 @@ def mark_key_failed(key):
 def reset_key_health(key):
     if key in st.session_state.api_health: st.session_state.api_health[key]["fails"] = 0
 
+# SYSTEM INSTRUCTION
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -221,7 +232,7 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 )
 
 # ==============================================================================
-# PHYSICAL PHOTO BIO-SCANNER & ARTIFACTS AREA
+# PHYSICAL PHOTO BIO-SCANNER AREA
 # ==============================================================================
 with content_scanner_zone:
     st.markdown("""
@@ -253,7 +264,7 @@ with content_scanner_zone:
     st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# HISTORICAL CONVERSATION DISPLAY BUFFER
+# HISTORICAL CHAT LAYERING
 # ==============================================================================
 with chat_output_zone:
     for msg in st.session_state.messages_display:
