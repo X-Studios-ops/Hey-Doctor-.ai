@@ -130,33 +130,6 @@ badge_code = """
 """
 components.html(badge_code, height=70)
 
-# ==============================================================================
-# 🔥 ADJUSTED POSITION: ADSTERRA INTERNET FRAMEWORK (OPENING SCREEN BOOST)
-# ==============================================================================
-st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
-        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
-    </div>
-""", unsafe_allow_html=True)
-
-components.html("""
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '4c180b2176e3a1a287de9e6b76879287',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
-    </div>
-""", height=100)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# --- METRICS & SCANNING INTERFACE ---
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
@@ -253,7 +226,7 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 )
 
 # ==============================================================================
-# PHYSICAL PHOTO BIO-SCANNER AREA
+# PHYSICAL PHOTO BIO-SCANNER AREA (START FREE CONSULTATION SECTION)
 # ==============================================================================
 st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
 
@@ -279,6 +252,32 @@ with col3:
     blood_type = st.selectbox("Blood", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
 
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
+
+# ==============================================================================
+# 🔥 TARGET POSITION: ADSTERRA LIVE REVENUE FRAMEWORK (BELOW CONSULTATION / ABOVE CHAT)
+# ==============================================================================
+st.markdown("""
+    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
+        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
+    </div>
+""", unsafe_allow_html=True)
+
+components.html("""
+    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4c180b2176e3a1a287de9e6b76879287',
+                'format' : 'iframe',
+                'height' : 90,
+                'width' : 728,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+    </div>
+""", height=100)
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
