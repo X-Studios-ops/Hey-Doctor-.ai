@@ -113,7 +113,7 @@ div[data-testid="stChatMessage"] {
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# 🔥 ASYNC TOP POSITION: LOADS FAST WITHOUT BLOCKING THE SITE
+# 🔥 ULTRA-FAST LAZY LOAD ADSTERRA CORE (3 SECONDS DELAY ENGINE)
 # ==============================================================================
 st.markdown("""
     <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px; margin-top: 5px;">
@@ -121,26 +121,37 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# components.html ko explicit styling di hai taaki browser bina freeze hue ise side network thread me background load kare
+# JavaScript injection jo ad ko 3 second baad inject karegi taaki site superfast khule
 components.html("""
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 90px;">
-        <script type="text/javascript">
-            atOptions = {
+    <div id="adsterra-lazy-node" style="display: flex; justify-content: center; align-items: center; width: 100%; min-height: 90px;">
+        <span style="color: rgba(241,245,249,0.3); font-size: 11px; font-family: monospace;">INITIALIZING SECURE AD CLUSTER...</span>
+    </div>
+    
+    <script type="text/javascript">
+        setTimeout(function() {
+            var container = document.getElementById('adsterra-lazy-node');
+            container.innerHTML = ''; // Clear loading text
+            
+            window.atOptions = {
                 'key' : '4c180b2176e3a1a287de9e6b76879287',
                 'format' : 'iframe',
                 'height' : 90,
                 'width' : 728,
                 'params' : {}
             };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js" async></script>
-    </div>
-""", height=100)
+            
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js';
+            container.appendChild(script);
+        }, 3000); // 3 Seconds precise lazy load delay
+    </script>
+""", height=110)
 
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ------------------------------------------------------------------------------
-# THE MAIN CORE INTERFACE (WILL LOAD INSTANTLY NOW)
+# INTERFACE MAIN CORE
 # ------------------------------------------------------------------------------
 st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
 
