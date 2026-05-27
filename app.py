@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.genai as genai          # <-- YEH LINE MISSING THI, AB SET HAI!
+import google.genai as genai          # <-- ACTIVE AND SET
 from google.genai import types  
 from PIL import Image
 import time
@@ -119,8 +119,8 @@ st.markdown("""
 <div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
 </div>
 """, unsafe_allow_html=True)
-# --- 🔥 PRODUCT HUNT BADGE INTEGRATION START ---
-# Isko maine title aur badge ke theek niche centralize alignment ke sath set kar diya hai
+
+# --- PRODUCT HUNT BADGE ---
 badge_code = """
 <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
     <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
@@ -129,7 +129,7 @@ badge_code = """
 </div>
 """
 components.html(badge_code, height=70)
-# --- 🔥 PRODUCT HUNT BADGE INTEGRATION END ---
+
 st.markdown("""
 <div class="bio-scan-container">
 <div class="scanner-text">
@@ -262,9 +262,6 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Native HTML Components ke zariye Adsterra scripts ko bina text compression ke execute karo
-import streamlit.components.v1 as components
-
 components.html("""
     <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
         <script type="text/javascript">
@@ -279,6 +276,7 @@ components.html("""
         <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
 """, height=100)
+
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
@@ -302,19 +300,20 @@ CURRENT QUERY MATRIX:
         except Exception:
             uploaded_img_data = None
 
-    # --- FIX 1: DYNAMIC ONSITE MAP FOR THE ENTIRE PAYLOAD WINDOW ---
+    # --- FIXED 1: SAFE ROLE MAPPING LOGIC FOR HISTORY POOL ---
     current_prompt_payload = []
     
-    # Session state data ko explicitly raw map karke types compile karenge 
     for past_turn in st.session_state.chat_history:
+        # Streamlit roles are user/assistant, Gemini requests user/model explicitly
+        clean_role = "user" if past_turn["role"] == "user" else "model"
         current_prompt_payload.append(
             types.Content(
-                role=past_turn["role"],
+                role=clean_role,
                 parts=[types.Part.from_text(text=past_turn["text"])]
             )
         )
     
-    # Current user response node formation
+    # Current turn structure mapping
     current_turn_parts = [types.Part.from_text(text=meta_header)]
     if uploaded_img_data is not None:
         current_turn_parts.append(types.Part.from_image(uploaded_img_data))
@@ -367,11 +366,10 @@ CURRENT QUERY MATRIX:
 
                 st.session_state.messages_display.append({"role": "assistant", "content": full_response})
                 
-                # --- FIX 2: STATE STORAGE AS CLEAN SAFE DICTIONARIES ---
+                # --- FIX 2: RE-EVALUATED STATE STORAGE MATCHING THE CORE MAP ---
                 st.session_state.chat_history.append({"role": "user", "text": meta_header})
                 st.session_state.chat_history.append({"role": "model", "text": full_response})
 
-                # Trim buffer memory tracking list
                 if len(st.session_state.chat_history) > 6:
                     st.session_state.chat_history = st.session_state.chat_history[-6:]
 
@@ -394,4 +392,3 @@ CURRENT QUERY MATRIX:
 
     if uploaded_img_data is not None:
         uploaded_img_data.close()
-                        
