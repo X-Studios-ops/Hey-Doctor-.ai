@@ -254,7 +254,7 @@ with col3:
 st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# 🔥 TARGET POSITION: ADSTERRA LIVE REVENUE FRAMEWORK (BELOW CONSULTATION / ABOVE CHAT)
+# 🔥 ONLY SINGLE AD POSITION: RIGHT BELOW "START FREE CONSULTATION"
 # ==============================================================================
 st.markdown("""
     <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
@@ -280,7 +280,7 @@ components.html("""
 st.markdown("<br>", unsafe_allow_html=True)
 
 # ==============================================================================
-# PIPELINE STREAM ENGINE EXECUTION
+# PIPELINE STREAM ENGINE EXECUTION (PURANA AD BLOCK REMOVED FROM HERE)
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
 
