@@ -112,48 +112,59 @@ div[data-testid="stChatMessage"] {
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
+# Define Explicit Layout Zones
+hero_zone = st.container()
+scanner_zone = st.container()
+chat_output_zone = st.container()
 
-st.markdown("""
-<div class="premium-badge-container">
-<div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
-</div>
-""", unsafe_allow_html=True)
+# ==============================================================================
+# 🔥 HERO ZONE: THE VERY TOP (ADSTERRA + PRODUCT HUNT)
+# ==============================================================================
+with hero_zone:
+    st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="premium-badge-container">
+    <div class="premium-badge">⚡ ENTERPRISE MULTI-CLUSTER ENGINE ACTIVE</div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# --- PRODUCT HUNT BADGE ---
-badge_code = """
-<div style="display: flex; justify-content: center; align-items: center; margin-bottom: 25px;">
-    <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
-        <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
-    </a>
-</div>
-"""
-components.html(badge_code, height=70)
+    # TARGET POSITION: TOP REVENUE FRAMEWORK (OPENING SCREEN)
+    st.markdown("""
+        <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 8px; text-align: center; border-radius: 4px; margin-bottom: 5px;">
+            <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 4px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
+        </div>
+    """, unsafe_allow_html=True)
 
-st.markdown("""
-<div class="bio-scan-container">
-<div class="scanner-text">
-STATUS::ONLINE<br>
-SMART_ROUTER::LOAD_BALANCED_ACTIVE<br>
-FAILOVER_ENGINE::AUTOMATIC_HARD_RESET_ENABLED<br>
-OPTIMIZATION::BY_PRATYUSH_X_STUDIOS
-</div>
-<div class="bio-scan-line"></div>
-</div>
-""", unsafe_allow_html=True)
+    components.html("""
+        <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
+            <script type="text/javascript">
+                atOptions = {
+                    'key' : '4c180b2176e3a1a287de9e6b76879287',
+                    'format' : 'iframe',
+                    'height' : 90,
+                    'width' : 728,
+                    'params' : {}
+                };
+            </script>
+            <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+        </div>
+    """, height=100)
+
+    # PRODUCT HUNT BADGE (CENTERED, RIGHT BELOW AD BANNERS)
+    badge_code = """
+    <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px; margin-top: 10px;">
+        <a href="https://www.producthunt.com/products/hey-doctor-ai?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-hey-doctor-ai" target="_blank" rel="noopener noreferrer">
+            <img alt="Hey Doctor.ai - Free AI Medical Assistant &amp; Symptom Checker built in Python | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&amp;theme=dark&amp;t=1779795209915" />
+        </a>
+    </div>
+    """
+    components.html(badge_code, height=70)
 
 # ==============================================================================
 # SECURE ALLOCATION POOL REGISTRY
 # ==============================================================================
 KEYS_POOL = []
-secret_keys = [
-    "GEMINI_API_KEY_A",
-    "GEMINI_API_KEY_B",
-    "GEMINI_API_KEY_C",
-    "GEMINI_API_KEY_D",
-    "GEMINI_API_KEY_E",
-    "GEMINI_API_KEY"
-]
+secret_keys = ["GEMINI_API_KEY_A", "GEMINI_API_KEY_B", "GEMINI_API_KEY_C", "GEMINI_API_KEY_D", "GEMINI_API_KEY_E", "GEMINI_API_KEY"]
 
 for key_name in secret_keys:
     if key_name in st.secrets and st.secrets[key_name]:
@@ -163,55 +174,34 @@ if not KEYS_POOL:
     st.error("🚨 CRITICAL METRIC: NO API KEYS DECLARED IN ENVIRONMENT CONFIG.")
     st.stop()
 
-# ==============================================================================
-# SESSION STATE MEMORY MANAGEMENT
-# ==============================================================================
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
-
-if "messages_display" not in st.session_state:
-    st.session_state.messages_display = []
-
-if "api_health" not in st.session_state:
-    st.session_state.api_health = {}
+# SESSION MANAGEMENT
+if "chat_history" not in st.session_state: st.session_state.chat_history = []
+if "messages_display" not in st.session_state: st.session_state.messages_display = []
+if "api_health" not in st.session_state: st.session_state.api_health = {}
 
 for key in KEYS_POOL:
     if key not in st.session_state.api_health:
         st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
 
-# SIDEBAR CONTROLLER FOR SYSTEM MAINTENANCE
 with st.sidebar:
     st.markdown("### 🛠️ CORE ADMINISTRATIVE NODE")
     if st.button("🔄 FORCE RESET API POOL COOLDOWNS"):
         st.session_state.api_health = {}
-        for key in KEYS_POOL:
-            st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
+        for key in KEYS_POOL: st.session_state.api_health[key] = {"fails": 0, "cooldown_until": 0.0}
         st.success("✅ ALL CLUSTER NODES FLUSHED & HEALTH RESTORED!")
 
 def get_best_available_key():
     current_time = time.time()
-    available_keys = []
-
-    for key in KEYS_POOL:
-        data = st.session_state.api_health[key]
-        if current_time >= data["cooldown_until"]:
-            available_keys.append(key)
-
-    if not available_keys:
-        return KEYS_POOL[0]
-
-    return min(available_keys, key=lambda k: st.session_state.api_health[k]["fails"])
+    available_keys = [key for key in KEYS_POOL if current_time >= st.session_state.api_health[key]["cooldown_until"]]
+    return min(available_keys, key=lambda k: st.session_state.api_health[k]["fails"]) if available_keys else KEYS_POOL[0]
 
 def mark_key_failed(key):
-    data = st.session_state.api_health[key]
-    data["fails"] += 1
-    data["cooldown_until"] = time.time() + 10.0 
+    st.session_state.api_health[key]["fails"] += 1
+    st.session_state.api_health[key]["cooldown_until"] = time.time() + 10.0 
 
 def reset_key_health(key):
-    if key in st.session_state.api_health:
-        st.session_state.api_health[key]["fails"] = 0
+    if key in st.session_state.api_health: st.session_state.api_health[key]["fails"] = 0
 
-# SYSTEM INSTRUCTION
 GOD_MODE_SYSTEM_INSTRUCTION = (
     "You are Heydoctor.ai, an elite-tier AI health concierge and expert wellness companion. "
     "IDENTITY OVERRIDE STATEMENT: You were fully developed, coded, and created from scratch by Pratyush, "
@@ -226,168 +216,111 @@ GOD_MODE_SYSTEM_INSTRUCTION = (
 )
 
 # ==============================================================================
-# PHYSICAL PHOTO BIO-SCANNER AREA (START FREE CONSULTATION SECTION)
+# PHYSICAL PHOTO BIO-SCANNER AREA
 # ==============================================================================
-st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
-
-uploaded_image = st.file_uploader(
-    "DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", 
-    type=["jpg", "jpeg", "png"],
-    key="medical_bio_uploader_field"
-)
-
-if uploaded_image is not None:
-    try:
-        preview = Image.open(uploaded_image)
-        st.image(preview, caption="✅ BIOMETRIC ARTIFACT CAPTURED", use_container_width=True)
-    except Exception as e:
-        st.error(f"Scanner Interdiction Fault: {e}")
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-with col2:
-    age = st.number_input("Age", min_value=1, max_value=120, value=18)
-with col3:
-    blood_type = st.selectbox("Blood", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
-
-st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
-
-# ==============================================================================
-# 🔥 ONLY SINGLE AD POSITION: RIGHT BELOW "START FREE CONSULTATION"
-# ==============================================================================
-st.markdown("""
-    <div style="border: 1px dashed #10B981; background-color: rgba(16, 185, 129, 0.05); padding: 12px; text-align: center; border-radius: 4px; margin-bottom: 15px;">
-        <span style="color: #10B981; font-size: 10px; display: block; letter-spacing: 2px; margin-bottom: 6px; font-weight: bold;">📢 SPONSORED ENCRYPTED ADVERT</span>
+with scanner_zone:
+    st.markdown("""
+    <div class="bio-scan-container">
+    <div class="scanner-text">
+    STATUS::ONLINE<br>
+    SMART_ROUTER::LOAD_BALANCED_ACTIVE<br>
+    FAILOVER_ENGINE::AUTOMATIC_HARD_RESET_ENABLED<br>
+    OPTIMIZATION::BY_PRATYUSH_X_STUDIOS
     </div>
-""", unsafe_allow_html=True)
-
-components.html("""
-    <div style="display: flex; justify-content: center; align-items: center; width: 100%;">
-        <script type="text/javascript">
-            atOptions = {
-                'key' : '4c180b2176e3a1a287de9e6b76879287',
-                'format' : 'iframe',
-                'height' : 90,
-                'width' : 728,
-                'params' : {}
-            };
-        </script>
-        <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
+    <div class="bio-scan-line"></div>
     </div>
-""", height=100)
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</div>', unsafe_allow_html=True)
+    uploaded_image = st.file_uploader("DROP PHYSICAL SYMPTOM PHOTO HERE FOR BIO-SCAN", type=["jpg", "jpeg", "png"], key="medical_bio_uploader_field")
 
-st.markdown("<br>", unsafe_allow_html=True)
+    if uploaded_image is not None:
+        try:
+            preview = Image.open(uploaded_image)
+            st.image(preview, caption="✅ BIOMETRIC ARTIFACT CAPTURED", use_container_width=True)
+        except Exception as e:
+            st.error(f"Scanner Interdiction Fault: {e}")
+
+    col1, col2, col3 = st.columns(3)
+    with col1: gender = st.selectbox("Gender", ["Male", "Female", "Other"])
+    with col2: age = st.number_input("Age", min_value=1, max_value=120, value=18)
+    with col3: blood_type = st.selectbox("Blood", ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"])
+    st.markdown("<br><hr style='border-color: rgba(0, 242, 254, 0.15);'>", unsafe_allow_html=True)
 
 # ==============================================================================
-# PIPELINE STREAM ENGINE EXECUTION (PURANA AD BLOCK REMOVED FROM HERE)
+# RENDER HISTORICAL CHAT
+# ==============================================================================
+with chat_output_zone:
+    for msg in st.session_state.messages_display:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+# ==============================================================================
+# PIPELINE STREAM ENGINE EXECUTION (NO AD HERE)
 # ==============================================================================
 if user_query := st.chat_input("Describe symptoms or data metrics here..."):
+    meta_header = f"""[PATIENT ARTIFACT REGISTERED]\nGender: {gender} | Age: {age} | Blood Type: {blood_type}\n\nCURRENT QUERY MATRIX:\n{user_query}"""
 
-    meta_header = f"""[PATIENT ARTIFACT REGISTERED]
-Gender: {gender} | Age: {age} | Blood Type: {blood_type}
-
-CURRENT QUERY MATRIX:
-{user_query}"""
-
-    with st.chat_message("user"):
-        st.markdown(user_query)
-
+    with chat_output_zone:
+        with st.chat_message("user"):
+            st.markdown(user_query)
+    
     st.session_state.messages_display.append({"role": "user", "content": user_query})
 
     uploaded_img_data = None
     if uploaded_image is not None:
-        try:
-            uploaded_img_data = Image.open(uploaded_image)
-        except Exception:
-            uploaded_img_data = None
+        try: uploaded_img_data = Image.open(uploaded_image)
+        except Exception: uploaded_img_data = None
 
-    # --- FIXED 1: SAFE ROLE MAPPING LOGIC FOR HISTORY POOL ---
     current_prompt_payload = []
-    
     for past_turn in st.session_state.chat_history:
         clean_role = "user" if past_turn["role"] == "user" else "model"
-        current_prompt_payload.append(
-            types.Content(
-                role=clean_role,
-                parts=[types.Part.from_text(text=past_turn["text"])]
-            )
-        )
+        current_prompt_payload.append(types.Content(role=clean_role, parts=[types.Part.from_text(text=past_turn["text"])]))
     
     current_turn_parts = [types.Part.from_text(text=meta_header)]
-    if uploaded_img_data is not None:
-        current_turn_parts.append(types.Part.from_image(uploaded_img_data))
-        
-    current_prompt_payload.append(
-        types.Content(role="user", parts=current_turn_parts)
-    )
+    if uploaded_img_data is not None: current_turn_parts.append(types.Part.from_image(uploaded_img_data))
+    current_prompt_payload.append(types.Content(role="user", parts=current_turn_parts))
 
-    with st.chat_message("assistant"):
-        response_placeholder = st.empty()
-        status_placeholder = st.empty()
+    with chat_output_zone:
+        with st.chat_message("assistant"):
+            response_placeholder = st.empty()
+            status_placeholder = st.empty()
+            stream_success = False
+            attempts = 0
+            max_attempts = len(KEYS_POOL)
 
-        stream_success = False
-        attempts = 0
-        max_attempts = len(KEYS_POOL)
+            while not stream_success and attempts < max_attempts:
+                active_key = get_best_available_key()
+                try:
+                    status_placeholder.markdown("""<div style="color:#00F2FE; font-size:12px; font-family:'Courier New',monospace;">⚡ CONNECTING SMART ENGINE ROUTER CORE...<br>🧠 STREAMING ANALYTICAL DICT SEGMENTS SECURELY...</div>""", unsafe_allow_html=True)
+                    client = genai.Client(api_key=active_key)
+                    config_schema = types.GenerateContentConfig(system_instruction=GOD_MODE_SYSTEM_INSTRUCTION, temperature=0.5)
+                    response_stream = client.models.generate_content_stream(model="gemini-2.5-flash", contents=current_prompt_payload, config=config_schema)
 
-        while not stream_success and attempts < max_attempts:
-            active_key = get_best_available_key()
+                    status_placeholder.empty()
+                    full_response = ""
+                    for chunk in response_stream:
+                        if chunk.text:
+                            full_response += chunk.text
+                            response_placeholder.markdown(full_response + "▒")
 
-            try:
-                status_placeholder.markdown("""
-                <div style="color:#00F2FE; font-size:12px; font-family:'Courier New',monospace;">
-                    ⚡ CONNECTING SMART ENGINE ROUTER CORE...<br>
-                    🧠 STREAMING ANALYTICAL DICT SEGMENTS SECURELY...
-                </div>
-                """, unsafe_allow_html=True)
+                    response_placeholder.markdown(full_response)
+                    st.session_state.messages_display.append({"role": "assistant", "content": full_response})
+                    st.session_state.chat_history.append({"role": "user", "text": meta_header})
+                    st.session_state.chat_history.append({"role": "model", "text": full_response})
 
-                client = genai.Client(api_key=active_key)
+                    if len(st.session_state.chat_history) > 6: st.session_state.chat_history = st.session_state.chat_history[-6:]
+                    reset_key_health(active_key)
+                    stream_success = True
 
-                config_schema = types.GenerateContentConfig(
-                    system_instruction=GOD_MODE_SYSTEM_INSTRUCTION,
-                    temperature=0.5
-                )
+                except Exception as e:
+                    mark_key_failed(active_key)
+                    attempts += 1
+                    status_placeholder.markdown(f"""<div style="color:#FF4B4B; font-size:11px; font-family:'Courier New',monospace;">⚠️ NODE SWITCH DETECTED: {str(e)[:60]}...</div>""", unsafe_allow_html=True)
+                    time.sleep(0.5)
 
-                response_stream = client.models.generate_content_stream(
-                    model="gemini-2.5-flash",
-                    contents=current_prompt_payload, 
-                    config=config_schema
-                )
-
+            if not stream_success:
                 status_placeholder.empty()
-                full_response = ""
+                st.error("🚨 INSTANCE COOLDOWN TRIGGERED: Click 'FORCE RESET API POOL COOLDOWNS' in the left sidebar to clear memory leaks.")
 
-                for chunk in response_stream:
-                    if chunk.text:
-                        full_response += chunk.text
-                        response_placeholder.markdown(full_response + "▒")
-
-                response_placeholder.markdown(full_response)
-
-                st.session_state.messages_display.append({"role": "assistant", "content": full_response})
-                
-                st.session_state.chat_history.append({"role": "user", "text": meta_header})
-                st.session_state.chat_history.append({"role": "model", "text": full_response})
-
-                if len(st.session_state.chat_history) > 6:
-                    st.session_state.chat_history = st.session_state.chat_history[-6:]
-
-                reset_key_health(active_key)
-                stream_success = True
-
-            except Exception as e:
-                mark_key_failed(active_key)
-                attempts += 1
-                status_placeholder.markdown(f"""
-                <div style="color:#FF4B4B; font-size:11px; font-family:'Courier New',monospace;">
-                    ⚠️ NODE SWITCH DETECTED: {str(e)[:60]}...
-                </div>
-                """, unsafe_allow_html=True)
-                time.sleep(0.5)
-
-        if not stream_success:
-            status_placeholder.empty()
-            st.error("🚨 INSTANCE COOLDOWN TRIGGERED: Click 'FORCE RESET API POOL COOLDOWNS' in the left sidebar to clear memory leaks.")
-
-    if uploaded_img_data is not None:
-        uploaded_img_data.close()
+    if uploaded_img_data is not None: uploaded_img_data.close()
