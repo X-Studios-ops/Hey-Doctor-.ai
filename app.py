@@ -307,13 +307,37 @@ def bmi_calculator_page():
 # ==============================================================================
 # MAIN TABS
 # ==============================================================================
+# ==============================================================================
+# MAIN NAVIGATION BUTTONS
+# ==============================================================================
 
-tab1, tab2, tab3 = st.tabs([
-    "🩺 AI Assistant",
-    "⚖️ BMI Calculator",
-    "📅 Med Reminder"
-])
+st.markdown("## 🚀 Health Tools")
 
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.page_link(
+        "pages/BMI.py",
+        label="⚖️ BMI Calculator"
+    )
+
+with col2:
+    st.page_link(
+        "pages/Medicine_Reminder.py",
+        label="💊 Medicine Reminder"
+    )
+
+with col3:
+    st.page_link(
+        "pages/Symptom_Checker.py",
+        label="🧬 Symptom Checker"
+    )
+
+# ==============================================================================
+# MAIN AI CHAT
+# ==============================================================================
+
+user_query = st.chat_input("Describe symptoms or data metrics here...")
 # ==============================================================================
 # TAB 1 - AI ASSISTANT
 # ==============================================================================
