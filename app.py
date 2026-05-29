@@ -76,6 +76,43 @@ div[data-testid="stChatMessage"] {
 """, unsafe_allow_html=True)
 
 # ==============================================================================
+# ONLY SIDEBAR ARROW TEXT & PAGE RENAMING SHORTCUT CODE
+# ==============================================================================
+st.markdown("""
+<style>
+/* 1. SIDEBAR ARROW KE SATH SHORTCUT TEXT */
+button[data-testid="sidebar-toggle"]::after {
+    content: " 📲 More Tools / Menu";
+    font-size: 13px;
+    font-weight: 800;
+    color: #10B981;
+    white-space: nowrap;
+    position: absolute;
+    left: 40px;
+    top: 10px;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; transform: scale(1.02); }
+    100% { opacity: 0.7; }
+}
+
+/* 2. MULTI-PAGE CHROME/SIDEBAR PAGES RENAME FIX */
+a[href*="app"] span { display: none !important; }
+a[href*="app"]::before { content: "🧠 Main AI" !important; font-weight: bold; color: white; }
+
+a[href*="BMI"] span { display: none !important; }
+a[href*="BMI"]::before { content: "⚖️ BMI Calculator" !important; font-weight: bold; color: white; }
+</style>
+""", unsafe_allow_html=True)
+
+# ==============================================================================
 # TITLE
 # ==============================================================================
 st.markdown(
