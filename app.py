@@ -279,7 +279,6 @@ components.html("""
         <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
 """, height=100)
-```python
 # ==============================================================================
 # MULTI TAB FEATURE FIX
 # ==============================================================================
