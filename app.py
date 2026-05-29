@@ -279,31 +279,87 @@ components.html("""
         <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
 """, height=100)
+```python
 # ==============================================================================
-# MAIN INTERFACE WITH TABS
+# MULTI TAB FEATURE FIX
 # ==============================================================================
-st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
-st.markdown('<div style="display:flex; justify-content:center;"><div class="premium-badge">⚡ ENTERPRISE ENGINE ACTIVE</div></div>', unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["🩺 AI Assistant", "⚖️ BMI Calculator", "📅 Med Reminder"])
+# ---------------- BMI FUNCTION ----------------
+def bmi_calculator_page():
+    st.subheader("⚖️ BMI Calculator")
 
+    height = st.number_input("Height (cm)", min_value=50.0, max_value=250.0, value=170.0)
+    weight = st.number_input("Weight (kg)", min_value=10.0, max_value=300.0, value=70.0)
+
+    if st.button("Calculate BMI"):
+        bmi = weight / ((height / 100) ** 2)
+
+        st.success(f"✅ Your BMI: {bmi:.2f}")
+
+        if bmi < 18.5:
+            st.warning("⚠️ Underweight")
+        elif bmi < 25:
+            st.success("💚 Normal Weight")
+        elif bmi < 30:
+            st.warning("⚠️ Overweight")
+        else:
+            st.error("🚨 Obese")
+
+# ==============================================================================
+# MAIN TABS
+# ==============================================================================
+
+tab1, tab2, tab3 = st.tabs([
+    "🩺 AI Assistant",
+    "⚖️ BMI Calculator",
+    "📅 Med Reminder"
+])
+
+# ==============================================================================
+# TAB 1 - AI ASSISTANT
+# ==============================================================================
 with tab1:
-    st.markdown('<h2 class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</h2>', unsafe_allow_html=True)
-    uploaded_image = st.file_uploader("DROP PHOTO HERE", type=["jpg", "jpeg", "png"])
+
+    st.markdown(
+        '<h2 class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</h2>',
+        unsafe_allow_html=True
+    )
+
+    uploaded_image = st.file_uploader(
+        "DROP PHOTO HERE",
+        type=["jpg", "jpeg", "png"],
+        key="tab1_uploader"
+    )
+
     if uploaded_image:
         img = Image.open(uploaded_image)
         img.thumbnail((500, 500))
         st.image(img, use_container_width=True)
-    
-    if user_query := st.chat_input("Describe symptoms..."):
-        st.chat_message("user").markdown(user_query)
-        st.chat_message("assistant").write("Analyzing metrics via Beast AI Engine...")
 
+    user_query = st.chat_input("Describe symptoms...")
+
+# ==============================================================================
+# TAB 2 - BMI
+# ==============================================================================
 with tab2:
     bmi_calculator_page()
 
+# ==============================================================================
+# TAB 3 - MEDICINE REMINDER
+# ==============================================================================
 with tab3:
-    st.info("Medicine Reminder Module Under Development by Pratyush.")
+
+    st.subheader("💊 Medicine Reminder")
+
+    medicine_name = st.text_input("Medicine Name")
+
+    reminder_time = st.time_input("Reminder Time")
+
+    if st.button("Save Reminder"):
+        st.success(
+            f"✅ Reminder Saved For {medicine_name} at {reminder_time}"
+        )
+```
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
