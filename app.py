@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.genai as genai          # <-- YEH LINE MISSING THI, AB SET HAI!
+import google.generativeai as genai         # <-- YEH LINE MISSING THI, AB SET HAI!
 from google.genai import types  
 from PIL import Image
 import time
@@ -279,23 +279,31 @@ components.html("""
         <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
 """, height=100)
-# --- TABS NAVIGATION ---
-# Ye code tere saare UI elements ko neat tarike se organize kar dega
+# ==============================================================================
+# MAIN INTERFACE WITH TABS
+# ==============================================================================
+st.markdown('<h1 class="main-title">🩺 heydoctor.ai</h1>', unsafe_allow_html=True)
+st.markdown('<div style="display:flex; justify-content:center;"><div class="premium-badge">⚡ ENTERPRISE ENGINE ACTIVE</div></div>', unsafe_allow_html=True)
+
 tab1, tab2, tab3 = st.tabs(["🩺 AI Assistant", "⚖️ BMI Calculator", "📅 Med Reminder"])
 
 with tab1:
-    st.markdown('<h2 class="section-header">🩺 AI MEDICAL CONCIERGE</h2>', unsafe_allow_html=True)
-    # Yahan tera pura AI Chat wala code ayega (Jo pehle se likha hai)
-    # ... AI Chat Code ...
+    st.markdown('<h2 class="section-header">🧬 PHYSICAL PHOTO BIO-SCANNER</h2>', unsafe_allow_html=True)
+    uploaded_image = st.file_uploader("DROP PHOTO HERE", type=["jpg", "jpeg", "png"])
+    if uploaded_image:
+        img = Image.open(uploaded_image)
+        img.thumbnail((500, 500))
+        st.image(img, use_container_width=True)
+    
+    if user_query := st.chat_input("Describe symptoms..."):
+        st.chat_message("user").markdown(user_query)
+        st.chat_message("assistant").write("Analyzing metrics via Beast AI Engine...")
 
 with tab2:
-    st.markdown('<h2 class="section-header">⚖️ BMI CALCULATOR</h2>', unsafe_allow_html=True)
-    # Yahan BMI Calculator function ko call kar
     bmi_calculator_page()
 
 with tab3:
-    st.markdown('<h2 class="section-header">📅 MEDICINE REMINDER</h2>', unsafe_allow_html=True)
-    st.info("Module under construction by Pratyush...")
+    st.info("Medicine Reminder Module Under Development by Pratyush.")
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
