@@ -101,9 +101,8 @@ width="250"
 
 </div>
 """, height=80)
-
 # ==============================================================================
-# API KEYS
+# API KEYS POOL FETCHING
 # ==============================================================================
 KEYS_POOL = []
 
@@ -118,10 +117,13 @@ secret_keys = [
 
 for key_name in secret_keys:
     if key_name in st.secrets:
-        KEYS_POOL.append(st.secrets[key_name])
+        # Secret value cleanly extract kar rhe hain
+        val = st.secrets[key_name]
+        if val and str(val).strip():
+            KEYS_POOL.append(str(val).strip())
 
 if not KEYS_POOL:
-    st.error("🚨 No API Keys Found")
+    st.error("🚨 Configuration Error: No API Keys found in Streamlit Secrets Dashboard. Please add them in App Settings.")
     st.stop()
 
 # ==============================================================================
@@ -137,15 +139,9 @@ if "api_index" not in st.session_state:
 # API ROTATION
 # ==============================================================================
 def get_next_api():
-
     key = KEYS_POOL[st.session_state.api_index]
-
-    st.session_state.api_index = (
-        st.session_state.api_index + 1
-    ) % len(KEYS_POOL)
-
+    st.session_state.api_index = (st.session_state.api_index + 1) % len(KEYS_POOL)
     return key
-
 # ==============================================================================
 # SYSTEM PROMPT
 # ==============================================================================
