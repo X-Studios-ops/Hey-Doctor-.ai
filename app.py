@@ -312,24 +312,84 @@ if st.button("Calculate BMI"):
         st.error("🚨 Obese")
 
 # ==============================================================================
-# MEDICINE REMINDER
+# 💊 WORKING MEDICINE REMINDER WITH LIVE ALERTS
 # ==============================================================================
 st.markdown("---")
 st.markdown("## 💊 Medicine Reminder")
 
-medicine_name = st.text_input(
-    "Medicine Name"
-)
+# Reminder data storage session state mein initialize kar rhe hain
+if "reminders" not in st.session_state:
+    st.session_state.reminders = []
 
-reminder_time = st.time_input(
-    "Reminder Time"
-)
+medicine_name = st.text_input("Medicine Name", key="med_name_input")
+reminder_time = st.time_input("Reminder Time", key="med_time_input")
 
-if st.button("Save Reminder"):
+if st.button("Save Reminder", key="save_reminder_btn"):
+    if medicine_name.strip():
+        # Current time lekar target timestamp calculate kar rhe hain
+        now = time.localtime()
+        target_time_str = reminder_time.strftime("%H:%M:%S")
+        
+        # Session state mein save kar rhe hain tracking ke liye
+        st.session_state.reminders.append({
+            "name": medicine_name,
+            "time": target_time_str,
+            "triggered": False
+        })
+        st.success(f"✅ Reminder Saved For **{medicine_name}** at {reminder_time.strftime('%I:%M %p')}")
+    else:
+        st.warning("⚠️ Please enter a medicine name first!")
 
-    st.success(
-        f"✅ Reminder Saved For {medicine_name} at {reminder_time}"
-    )
+# Active reminders list niche show karne ke liye
+if st.session_state.reminders:
+    with st.expander("📋 Your Active Reminders", expanded=True):
+        for r in st.session_state.reminders:
+            st.write(f"⏰ **{r['time']}** - {r['name']}")
+
+# DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS
+# Yeh code background mein har 5 second par check karega aur time hote hi audio + alert dega
+reminder_js_data = str(st.session_state.reminders)
+
+components.html(f"""
+<script>
+    // Browser notification permission maang rha hai
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {{
+        Notification.requestPermission();
+    }}
+
+    const reminders = {reminder_js_data};
+    
+    function checkReminders() {{
+        const now = new Date();
+        // Local time format (HH:MM:SS) 24 hours format mein match karne ke liye
+        const currentTime = now.toTimeString().split(' ')[0]; 
+        
+        reminders.forEach(r => {{
+            // Agar time match karta hai (sirf Hours aur Minutes match check)
+            if (r.time.substring(0,5) === currentTime.substring(0,5) && !window[r.name + r.time]) {{
+                
+                // Duplicate alert rokne ke liye flag lagaya
+                window[r.name + r.time] = true; 
+                
+                // 1. Browser Pop-up Alert
+                alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
+                
+                // 2. System Desktop Notification
+                if (Notification.permission === "granted") {{
+                    new Notification("💊 Heydoctor.ai Medicine Reminder", {{
+                        body: "Time to take your medicine: " + r.name,
+                        icon: "https://cdn-icons-png.flaticon.com/512/822/822143.png"
+                    }});
+                }}
+            }}
+        }});
+    }}
+
+    // Har 5 second mein time check karega background mein
+    setInterval(checkReminders, 5000);
+</script>
+""", height=0, width=0)
+
 
 # ==============================================================================
 # SECOND ADSTERRA AD
