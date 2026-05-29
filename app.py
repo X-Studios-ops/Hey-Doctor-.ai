@@ -279,6 +279,23 @@ components.html("""
         <script type="text/javascript" src="https://www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"></script>
     </div>
 """, height=100)
+# --- TABS NAVIGATION ---
+# Ye code tere saare UI elements ko neat tarike se organize kar dega
+tab1, tab2, tab3 = st.tabs(["🩺 AI Assistant", "⚖️ BMI Calculator", "📅 Med Reminder"])
+
+with tab1:
+    st.markdown('<h2 class="section-header">🩺 AI MEDICAL CONCIERGE</h2>', unsafe_allow_html=True)
+    # Yahan tera pura AI Chat wala code ayega (Jo pehle se likha hai)
+    # ... AI Chat Code ...
+
+with tab2:
+    st.markdown('<h2 class="section-header">⚖️ BMI CALCULATOR</h2>', unsafe_allow_html=True)
+    # Yahan BMI Calculator function ko call kar
+    bmi_calculator_page()
+
+with tab3:
+    st.markdown('<h2 class="section-header">📅 MEDICINE REMINDER</h2>', unsafe_allow_html=True)
+    st.info("Module under construction by Pratyush...")
 # ==============================================================================
 # PIPELINE STREAM ENGINE EXECUTION
 # ==============================================================================
