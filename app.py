@@ -71,7 +71,22 @@ div[data-testid="stChatMessage"] {
     font-weight: bold;
     border: none;
 }
+/* 👇 BAS YAHAN SABSE NEECHE YEH NAYA CODE PASTE KAR DO */
 
+section[data-testid="stSidebarCollapseButton"] button::after {
+    content: " Shortcut";
+    font-size: 14px;
+    font-weight: bold;
+    color: #10B981;
+    position: relative;
+    left: 5px;
+    top: -2px;
+    white-space: nowrap;
+}
+
+section[data-testid="stSidebarCollapseButton"] button:hover::after {
+    color: #00F2FE;
+}
 </style>
 """, unsafe_allow_html=True)
 
