@@ -5,7 +5,7 @@
 # ==============================================================================
 
 import streamlit as st
-import google.generativeai as genai         # <-- YEH LINE MISSING THI, AB SET HAI!
+from google import genai         # <-- YEH LINE MISSING THI, AB SET HAI!
 from google.genai import types  
 from PIL import Image
 import time
