@@ -128,6 +128,8 @@ a[href*="BMI"]::before { content: "⚖️ BMI Calculator" !important; font-weigh
 /* Naya Strong Selector: Medicine ya Timer kuch bhi mile toh replace karega */
 a[href*="med"] span, a[href*="Med"] span, a[href*="timer"] span { display: none !important; }
 a[href*="med"]::before, a[href*="Med"]::before, a[href*="timer"]::before { content: "⏰ Medicine Timer" !important; font-weight: bold; color: white; }
+</style>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # TITLE
