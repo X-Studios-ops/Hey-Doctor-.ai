@@ -374,7 +374,7 @@ if st.session_state.reminders:
         for r in st.session_state.reminders:
             st.write(f"⏰ **{r['display_time']}** - {r['name']}")
 
-# DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS WITH SOUND
+# DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS WITH BROWSER SYNTHESIZED SOUND
 reminder_js_data = str(st.session_state.reminders)
 
 components.html(f"""
@@ -382,24 +382,40 @@ components.html(f"""
     🔔 Click Here To Enable Alarm Sound
 </div>
 
-<audio id="alarmAudio" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
-
 <script>
     let audioEnabled = false;
-    const alarm = document.getElementById("alarmAudio");
+    let audioCtx;
     
-    // User ke click karte hi aawaz unlock ho jayegi
+    // User ke click karte hi browser ki internal aawaz machine on ho jayegi
     function enableAudio() {{
         audioEnabled = true;
-        // Ek mini-second ke liye play/pause karke browser ko unlock karte hain
-        alarm.play().then(() => {{
-            setTimeout(() => alarm.pause(), 100);
-        }}).catch(e => console.log(e));
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         const btn = document.getElementById("audio-btn");
-        btn.innerHTML = "✅ Alarm Active (Do not close page)";
+        btn.innerHTML = "✅ Alarm Active (Do not click anything else now)";
         btn.style.background = "#00F2FE";
         btn.style.color = "black";
+    }}
+
+    // Yeh function code se beep sound banata hai (No MP3 file needed!)
+    function playBeep() {{
+        if (!audioCtx) return;
+        
+        // 3 baar tezz Beep bajayega
+        for(let i=0; i<3; i++) {{
+            setTimeout(() => {{
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                osc.type = 'square'; // Tezz digital sound
+                osc.frequency.setValueAtTime(880, audioCtx.currentTime); 
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                
+                osc.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3); 
+            }}, i * 500);
+        }}
     }}
 
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {{
@@ -416,10 +432,9 @@ components.html(f"""
             if (r.time.substring(0,5) === currentTime.substring(0,5) && !window[r.name + r.time]) {{
                 window[r.name + r.time] = true; 
                 
-                // 1. Aawaz Play Karo (Agar user ne button dabaya hai)
+                // 1. Play Generated Beep
                 if (audioEnabled) {{
-                    alarm.currentTime = 0;
-                    alarm.play();
+                    playBeep();
                 }}
                 
                 // 2. Desktop Notification
@@ -430,15 +445,15 @@ components.html(f"""
                     }});
                 }}
 
-                // 3. Screen Pop-up Alert
+                // 3. Screen Pop-up Alert (Thoda delay diya taaki beep baj sake)
                 setTimeout(() => {{
                     alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
-                }}, 500);
+                }}, 1500);
             }}
         }});
     }}
 
-    // Har 2 second mein time check karega
+    // Har 2 second mein check karega
     setInterval(checkReminders, 2000);
 </script>
 """, height=60)
