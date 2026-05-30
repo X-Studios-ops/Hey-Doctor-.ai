@@ -374,7 +374,7 @@ if st.session_state.reminders:
         for r in st.session_state.reminders:
             st.write(f"⏰ **{r['display_time']}** - {r['name']}")
 
-# DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS
+# DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS WITH SOUND
 reminder_js_data = str(st.session_state.reminders)
 
 components.html(f"""
@@ -385,6 +385,9 @@ components.html(f"""
 
     const reminders = {reminder_js_data};
     
+    // Yahan humne ek mast loud alarm sound add kiya hai
+    const alarmSound = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
+    
     function checkReminders() {{
         const now = new Date();
         const currentTime = now.toTimeString().split(' ')[0]; 
@@ -393,14 +396,21 @@ components.html(f"""
             if (r.time.substring(0,5) === currentTime.substring(0,5) && !window[r.name + r.time]) {{
                 window[r.name + r.time] = true; 
                 
-                alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
+                // 1. Sabse pehle AAWAZ play karo
+                alarmSound.play().catch(e => console.log("Browser ne audio block kar di. Click on page first."));
                 
+                // 2. System Desktop Notification bhejo
                 if (Notification.permission === "granted") {{
                     new Notification("💊 Heydoctor.ai Medicine Reminder", {{
                         body: "Time to take your medicine: " + r.name,
                         icon: "https://cdn-icons-png.flaticon.com/512/822/822143.png"
                     }});
                 }}
+
+                // 3. Browser Popup Alert (Mili-second ka delay diya hai taaki pehle aawaz shuru ho jaye, kyunki alert JS ko pause kar deta hai)
+                setTimeout(() => {{
+                    alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
+                }}, 500);
             }}
         }});
     }}
