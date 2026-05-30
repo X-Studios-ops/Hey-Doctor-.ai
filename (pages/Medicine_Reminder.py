@@ -112,19 +112,18 @@ st.markdown(
 )
 
 # ==============================================================================
-# BACKGROUND LIVE WORKER (FIXED JAVASCRIPT INJECTION)
+# BACKGROUND LIVE WORKER (100% CRASH-FREE JAVASCRIPT INJECTION)
 # ==============================================================================
-# JSON dumps use karke Python variables ko safely JS format mein convert kiya
 js_data = json.dumps(st.session_state.reminders_list)
 
-html_code = """
+# Plain text template jisme koi formatting clash nahi hoga
+html_template = """
 <script>
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {
         Notification.requestPermission();
     }
 
-    // Direct JSON injection bina f-string errors ke
-    const activeList = """ + js_data + """;
+    const activeList = INSERT_JSON_HERE;
     
     function monitorSystemClock() {
         const sysDate = new Date();
@@ -157,5 +156,6 @@ html_code = """
 </script>
 """
 
-components.html(html_code, height=0, width=0)
-    
+# Replace method se safely data inject kar diya
+final_html_code = html_template.replace("INSERT_JSON_HERE", js_data)
+components.html(final_html_code, height=0, width=0)
