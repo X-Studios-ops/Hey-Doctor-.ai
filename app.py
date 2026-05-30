@@ -423,12 +423,6 @@ src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"
 """, height=60)
 
 # ==============================================================================
-# CHAT INPUT
-# ==============================================================================
-user_query = st.chat_input(
-    "Describe symptoms here..."
-)
-# ==============================================================================
 # 1. PURANE MESSAGES DIKHANA (Yeh page rerun hone par history wapas layega)
 # ==============================================================================
 for message in st.session_state.chat_history:
