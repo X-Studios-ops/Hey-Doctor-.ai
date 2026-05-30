@@ -378,15 +378,35 @@ if st.session_state.reminders:
 reminder_js_data = str(st.session_state.reminders)
 
 components.html(f"""
+<div id="audio-btn" style="text-align: center; font-family: 'Poppins', sans-serif; font-weight: bold; color: white; background: #10B981; padding: 10px; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.3);" onclick="enableAudio()">
+    🔔 Click Here To Enable Alarm Sound
+</div>
+
+<audio id="alarmAudio" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+
 <script>
+    let audioEnabled = false;
+    const alarm = document.getElementById("alarmAudio");
+    
+    // User ke click karte hi aawaz unlock ho jayegi
+    function enableAudio() {{
+        audioEnabled = true;
+        // Ek mini-second ke liye play/pause karke browser ko unlock karte hain
+        alarm.play().then(() => {{
+            setTimeout(() => alarm.pause(), 100);
+        }}).catch(e => console.log(e));
+        
+        const btn = document.getElementById("audio-btn");
+        btn.innerHTML = "✅ Alarm Active (Do not close page)";
+        btn.style.background = "#00F2FE";
+        btn.style.color = "black";
+    }}
+
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {{
         Notification.requestPermission();
     }}
 
     const reminders = {reminder_js_data};
-    
-    // Yahan humne ek mast loud alarm sound add kiya hai
-    const alarmSound = new Audio("https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg");
     
     function checkReminders() {{
         const now = new Date();
@@ -396,10 +416,13 @@ components.html(f"""
             if (r.time.substring(0,5) === currentTime.substring(0,5) && !window[r.name + r.time]) {{
                 window[r.name + r.time] = true; 
                 
-                // 1. Sabse pehle AAWAZ play karo
-                alarmSound.play().catch(e => console.log("Browser ne audio block kar di. Click on page first."));
+                // 1. Aawaz Play Karo (Agar user ne button dabaya hai)
+                if (audioEnabled) {{
+                    alarm.currentTime = 0;
+                    alarm.play();
+                }}
                 
-                // 2. System Desktop Notification bhejo
+                // 2. Desktop Notification
                 if (Notification.permission === "granted") {{
                     new Notification("💊 Heydoctor.ai Medicine Reminder", {{
                         body: "Time to take your medicine: " + r.name,
@@ -407,7 +430,7 @@ components.html(f"""
                     }});
                 }}
 
-                // 3. Browser Popup Alert (Mili-second ka delay diya hai taaki pehle aawaz shuru ho jaye, kyunki alert JS ko pause kar deta hai)
+                // 3. Screen Pop-up Alert
                 setTimeout(() => {{
                     alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
                 }}, 500);
@@ -415,9 +438,10 @@ components.html(f"""
         }});
     }}
 
-    setInterval(checkReminders, 5000);
+    // Har 2 second mein time check karega
+    setInterval(checkReminders, 2000);
 </script>
-""", height=0, width=0)
+""", height=60)
 # ==============================================================================
 # SECOND ADSTERRA AD
 # ==============================================================================
