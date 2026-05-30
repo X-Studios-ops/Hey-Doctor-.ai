@@ -328,16 +328,36 @@ if "reminders" not in st.session_state:
     st.session_state.reminders = []
 
 medicine_name = st.text_input("Medicine Name", key="med_name_input")
-reminder_time = st.time_input("Reminder Time", key="med_time_input")
+
+# Custom AM/PM Time Picker (Using Columns)
+st.write("Reminder Time")
+col_h, col_m, col_ap = st.columns(3)
+
+with col_h:
+    # 01 se 12 tak ghante
+    hour = st.selectbox("Hour", [f"{i:02d}" for i in range(1, 13)], key="hour_input")
+with col_m:
+    # 00 se 59 tak minutes
+    minute = st.selectbox("Minute", [f"{i:02d}" for i in range(0, 60)], key="min_input")
+with col_ap:
+    # AM aur PM
+    ampm = st.selectbox("AM/PM", ["AM", "PM"], key="ampm_input")
 
 if st.button("Save Reminder", key="save_reminder_btn"):
     if medicine_name.strip():
-        # JavaScript background logic ke liye 24-Hour format (e.g., 14:30:00)
-        target_time_str = reminder_time.strftime("%H:%M:%S")
+        # Display ke liye time format
+        display_time_str = f"{hour}:{minute} {ampm}"
         
-        # UI par dikhane ke liye 12-Hour AM/PM format (e.g., 02:30 PM)
-        display_time_str = reminder_time.strftime("%I:%M %p")
+        # Background JavaScript ke liye 24-hour me convert karna zaroori hai
+        hour_24 = int(hour)
+        if ampm == "PM" and hour_24 != 12:
+            hour_24 += 12
+        elif ampm == "AM" and hour_24 == 12:
+            hour_24 = 0
+            
+        target_time_str = f"{hour_24:02d}:{minute}:00"
         
+        # Session state mein save kar rhe hain
         st.session_state.reminders.append({
             "name": medicine_name,
             "time": target_time_str,           # JS worker isko padhega
@@ -348,7 +368,7 @@ if st.button("Save Reminder", key="save_reminder_btn"):
     else:
         st.warning("⚠️ Please enter a medicine name first!")
 
-# Active reminders list (Ab yahan AM/PM dikhega)
+# Active reminders list
 if st.session_state.reminders:
     with st.expander("📋 Your Active Reminders", expanded=True):
         for r in st.session_state.reminders:
