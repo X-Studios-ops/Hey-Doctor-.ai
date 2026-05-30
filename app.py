@@ -437,27 +437,28 @@ for message in st.session_state.chat_history:
 # ==============================================================================
 user_query = st.chat_input("What are your symptoms?")
 # ==============================================================================
-
 # AI ENGINE
 # ==============================================================================
 if user_query:
 
+    # 1. User ka message UI pe dikhao
     with st.chat_message("user"):
         st.markdown(user_query)
 
-    meta_prompt = f"""
-Gender: {gender}
-Age: {age}
-Blood Type: {blood_type}
-
-Symptoms:
-{user_query}
-"""
+    # 2. PATIENT DETAILS KO SYSTEM PROMPT MEIN DAAL DIYA (Har message me nahi jayega)
+    dynamic_system_instruction = SYSTEM_PROMPT + f"""
+    \nCURRENT PATIENT PROFILE:
+    - Gender: {gender}
+    - Age: {age}
+    - Blood Type: {blood_type}
+    
+    (Note: Do not greet the patient repeatedly in every response. Just answer their current query directly and naturally.)
+    """
 
     contents = []
 
+    # History nikal rahe hain
     for item in st.session_state.chat_history:
-
         contents.append(
             types.Content(
                 role=item["role"],
@@ -469,14 +470,13 @@ Symptoms:
             )
         )
 
+    # Ab meta_prompt ki jagah seedha user_query bhej rahe hain
     current_parts = [
-        types.Part.from_text(text=meta_prompt)
+        types.Part.from_text(text=user_query)
     ]
 
     if uploaded_image:
-
         image_data = Image.open(uploaded_image)
-
         current_parts.append(
             types.Part.from_image(image_data)
         )
@@ -491,44 +491,29 @@ Symptoms:
     with st.chat_message("assistant"):
 
         response_placeholder = st.empty()
-
         full_response = ""
-
         success = False
 
         for _ in range(len(KEYS_POOL)):
-
             try:
-
                 api_key = get_next_api()
-
-                client = genai.Client(
-                    api_key=api_key
-                )
+                client = genai.Client(api_key=api_key)
 
                 response_stream = client.models.generate_content_stream(
                     model="gemini-2.5-flash",
                     contents=contents,
                     config=types.GenerateContentConfig(
-                        system_instruction=SYSTEM_PROMPT,
+                        system_instruction=dynamic_system_instruction, # Yahan naya instruction pass kiya
                         temperature=0.5
                     )
                 )
 
                 for chunk in response_stream:
-
                     if chunk.text:
-
                         full_response += chunk.text
+                        response_placeholder.markdown(full_response + "▌")
 
-                        response_placeholder.markdown(
-                            full_response + "▌"
-                        )
-
-                response_placeholder.markdown(
-                    full_response
-                )
-
+                response_placeholder.markdown(full_response)
                 success = True
                 break
 
@@ -538,9 +523,10 @@ Symptoms:
         if not success:
             st.error("🚨 All API Keys Failed")
 
+    # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
     st.session_state.chat_history.append({
         "role": "user",
-        "text": meta_prompt
+        "text": user_query 
     })
 
     st.session_state.chat_history.append({
