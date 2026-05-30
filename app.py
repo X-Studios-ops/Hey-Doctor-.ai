@@ -124,6 +124,9 @@ a[href*="app"]::before { content: "🧠 Main AI" !important; font-weight: bold; 
 
 a[href*="BMI"] span { display: none !important; }
 a[href*="BMI"]::before { content: "⚖️ BMI Calculator" !important; font-weight: bold; color: white; }
+/*
+a[href*="Medicine_Reminder"] span { display: none !important; }
+    a[href*="Medicine_Reminder"]::before { content: "⏰ Medicine Timer" !important; font-weight: bold; color: white; }
 </style>
 """, unsafe_allow_html=True)
 
