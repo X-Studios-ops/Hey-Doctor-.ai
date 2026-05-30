@@ -428,8 +428,22 @@ src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"
 user_query = st.chat_input(
     "Describe symptoms here..."
 )
+# ==============================================================================
+# 1. PURANE MESSAGES DIKHANA (Yeh page rerun hone par history wapas layega)
+# ==============================================================================
+for message in st.session_state.chat_history:
+    # Gemini API 'model' role use karta hai, par Streamlit UI 'assistant' mangta hai
+    display_role = "assistant" if message["role"] == "model" else message["role"]
+    
+    with st.chat_message(display_role):
+        st.markdown(message["text"])
 
 # ==============================================================================
+# 2. USER SE NAYA INPUT LENA
+# ==============================================================================
+user_query = st.chat_input("What are your symptoms?")
+# ==============================================================================
+
 # AI ENGINE
 # ==============================================================================
 if user_query:
