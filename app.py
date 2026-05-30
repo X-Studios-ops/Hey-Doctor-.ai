@@ -118,17 +118,16 @@ button[data-testid="sidebar-toggle"]::after {
     100% { opacity: 0.7; }
 }
 
-/* 2. MULTI-PAGE CHROME/SIDEBAR PAGES RENAME FIX */
+/* Multi-page CSS Selector (Super Strong Match) */
 a[href*="app"] span { display: none !important; }
 a[href*="app"]::before { content: "🧠 Main AI" !important; font-weight: bold; color: white; }
 
 a[href*="BMI"] span { display: none !important; }
 a[href*="BMI"]::before { content: "⚖️ BMI Calculator" !important; font-weight: bold; color: white; }
-/*
-a[href*="Medicine_Reminder"] span { display: none !important; }
-    a[href*="Medicine_Reminder"]::before { content: "⏰ Medicine Timer" !important; font-weight: bold; color: white; }
-</style>
-""", unsafe_allow_html=True)
+
+/* Naya Strong Selector: Medicine ya Timer kuch bhi mile toh replace karega */
+a[href*="med"] span, a[href*="Med"] span, a[href*="timer"] span { display: none !important; }
+a[href*="med"]::before, a[href*="Med"]::before, a[href*="timer"]::before { content: "⏰ Medicine Timer" !important; font-weight: bold; color: white; }
 
 # ==============================================================================
 # TITLE
