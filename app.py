@@ -332,33 +332,33 @@ reminder_time = st.time_input("Reminder Time", key="med_time_input")
 
 if st.button("Save Reminder", key="save_reminder_btn"):
     if medicine_name.strip():
-        # Current time lekar target timestamp calculate kar rhe hain
-        now = time.localtime()
+        # JavaScript background logic ke liye 24-Hour format (e.g., 14:30:00)
         target_time_str = reminder_time.strftime("%H:%M:%S")
         
-        # Session state mein save kar rhe hain tracking ke liye
+        # UI par dikhane ke liye 12-Hour AM/PM format (e.g., 02:30 PM)
+        display_time_str = reminder_time.strftime("%I:%M %p")
+        
         st.session_state.reminders.append({
             "name": medicine_name,
-            "time": target_time_str,
+            "time": target_time_str,           # JS worker isko padhega
+            "display_time": display_time_str,  # Hum screen par yeh dikhayenge
             "triggered": False
         })
-        st.success(f"✅ Reminder Saved For **{medicine_name}** at {reminder_time.strftime('%I:%M %p')}")
+        st.success(f"✅ Reminder Saved For **{medicine_name}** at {display_time_str}")
     else:
         st.warning("⚠️ Please enter a medicine name first!")
 
-# Active reminders list niche show karne ke liye
+# Active reminders list (Ab yahan AM/PM dikhega)
 if st.session_state.reminders:
     with st.expander("📋 Your Active Reminders", expanded=True):
         for r in st.session_state.reminders:
-            st.write(f"⏰ **{r['time']}** - {r['name']}")
+            st.write(f"⏰ **{r['display_time']}** - {r['name']}")
 
 # DYNAMIC JAVASCRIPT BACKGROUND WORKER FOR LIVE ALERTS
-# Yeh code background mein har 5 second par check karega aur time hote hi audio + alert dega
 reminder_js_data = str(st.session_state.reminders)
 
 components.html(f"""
 <script>
-    // Browser notification permission maang rha hai
     if (Notification.permission !== "granted" && Notification.permission !== "denied") {{
         Notification.requestPermission();
     }}
@@ -367,20 +367,14 @@ components.html(f"""
     
     function checkReminders() {{
         const now = new Date();
-        // Local time format (HH:MM:SS) 24 hours format mein match karne ke liye
         const currentTime = now.toTimeString().split(' ')[0]; 
         
         reminders.forEach(r => {{
-            // Agar time match karta hai (sirf Hours aur Minutes match check)
             if (r.time.substring(0,5) === currentTime.substring(0,5) && !window[r.name + r.time]) {{
-                
-                // Duplicate alert rokne ke liye flag lagaya
                 window[r.name + r.time] = true; 
                 
-                // 1. Browser Pop-up Alert
                 alert("🚨 MEDICINE REMINDER: Please take your medicine: " + r.name);
                 
-                // 2. System Desktop Notification
                 if (Notification.permission === "granted") {{
                     new Notification("💊 Heydoctor.ai Medicine Reminder", {{
                         body: "Time to take your medicine: " + r.name,
@@ -391,12 +385,9 @@ components.html(f"""
         }});
     }}
 
-    // Har 5 second mein time check karega background mein
     setInterval(checkReminders, 5000);
 </script>
 """, height=0, width=0)
-
-
 # ==============================================================================
 # SECOND ADSTERRA AD
 # ==============================================================================
