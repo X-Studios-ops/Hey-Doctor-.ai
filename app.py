@@ -594,11 +594,11 @@ if user_query:
         "text": full_response
     })
 
-   # ==============================================================================
+  # ==============================================================================
     # 🛑 SAFE HISTORY LIMIT (PREVENTS CRASH & TOKEN OVERLOAD)
     # ==============================================================================
-    # Sirf last 30 messages (15 Q&A) save rakhega. 
-    # Isse AI pichli baatein yaad bhi rakhega aur system hang/crash bhi nahi hoga.
+    # Sirf last 30 messages save rakhega
     if len(st.session_state.chat_history) > 30:
-        st.session_state.chat_history = st.session_state.chat_history[-30:]
+        st.session_state.chat_history = (
+            st.session_state.chat_history[-30:]
         )
