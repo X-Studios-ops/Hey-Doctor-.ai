@@ -293,22 +293,22 @@ junk_food = st.slider("🍔 Junk Food Meals Per Week", 0, 20, 3)
 
 if st.button("🔍 Run Reality Check"):
 
-score = 100
+    score = 100
 
-if sleep_hours < 7:
-    score -= (7 - sleep_hours) * 5
+    if sleep_hours < 7:
+        score -= (7 - sleep_hours) * 5
 
-if water_glasses < 8:
-    score -= (8 - water_glasses) * 2
+    if water_glasses < 8:
+        score -= (8 - water_glasses) * 2
 
-if exercise_days < 3:
-    score -= (3 - exercise_days) * 5
+    if exercise_days < 3:
+        score -= (3 - exercise_days) * 5
+        
+    if screen_hours > 6:
+        score -= (screen_hours - 6) * 3
 
-if screen_hours > 6:
-    score -= (screen_hours - 6) * 3
-
-if junk_food > 4:
-    score -= (junk_food - 4) * 2
+     if junk_food > 4:
+        score -= (junk_food - 4) * 2
 
 score = max(0, min(100, score))
 
