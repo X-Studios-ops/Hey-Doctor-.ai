@@ -303,17 +303,16 @@ if st.button("🔍 Run Reality Check"):
 
     if exercise_days < 3:
         score -= (3 - exercise_days) * 5
-        
+
     if screen_hours > 6:
         score -= (screen_hours - 6) * 3
 
     if junk_food > 4:
         score -= (junk_food - 4) * 2
 
-score = max(0, min(100, score))
+    score = max(0, min(100, score))
 
-st.subheader(f"🎯 Lifestyle Score: {score}/100")
-
+    st.subheader(f"🎯 Reality Score: {score}/100")
 if score >= 85:
     roast = "🟢 Your lifestyle is actually impressive. Keep it up!"
 elif score >= 70:
