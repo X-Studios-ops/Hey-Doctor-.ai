@@ -279,6 +279,79 @@ src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"
 </div>
 """, height=100)
 
+======================================================================
+# ⭐ AI Reality Check
+======================================================================
+st.markdown("---")
+st.markdown("## ⭐ AI Reality Check")
+st.caption("Get a brutally honest review of your lifestyle 😅")
+
+sleep_hours = st.slider("😴 Sleep Hours Per Day", 0, 12, 7)
+water_glasses = st.slider("💧 Glasses of Water Per Day", 0, 15, 8)
+exercise_days = st.slider("🏃 Exercise Days Per Week", 0, 7, 3)
+screen_hours = st.slider("📱 Screen Time (Hours/Day)", 0, 15, 5)
+junk_food = st.slider("🍔 Junk Food Meals Per Week", 0, 20, 3)
+
+if st.button("🔍 Run Reality Check"):
+
+```
+score = 100
+
+if sleep_hours < 7:
+    score -= (7 - sleep_hours) * 5
+
+if water_glasses < 8:
+    score -= (8 - water_glasses) * 2
+
+if exercise_days < 3:
+    score -= (3 - exercise_days) * 5
+
+if screen_hours > 6:
+    score -= (screen_hours - 6) * 3
+
+if junk_food > 4:
+    score -= (junk_food - 4) * 2
+
+score = max(0, min(100, score))
+
+st.subheader(f"🎯 Lifestyle Score: {score}/100")
+
+if score >= 85:
+    roast = "🟢 Your lifestyle is actually impressive. Keep it up!"
+elif score >= 70:
+    roast = "🟡 Not bad, but your body has a few complaints."
+elif score >= 50:
+    roast = "🟠 Your body is working overtime to compensate for your habits. 😭"
+elif score >= 30:
+    roast = "🔴 Reality Check: Your lifestyle choices are winning against your health."
+else:
+    roast = "💀 Emergency Reality Check: Your body deserves an apology."
+
+st.warning(roast)
+
+advice = []
+
+if sleep_hours < 7:
+    advice.append("😴 Try getting 7–8 hours of sleep.")
+
+if water_glasses < 8:
+    advice.append("💧 Drink more water daily.")
+
+if exercise_days < 3:
+    advice.append("🏃 Add at least 3 exercise sessions per week.")
+
+if screen_hours > 6:
+    advice.append("📱 Reduce screen time.")
+
+if junk_food > 4:
+    advice.append("🍔 Cut down on junk food.")
+
+if advice:
+    st.success("🩺 AI Suggestions")
+    for item in advice:
+        st.write("•", item)
+```
+
 # ==============================================================================
 # BMI CALCULATOR
 # ==============================================================================
