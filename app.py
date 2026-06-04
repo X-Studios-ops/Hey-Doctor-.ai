@@ -316,7 +316,8 @@ if st.button("Calculate BMI"):
 
     else:
         st.error("🚨 Obese")
-
+Coming Soon 🚀
+Medicine Reminder feature is under development.
 # ==============================================================================
 # SECOND ADSTERRA AD
 # ==============================================================================
