@@ -307,7 +307,7 @@ if st.button("🔍 Run Reality Check"):
     if screen_hours > 6:
         score -= (screen_hours - 6) * 3
 
-     if junk_food > 4:
+    if junk_food > 4:
         score -= (junk_food - 4) * 2
 
 score = max(0, min(100, score))
