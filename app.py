@@ -279,9 +279,8 @@ src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"
 </div>
 """, height=100)
 
-======================================================================
 # ⭐ AI Reality Check
-======================================================================
+
 st.markdown("---")
 st.markdown("## ⭐ AI Reality Check")
 st.caption("Get a brutally honest review of your lifestyle 😅")
