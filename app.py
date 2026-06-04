@@ -296,6 +296,7 @@ if st.button("🔍 Run Reality Check"):
 
 score = 100
 
+
 if sleep_hours < 7:
     score -= (7 - sleep_hours) * 5
 
