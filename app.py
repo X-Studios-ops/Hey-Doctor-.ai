@@ -313,42 +313,18 @@ if junk_food > 4:
 
 score = max(0, min(100, score))
 
-st.subheader(f"🎯 Reality Score: {score}/100")
+st.success(f"🎯 Reality Score: {score}/100")
 
 if score >= 85:
-    roast = "🟢 Your lifestyle is actually impressive. Keep it up!"
+    st.info("🟢 Your lifestyle is actually impressive. Keep it up!")
 elif score >= 70:
-    roast = "🟡 Not bad, but your body has a few complaints."
+    st.info("🟡 Not bad, but your body has a few complaints.")
 elif score >= 50:
-    roast = "🟠 Your body is working overtime to compensate for your habits. 😭"
+    st.warning("🟠 Your body is working overtime to compensate for your habits. 😭")
 elif score >= 30:
-    roast = "🔴 Reality Check: Your lifestyle choices are winning against your health."
+    st.warning("🔴 Reality Check: Your lifestyle choices are winning against your health.")
 else:
-    roast = "💀 Emergency Reality Check: Your body deserves an apology."
-
-st.warning(roast)
-
-advice = []
-
-if sleep_hours < 7:
-    advice.append("😴 Try getting 7–8 hours of sleep.")
-
-if water_glasses < 8:
-    advice.append("💧 Drink more water daily.")
-
-if exercise_days < 3:
-    advice.append("🏃 Add at least 3 exercise sessions per week.")
-
-if screen_hours > 6:
-    advice.append("📱 Reduce screen time.")
-
-if junk_food > 4:
-    advice.append("🍔 Cut down on junk food.")
-
-if advice:
-    st.success("🩺 AI Suggestions")
-    for item in advice:
-        st.write("•", item)
+    st.error("💀 Emergency Reality Check: Your body deserves an apology.")
 
 # ==============================================================================
 # BMI CALCULATOR
