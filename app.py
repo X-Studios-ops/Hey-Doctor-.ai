@@ -280,7 +280,6 @@ src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js"
 """, height=100)
 
 # ⭐ AI Reality Check
-
 st.markdown("---")
 st.markdown("## ⭐ AI Reality Check")
 st.caption("Get a brutally honest review of your lifestyle 😅")
@@ -291,42 +290,39 @@ exercise_days = st.slider("🏃 Exercise Days Per Week", 0, 7, 3)
 screen_hours = st.slider("📱 Screen Time (Hours/Day)", 0, 15, 5)
 junk_food = st.slider("🍔 Junk Food Meals Per Week", 0, 20, 3)
 
+# Everything below this line must be indented properly
 if st.button("🔍 Run Reality Check"):
+    score = 100
 
-```
-score = 100
+    if sleep_hours < 7:
+        score -= (7 - sleep_hours) * 5
 
-if sleep_hours < 7:
-    score -= (7 - sleep_hours) * 5
+    if water_glasses < 8:
+        score -= (8 - water_glasses) * 2
 
-if water_glasses < 8:
-    score -= (8 - water_glasses) * 2
+    if exercise_days < 3:
+        score -= (3 - exercise_days) * 5
 
-if exercise_days < 3:
-    score -= (3 - exercise_days) * 5
+    if screen_hours > 6:
+        score -= (screen_hours - 6) * 3
 
-if screen_hours > 6:
-    score -= (screen_hours - 6) * 3
+    if junk_food > 4:
+        score -= (junk_food - 4) * 2
 
-if junk_food > 4:
-    score -= (junk_food - 4) * 2
+    score = max(0, min(100, score))
 
-score = max(0, min(100, score))
+    st.success(f"🎯 Reality Score: {score}/100")
 
-st.success(f"🎯 Reality Score: {score}/100")
-
-if score >= 85:
-    st.info("🟢 Your lifestyle is actually impressive. Keep it up!")
-elif score >= 70:
-    st.info("🟡 Not bad, but your body has a few complaints.")
-elif score >= 50:
-    st.warning("🟠 Your body is working overtime to compensate for your habits. 😭")
-elif score >= 30:
-    st.warning("🔴 Reality Check: Your lifestyle choices are winning against your health.")
-else:
-    st.error("💀 Emergency Reality Check: Your body deserves an apology.")
-```
-
+    if score >= 85:
+        st.info("🟢 Your lifestyle is actually impressive. Keep it up!")
+    elif score >= 70:
+        st.info("🟡 Not bad, but your body has a few complaints.")
+    elif score >= 50:
+        st.warning("🟠 Your body is working overtime to compensate for your habits. 😭")
+    elif score >= 30:
+        st.warning("🔴 Reality Check: Your lifestyle choices are winning against your health.")
+    else:
+        st.error("💀 Emergency Reality Check: Your body deserves an apology.")
 
 # ==============================================================================
 # BMI CALCULATOR
