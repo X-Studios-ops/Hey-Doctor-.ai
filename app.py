@@ -293,9 +293,8 @@ junk_food = st.slider("🍔 Junk Food Meals Per Week", 0, 20, 3)
 
 if st.button("🔍 Run Reality Check"):
 
-
+```
 score = 100
-
 
 if sleep_hours < 7:
     score -= (7 - sleep_hours) * 5
@@ -326,6 +325,8 @@ elif score >= 30:
     st.warning("🔴 Reality Check: Your lifestyle choices are winning against your health.")
 else:
     st.error("💀 Emergency Reality Check: Your body deserves an apology.")
+```
+
 
 # ==============================================================================
 # BMI CALCULATOR
