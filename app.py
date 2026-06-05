@@ -324,43 +324,6 @@ if st.button("🔍 Run Reality Check"):
     else:
         st.error("💀 Emergency Reality Check: Your body deserves an apology.")
 
-# ==============================================================================
-# BMI CALCULATOR
-# ==============================================================================
-st.markdown("---")
-st.markdown("## ⚖️ BMI Calculator")
-
-height = st.number_input(
-    "Height (cm)",
-    min_value=50.0,
-    max_value=250.0,
-    value=170.0
-)
-
-weight = st.number_input(
-    "Weight (kg)",
-    min_value=10.0,
-    max_value=300.0,
-    value=70.0
-)
-
-if st.button("Calculate BMI"):
-
-    bmi = weight / ((height / 100) ** 2)
-
-    st.success(f"✅ Your BMI = {bmi:.2f}")
-
-    if bmi < 18.5:
-        st.warning("⚠️ Underweight")
-
-    elif bmi < 25:
-        st.success("💚 Normal Weight")
-
-    elif bmi < 30:
-        st.warning("⚠️ Overweight")
-
-    else:
-        st.error("🚨 Obese")
 #==============================================================================
 st.markdown("""
 ## 🚀 Coming Soon
