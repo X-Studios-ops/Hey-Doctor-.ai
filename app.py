@@ -324,6 +324,52 @@ if st.button("🔍 Run Reality Check"):
     else:
         st.error("💀 Emergency Reality Check: Your body deserves an apology.")
 
+# ==============================================================================
+# MEDICINE SEARCH TOOL (INTEGRATED)
+# ==============================================================================
+with st.sidebar:
+    st.markdown("---")
+    st.markdown("### 💊 Medicine Info Search")
+    med_query = st.text_input("Search Medicine Name:", placeholder="e.g. Paracetamol")
+    
+    if st.button("Search Information"):
+        if med_query:
+            with st.spinner("Heydoctor.ai is analyzing database..."):
+                # System instructions for medical accuracy
+                med_prompt = f"""
+                You are a professional medical assistant. Provide a concise, 
+                accurate medical profile for the medicine '{med_query}'.
+                Include these sections:
+                1. USES: (Bullet points)
+                2. SIDE EFFECTS: (Bullet points)
+                3. PRECAUTIONS: (Bullet points)
+                4. WARNING: (Bold text)
+                """
+                
+                try:
+                    # Using current API key from Keys Pool
+                    api_key = get_next_api()
+                    client = genai.Client(api_key=api_key)
+                    
+                    response = client.models.generate_content(
+                        model="gemini-2.5-flash",
+                        contents=med_prompt
+                    )
+                    
+                    st.markdown("---")
+                    st.markdown(response.text)
+                    
+                    # Disclaimer inside sidebar
+                    st.markdown("""
+                    <div style='font-size:10px; color:#666; margin-top:20px; text-align:center;'>
+                    <strong>Disclaimer:</strong> This tool is for info only. Not a medical diagnosis. Consult a doctor before taking any medication.
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                except Exception as e:
+                    st.error("AI service currently busy. Please try again.")
+        else:
+            st.warning("Please enter a medicine name first.")
 #==============================================================================
 st.markdown("""
 ## 🚀 Coming Soon
