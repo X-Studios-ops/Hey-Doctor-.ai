@@ -24,68 +24,23 @@ st.set_page_config(
 # ==============================================================================
 st.markdown("""
 <style>
-
-html, body, [data-testid="stAppViewContainer"] {
-    background: radial-gradient(circle at center, #061510 0%, #010403 100%);
-    color: white;
-    font-family: 'Poppins', sans-serif;
-}
-
-.main-title {
-    font-size: 3rem;
-    font-weight: 900;
-    text-align: center;
-    background: linear-gradient(90deg,#00F2FE,#10B981);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-top: 10px;
-}
-
-.glass-box {
-    background: rgba(0,0,0,0.25);
-    border: 1px solid rgba(0,255,200,0.15);
-    padding: 18px;
-    border-radius: 18px;
-    margin-bottom: 18px;
-    backdrop-filter: blur(10px);
-}
-
-.section-title {
-    color: #10B981;
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-div[data-testid="stChatMessage"] {
-    background: rgba(255,255,255,0.03);
-    border-radius: 12px;
-    padding: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.stButton button {
-    width: 100%;
-    border-radius: 12px;
-    background: linear-gradient(90deg,#00F2FE,#10B981);
-    color: black;
-    font-weight: bold;
-    border: none;
-}
-/* 👇 BAS YAHAN SABSE NEECHE YEH NAYA CODE PASTE KAR DO */
-
+/* Sidebar toggle button ke saath text chipka do */
 section[data-testid="stSidebarCollapseButton"] button::after {
-    content: " Shortcut";
+    content: " | 💊 Medicine Info";
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 800;
     color: #10B981;
-    position: relative;
-    left: 5px;
-    top: -2px;
-    white-space: nowrap;
+    margin-left: 10px;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 2px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
-section[data-testid="stSidebarCollapseButton"] button:hover::after {
-    color: #00F2FE;
+/* Sidebar khulne par icon aur text saaf dikhe */
+button[data-testid="sidebar-toggle"] {
+    display: flex;
+    align-items: center;
 }
 </style>
 """, unsafe_allow_html=True)
