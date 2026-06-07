@@ -424,11 +424,32 @@ if user_query:
         types.Part.from_text(text=user_query)
     ]
 
-    if uploaded_image:
-        image_data = Image.open(uploaded_image)
-        current_parts.append(
-            types.Part.from_image(image_data)
+    # Ab meta_prompt ki jagah seedha user_query bhej rahe hain
+
+current_parts = [
+    types.Part.from_text(text=user_query)
+]
+
+# Image support
+if uploaded_image:
+    image_data = Image.open(uploaded_image).convert("RGB")
+
+    contents.append(
+        types.Content(
+            role="user",
+            parts=[
+                types.Part.from_text(text=user_query),
+                image_data
+            ]
         )
+    )
+else:
+    contents.append(
+        types.Content(
+            role="user",
+            parts=current_parts
+        )
+    )
 
     contents.append(
         types.Content(
