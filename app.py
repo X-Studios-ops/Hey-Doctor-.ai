@@ -454,8 +454,9 @@ if user_query:
                 success = True
                 break
 
-            except Exception:
-                continue
+            except Exception as e:
+    st.error(f"API Error: {e}")
+    break
 
         if not success:
             st.error("🚨 All API Keys Failed")
