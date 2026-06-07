@@ -424,7 +424,12 @@ if user_query:
         types.Part.from_text(text=user_query)
     ]
 
-    
+    contents.append(
+    types.Content(
+        role="user",
+        parts=current_parts
+    )
+)
     with st.chat_message("assistant"):
 
         response_placeholder = st.empty()
