@@ -325,49 +325,64 @@ if st.button("🔍 Run Reality Check"):
         st.error("💀 Emergency Reality Check: Your body deserves an apology.")
 
 # ==============================================================================
-# MEDICINE SEARCH TOOL (INTEGRATED)
+# MEDICINE INFO TOOL - SIDEBAR INTEGRATION
 # ==============================================================================
+
 with st.sidebar:
     st.markdown("---")
     st.markdown("### 💊 Medicine Info Search")
-    med_query = st.text_input("Search Medicine Name:", placeholder="e.g. Paracetamol")
     
-    if st.button("Search Information"):
+    # Text input for medicine name
+    med_query = st.text_input("Enter Medicine Name:", placeholder="e.g. Paracetamol, Ibuprofen")
+    
+    # Button to trigger search
+    if st.button("Search Information", key="med_search_btn"):
         if med_query:
-            with st.spinner("Heydoctor.ai is analyzing database..."):
-                # System instructions for medical accuracy
-                med_prompt = f"""
-                You are a professional medical assistant. Provide a concise, 
-                accurate medical profile for the medicine '{med_query}'.
-                Include these sections:
-                1. USES: (Bullet points)
-                2. SIDE EFFECTS: (Bullet points)
-                3. PRECAUTIONS: (Bullet points)
-                4. WARNING: (Bold text)
-                """
-                
+            with st.spinner("Heydoctor.ai is querying neural database..."):
                 try:
-                    # Using current API key from Keys Pool
+                    # Current API Key rotation logic
                     api_key = get_next_api()
                     client = genai.Client(api_key=api_key)
+                    
+                    # Prompt defined for structured output
+                    med_prompt = f"""
+                    You are Heydoctor.ai medical assistant. Provide a structured,
+                    concise medical profile for: '{med_query}'.
+                    
+                    Format your response exactly as:
+                    **1. PRIMARY USES:**
+                    - [Use 1]
+                    - [Use 2]
+                    
+                    **2. COMMON SIDE EFFECTS:**
+                    - [Side Effect 1]
+                    - [Side Effect 2]
+                    
+                    **3. KEY PRECAUTIONS:**
+                    - [Precaution 1]
+                    
+                    **4. DOCTOR'S WARNING:**
+                    [Keep this bold and critical]
+                    """
                     
                     response = client.models.generate_content(
                         model="gemini-2.5-flash",
                         contents=med_prompt
                     )
                     
+                    # Show results in a beautiful box
                     st.markdown("---")
                     st.markdown(response.text)
                     
-                    # Disclaimer inside sidebar
+                    # Disclaimer
                     st.markdown("""
-                    <div style='font-size:10px; color:#666; margin-top:20px; text-align:center;'>
-                    <strong>Disclaimer:</strong> This tool is for info only. Not a medical diagnosis. Consult a doctor before taking any medication.
+                    <div style='font-size:10px; color:#666; margin-top:20px; text-align:center; padding:10px; border: 1px solid #333; border-radius:5px;'>
+                    <strong>CRITICAL DISCLAIMER:</strong> This is an AI-generated health insight. It is NOT medical advice. Always verify with a licensed doctor.
                     </div>
                     """, unsafe_allow_html=True)
                     
                 except Exception as e:
-                    st.error("AI service currently busy. Please try again.")
+                    st.error("AI service could not process this request. Please check your API keys.")
         else:
             st.warning("Please enter a medicine name first.")
 #==============================================================================
