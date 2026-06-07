@@ -175,14 +175,19 @@ MEDICAL RULES:
 # ==============================================================================
 st.markdown("## 🧬 Diagnostic Stream")
 
-uploaded_image = st.file_uploader(
-    "Upload Medical Image",
-    type=["jpg", "jpeg", "png"]
-)
+st.warning("""
+🚧 **Medical Image Analysis - Coming Soon**
 
-if uploaded_image:
-    img = Image.open(uploaded_image)
-    st.image(img, use_container_width=True)
+Our advanced AI diagnostic vision system is currently being upgraded.
+
+Features coming soon:
+- Skin Condition Analysis
+- Prescription Reading
+- Medical Report Interpretation
+- Eye & Dental Screening
+
+Stay tuned for the next update.
+""")
 
 # ==============================================================================
 # USER DETAILS
