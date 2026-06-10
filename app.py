@@ -437,9 +437,9 @@ if user_query:
 )
     with st.chat_message("assistant"):
 
-    response_placeholder = st.empty()
-    full_response = ""
-    success = False
+        response_placeholder = st.empty()
+        full_response = ""
+        success = False
 
     for attempt in range(len(KEYS_POOL) * 2):
 
