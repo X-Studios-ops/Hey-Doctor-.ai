@@ -437,39 +437,53 @@ if user_query:
 )
     with st.chat_message("assistant"):
 
-        response_placeholder = st.empty()
-        full_response = ""
-        success = False
+    response_placeholder = st.empty()
+    full_response = ""
+    success = False
 
-        for _ in range(len(KEYS_POOL)):
-            try:
-                api_key = get_next_api()
-                client = genai.Client(api_key=api_key)
+    for attempt in range(len(KEYS_POOL) * 2):
 
-                response_stream = client.models.generate_content_stream(
-                    model="gemini-2.5-flash",
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction=dynamic_system_instruction, # Yahan naya instruction pass kiya
-                        temperature=0.5
-                    )
+        try:
+            api_key = get_next_api()
+            client = genai.Client(api_key=api_key)
+
+            response_stream = client.models.generate_content_stream(
+                model="gemini-2.5-flash",
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=dynamic_system_instruction,
+                    temperature=0.5
                 )
+            )
 
-                for chunk in response_stream:
-                    if chunk.text:
-                        full_response += chunk.text
-                        response_placeholder.markdown(full_response + "▌")
+            for chunk in response_stream:
+                if chunk.text:
+                    full_response += chunk.text
+                    response_placeholder.markdown(full_response + "▌")
 
-                response_placeholder.markdown(full_response)
-                success = True
-                break
+            response_placeholder.markdown(full_response)
+            success = True
+            break
 
-            except Exception as e:
-                st.error(f"API Error: {e}")
-                break
+        except Exception as e:
 
-        if not success:
-            st.error("🚨 All API Keys Failed")
+            error_text = str(e)
+
+            if "503" in error_text or "UNAVAILABLE" in error_text:
+                st.warning("⚠️ AI busy. Retrying...")
+                time.sleep(5)
+                continue
+
+            if "429" in error_text:
+                st.warning("⚠️ Rate limit reached. Trying next API key...")
+                time.sleep(3)
+                continue
+
+            st.warning(f"⚠️ API Key Failed. Trying next key...")
+            continue
+
+    if not success:
+        st.error("🚨 AI service temporarily unavailable. Please try again in a few minutes.")
 
     # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
     st.session_state.chat_history.append({
