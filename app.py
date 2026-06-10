@@ -500,7 +500,7 @@ if user_query:
     # 🛑 SAFE HISTORY LIMIT (PREVENTS CRASH & TOKEN OVERLOAD)
     # ==============================================================================
     # Sirf last 30 messages save rakhega
-    if len(st.session_state.chat_history) > 30:
+    if len(st.session_state.chat_history) > 12:
         st.session_state.chat_history = (
-            st.session_state.chat_history[-30:]
+            st.session_state.chat_history[-12:]
         )
