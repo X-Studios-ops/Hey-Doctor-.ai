@@ -436,7 +436,7 @@ if user_query:
         parts=current_parts
     )
 )
-    with st.chat_message("assistant"):
+with st.chat_message("assistant"):
 
     response_placeholder = st.empty()
     full_response = ""
@@ -464,6 +464,7 @@ if user_query:
                     response_placeholder.markdown(full_response + "▌")
 
             response_placeholder.markdown(full_response)
+
             success = True
             break
 
@@ -484,30 +485,29 @@ if user_query:
 
             continue
 
-
-
-    # ❌ Final fallback system
+    # Gemini fallback
     if not success:
 
-    try:
+        try:
 
-        st.warning("🔁 Switching to Gemini 1.5...")
+            st.warning("🔁 Switching to Gemini 1.5...")
 
-        client = genai.Client(api_key=KEYS_POOL[0])
+            client = genai.Client(api_key=KEYS_POOL[0])
 
-        response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=contents,
-            config=types.GenerateContentConfig(
-                system_instruction=dynamic_system_instruction
+            response = client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=dynamic_system_instruction
+                )
             )
-        )
 
-        full_response = response.text
-        response_placeholder.markdown(full_response)
-        success = True
+            full_response = response.text
+            response_placeholder.markdown(full_response)
 
-    except Exception:
+            success = True
+
+        except Exception:
 
         try:
 
