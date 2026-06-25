@@ -442,7 +442,7 @@ if user_query:
        full_response = ""
        success = False
 
-  for attempt in range(len(KEYS_POOL)):
+       for attempt in range(len(KEYS_POOL)):
 
     api_key = KEYS_POOL[attempt]
 
