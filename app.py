@@ -438,13 +438,13 @@ if user_query:
 )
     with st.chat_message("assistant"):
 
-       response_placeholder = st.empty()
-       full_response = ""
-       success = False
+    response_placeholder = st.empty()
+    full_response = ""
+    success = False
 
-  for attempt in range(len(KEYS_POOL)):
+    for attempt in range(len(KEYS_POOL)):
 
-      api_key = KEYS_POOL[attempt]
+        api_key = KEYS_POOL[attempt]
 
         try:
             client = genai.Client(api_key=api_key)
@@ -471,10 +471,8 @@ if user_query:
 
             error_text = str(e)
 
-            # 🔴 mark bad key
             print(f"Key {attempt+1} failed")
 
-            # 🔥 Smart delay system
             if "503" in error_text:
                 time.sleep(2)
 
