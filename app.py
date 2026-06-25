@@ -137,6 +137,13 @@ for key_name in secret_keys:
 if not KEYS_POOL:
     st.error("🚨 Configuration Error: No API Keys found in Streamlit Secrets Dashboard. Please add them in App Settings.")
     st.stop()
+# ==============================================================================
+# GROQ API KEY
+# ==============================================================================
+GROQ_API_KEY = st.secrets.get("GROQ_API_KEY")
+
+if not GROQ_API_KEY:
+    st.warning("⚠️ GROQ_API_KEY not found in Secrets")
 
 # ==============================================================================
 # SESSION STATE
