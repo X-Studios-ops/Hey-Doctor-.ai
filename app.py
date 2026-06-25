@@ -438,16 +438,16 @@ if user_query:
 )
     with st.chat_message("assistant"):
 
-    response_placeholder = st.empty()
-    full_response = ""
-    success = False
+        response_placeholder = st.empty()
+        full_response = ""
+        success = False
 
-    for attempt in range(len(KEYS_POOL)):
+        for attempt in range(len(KEYS_POOL)):
 
-        api_key = KEYS_POOL[attempt]
+            api_key = KEYS_POOL[attempt]
 
-        try:
-            client = genai.Client(api_key=api_key)
+            try:
+               client = genai.Client(api_key=api_key)
 
             response_stream = client.models.generate_content_stream(
                 model="gemini-2.5-flash",
