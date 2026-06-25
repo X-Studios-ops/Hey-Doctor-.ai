@@ -527,7 +527,7 @@ with st.chat_message("assistant"):
                     messages=[
                         {
                             "role": "user",
-                            "content": user_query
+                            "content": str(user_query)
                         }
                     ],
                     model="llama3-70b-8192"
