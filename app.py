@@ -8,6 +8,7 @@ from google.genai import types
 from PIL import Image
 import time
 import streamlit.components.v1 as components
+from groq import Groq
 
 # ==============================================================================
 # PAGE CONFIG
