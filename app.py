@@ -470,7 +470,6 @@ if user_query:
         except Exception as e:
 
             error_text = str(e)
-            key_fail_count[key_index] += 1
 
             # 🔴 mark bad key
             print(f"Key {attempt+1} failed")
