@@ -507,33 +507,34 @@ with st.chat_message("assistant"):
 
             success = True
 
-        try:
-    st.warning("🔁 Switching to Groq...")
+        except Exception:
+            # If the first provider fails, try Groq
+            try:
+                st.warning("🔁 Switching to Groq...")
 
-    groq_client = Groq(
-        api_key=GROQ_API_KEY
-    )
+                groq_client = Groq(
+                    api_key=GROQ_API_KEY
+                )
 
-    chat_completion = groq_client.chat.completions.create(
-        messages=[
-            {
-                "role": "user",
-                "content": user_query
-            }
-        ],
-        model="llama3-70b-8192"
-    )
+                chat_completion = groq_client.chat.completions.create(
+                    messages=[
+                        {
+                            "role": "user",
+                            "content": user_query
+                        }
+                    ],
+                    model="llama3-70b-8192"
+                )
 
-    full_response = chat_completion.choices[0].message.content
-    response_placeholder.markdown(full_response)
+                full_response = chat_completion.choices[0].message.content
+                response_placeholder.markdown(full_response)
+                success = True
 
-    success = True
-
-except Exception as e:
-    # It's highly recommended to print the actual error 'e' for debugging
-    response_placeholder.error(f"🚨 All AI providers failed. Error: {e}")
-    full_response = "Sorry, I encountered an error and couldn't generate a response."
-    success = False
+            except Exception as e:
+                # If Groq ALSO fails, catch the error here
+                response_placeholder.error(f"🚨 All AI providers failed. Error: {e}")
+                full_response = "Sorry, I encountered an error and couldn't generate a response."
+                success = False
 
 # Only update the chat history if a successful response was generated
 if success:
