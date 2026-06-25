@@ -8,7 +8,6 @@ from google.genai import types
 from PIL import Image
 import time
 import streamlit.components.v1 as components
-from groq import Groq
 
 # ==============================================================================
 # PAGE CONFIG
@@ -137,13 +136,6 @@ for key_name in secret_keys:
 if not KEYS_POOL:
     st.error("🚨 Configuration Error: No API Keys found in Streamlit Secrets Dashboard. Please add them in App Settings.")
     st.stop()
-# ==============================================================================
-# GROQ API KEY
-# ==============================================================================
-GROQ_API_KEY = st.secrets.get("GROQ_API_KEY")
-
-if not GROQ_API_KEY:
-    st.warning("⚠️ GROQ_API_KEY not found in Secrets")
 
 # ==============================================================================
 # SESSION STATE
@@ -443,15 +435,24 @@ if user_query:
         parts=current_parts
     )
 )
-with st.chat_message("assistant"):
+    with st.chat_message("assistant"):
 
-    response_placeholder = st.empty()
-    full_response = ""
-    success = False
+       response_placeholder = st.empty()
+       full_response = ""
+       success = False
+
+    # 🔥 Key health tracking (important)
+    key_fail_count = {i: 0 for i in range(len(KEYS_POOL))}
+
+    def get_best_key():
+        # least failed key choose karo
+        best_index = min(key_fail_count, key=key_fail_count.get)
+        return best_index
 
     for attempt in range(len(KEYS_POOL)):
 
-        api_key = KEYS_POOL[attempt]
+        key_index = get_best_key()
+        api_key = KEYS_POOL[key_index]
 
         try:
             client = genai.Client(api_key=api_key)
@@ -471,38 +472,38 @@ with st.chat_message("assistant"):
                     response_placeholder.markdown(full_response + "▌")
 
             response_placeholder.markdown(full_response)
-
             success = True
             break
 
         except Exception as e:
 
             error_text = str(e)
+            key_fail_count[key_index] += 1
 
-            print(f"Key {attempt+1} failed")
+            # 🔴 mark bad key
+            st.warning(f"⚠️ Key {key_index+1} failed")
 
+            # 🔥 Smart delay system
             if "503" in error_text:
                 time.sleep(2)
 
             elif "429" in error_text:
-                time.sleep(5)
+                time.sleep(6)
 
             else:
                 time.sleep(1)
 
             continue
 
-    # Gemini fallback
+    # ❌ Final fallback system
     if not success:
-
         try:
-
-            st.warning("🔁 Switching to Gemini 1.5...")
+            st.warning("🔁 Switching to fallback model...")
 
             client = genai.Client(api_key=KEYS_POOL[0])
 
             response = client.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-1.5-flash",  # fallback lighter model
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=dynamic_system_instruction
@@ -511,41 +512,11 @@ with st.chat_message("assistant"):
 
             full_response = response.text
             response_placeholder.markdown(full_response)
-
             success = True
 
-        except Exception:
-            # If the first provider fails, try Groq
-            try:
-                st.warning("🔁 Switching to Groq...")
-
-                groq_client = Groq(
-                    api_key=GROQ_API_KEY
-                )
-
-                chat_completion = groq_client.chat.completions.create(
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": str(user_query)
-                        }
-                    ],
-                    model="llama-3.1-8b-instant"
-                )
-
-                full_response = chat_completion.choices[0].message.content
-                response_placeholder.markdown(full_response)
-                success = True
-
-            except Exception as e:
-                # If Groq ALSO fails, catch the error here
-                response_placeholder.error(f"🚨 All AI providers failed. Error: {e}")
-                full_response = "Sorry, I encountered an error and couldn't generate a response."
-                success = False
-
-# Only update the chat history if a successful response was generated
-if success:
-    # History mein ab sirf user ka exact message save hoga
+        except Exception as e:
+            response_placeholder.error("🚨 All systems failed. Try again later.")
+    # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
     st.session_state.chat_history.append({
         "role": "user",
         "text": user_query 
