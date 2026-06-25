@@ -530,7 +530,7 @@ with st.chat_message("assistant"):
                             "content": str(user_query)
                         }
                     ],
-                    model="llama3-70b-8192"
+                    model="llama-3.1-8b-instant"
                 )
 
                 full_response = chat_completion.choices[0].message.content
