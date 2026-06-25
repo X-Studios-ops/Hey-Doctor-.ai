@@ -447,27 +447,27 @@ if user_query:
             api_key = KEYS_POOL[attempt]
 
             try:
-               client = genai.Client(api_key=api_key)
+    client = genai.Client(api_key=api_key)
 
-            response_stream = client.models.generate_content_stream(
-                model="gemini-2.5-flash",
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=dynamic_system_instruction,
-                    temperature=0.5
-                )
-            )
+    response_stream = client.models.generate_content_stream(
+        model="gemini-2.5-flash",
+        contents=contents,
+        config=types.GenerateContentConfig(
+            system_instruction=dynamic_system_instruction,
+            temperature=0.5
+        )
+    )
 
-            for chunk in response_stream:
-                if chunk.text:
-                    full_response += chunk.text
-                    response_placeholder.markdown(full_response + "▌")
+    for chunk in response_stream:
+        if chunk.text:
+            full_response += chunk.text
+            response_placeholder.markdown(full_response + "▌")
 
-            response_placeholder.markdown(full_response)
-            success = True
-            break
+    response_placeholder.markdown(full_response)
+    success = True
+    break
 
-        except Exception as e:
+except Exception as e:
 
             error_text = str(e)
 
