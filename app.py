@@ -444,7 +444,7 @@ if user_query:
 
   for attempt in range(len(KEYS_POOL)):
 
-    api_key = KEYS_POOL[attempt]
+      api_key = KEYS_POOL[attempt]
 
         try:
             client = genai.Client(api_key=api_key)
