@@ -488,25 +488,60 @@ if user_query:
 
     # ❌ Final fallback system
     if not success:
+
+    try:
+
+        st.warning("🔁 Switching to Gemini 1.5...")
+
+        client = genai.Client(api_key=KEYS_POOL[0])
+
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=dynamic_system_instruction
+            )
+        )
+
+        full_response = response.text
+        response_placeholder.markdown(full_response)
+        success = True
+
+    except Exception:
+
         try:
-            st.warning("🔁 Switching to fallback model...")
 
-            client = genai.Client(api_key=KEYS_POOL[0])
+            st.warning("🔁 Switching to Groq...")
 
-            response = client.models.generate_content(
-                model="gemini-1.5-flash",  # fallback lighter model
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    system_instruction=dynamic_system_instruction
-                )
+            groq_client = Groq(
+                api_key=GROQ_API_KEY
             )
 
-            full_response = response.text
+            chat_completion = groq_client.chat.completions.create(
+                messages=[
+                    {
+                        "role": "user",
+                        "content": user_query
+                    }
+                ],
+                model="llama-3.3-70b-versatile"
+            )
+
+            full_response = (
+                chat_completion
+                .choices[0]
+                .message
+                .content
+            )
+
             response_placeholder.markdown(full_response)
             success = True
 
-        except Exception as e:
-            response_placeholder.error("🚨 All systems failed. Try again later.")
+        except Exception:
+
+            response_placeholder.error(
+                "🚨 All AI systems unavailable."
+            )
     # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
     st.session_state.chat_history.append({
         "role": "user",
