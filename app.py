@@ -509,39 +509,32 @@ with st.chat_message("assistant"):
 
         except Exception:
 
-        try:
+    try:
 
-            st.warning("🔁 Switching to Groq...")
+        st.warning("🔁 Switching to Groq...")
 
-            groq_client = Groq(
-                api_key=GROQ_API_KEY
-            )
+        groq_client = Groq(
+            api_key=GROQ_API_KEY
+        )
 
-            chat_completion = groq_client.chat.completions.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": user_query
-                    }
-                ],
-                model="llama-3.3-70b-versatile"
-            )
+        chat_completion = groq_client.chat.completions.create(
+            messages=[
+                {
+                    "role": "user",
+                    "content": user_query
+                }
+            ],
+            model="llama3-70b-8192"
+        )
 
-            full_response = (
-                chat_completion
-                .choices[0]
-                .message
-                .content
-            )
+        full_response = chat_completion.choices[0].message.content
+        response_placeholder.markdown(full_response)
 
-            response_placeholder.markdown(full_response)
-            success = True
+        success = True
 
-        except Exception:
-
-            response_placeholder.error(
-                "🚨 All AI systems unavailable."
-            )
+    except Exception:
+        response_placeholder.error("🚨 All AI providers failed.")
+        
     # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
     st.session_state.chat_history.append({
         "role": "user",
