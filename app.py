@@ -507,35 +507,37 @@ with st.chat_message("assistant"):
 
             success = True
 
-        except Exception:
+        try:
+    st.warning("🔁 Switching to Groq...")
 
-    try:
+    groq_client = Groq(
+        api_key=GROQ_API_KEY
+    )
 
-        st.warning("🔁 Switching to Groq...")
+    chat_completion = groq_client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": user_query
+            }
+        ],
+        model="llama3-70b-8192"
+    )
 
-        groq_client = Groq(
-            api_key=GROQ_API_KEY
-        )
+    full_response = chat_completion.choices[0].message.content
+    response_placeholder.markdown(full_response)
 
-        chat_completion = groq_client.chat.completions.create(
-            messages=[
-                {
-                    "role": "user",
-                    "content": user_query
-                }
-            ],
-            model="llama3-70b-8192"
-        )
+    success = True
 
-        full_response = chat_completion.choices[0].message.content
-        response_placeholder.markdown(full_response)
+except Exception as e:
+    # It's highly recommended to print the actual error 'e' for debugging
+    response_placeholder.error(f"🚨 All AI providers failed. Error: {e}")
+    full_response = "Sorry, I encountered an error and couldn't generate a response."
+    success = False
 
-        success = True
-
-    except Exception:
-        response_placeholder.error("🚨 All AI providers failed.")
-        
-    # History mein ab sirf user ka exact message save hoga (bina kisi meta tag ke)
+# Only update the chat history if a successful response was generated
+if success:
+    # History mein ab sirf user ka exact message save hoga
     st.session_state.chat_history.append({
         "role": "user",
         "text": user_query 
