@@ -473,7 +473,7 @@ if user_query:
             key_fail_count[key_index] += 1
 
             # 🔴 mark bad key
-            st.warning(f"⚠️ Key {key_index+1} failed")
+            print(f"Key {attempt+1} failed")
 
             # 🔥 Smart delay system
             if "503" in error_text:
