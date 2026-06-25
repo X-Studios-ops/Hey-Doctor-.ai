@@ -442,18 +442,9 @@ if user_query:
        full_response = ""
        success = False
 
-    # 🔥 Key health tracking (important)
-    key_fail_count = {i: 0 for i in range(len(KEYS_POOL))}
+  for attempt in range(len(KEYS_POOL)):
 
-    def get_best_key():
-        # least failed key choose karo
-        best_index = min(key_fail_count, key=key_fail_count.get)
-        return best_index
-
-    for attempt in range(len(KEYS_POOL)):
-
-        key_index = get_best_key()
-        api_key = KEYS_POOL[key_index]
+    api_key = KEYS_POOL[attempt]
 
         try:
             client = genai.Client(api_key=api_key)
