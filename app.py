@@ -95,24 +95,6 @@ st.markdown(
 )
 
 # ==============================================================================
-# PRODUCT HUNT BADGE
-# ==============================================================================
-components.html("""
-<div style="display:flex;justify-content:center;margin-bottom:15px;">
-
-<a href="https://www.producthunt.com/products/hey-doctor-ai"
-target="_blank">
-
-<img
-src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1156270&theme=dark"
-width="250"
-/>
-
-</a>
-
-</div>
-""", height=80)
-# ==============================================================================
 # API KEYS POOL FETCHING
 # ==============================================================================
 KEYS_POOL = []
