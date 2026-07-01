@@ -333,30 +333,6 @@ st.markdown("""
 
 Medicine Reminder feature is under development and will be available soon.
 """)
-# ==============================================================================
-# SECOND ADSTERRA AD
-# ==============================================================================
-st.markdown("---")
-
-components.html("""
-<div style="display:flex;justify-content:center;">
-
-<script type="text/javascript">
-atOptions = {
-    'key' : '4c180b2176e3a1a287de9e6b76879287',
-    'format' : 'iframe',
-    'height' : 50,
-    'width' : 320,
-    'params' : {}
-};
-</script>
-
-<script type="text/javascript"
-src="//www.highperformanceformat.com/4c180b2176e3a1a287de9e6b76879287/invoke.js">
-</script>
-
-</div>
-""", height=60)
 
 # ==============================================================================
 # 1. PURANE MESSAGES DIKHANA (Yeh page rerun hone par history wapas layega)
